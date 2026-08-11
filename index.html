@@ -1,0 +1,1992 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <title>ดูดวงไพ่มหิทธิเลขฟรี</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #00008B;
+            --accent-color: #FFD700;
+            --bg-color: #f0f4f8;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            user-select: none;
+            overflow-x: hidden;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), #000);
+            color: white;
+            width: 100%;
+            padding: 15px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.4rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* --- LANDING & INPUT SECTIONS --- */
+        .container-box {
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            margin-top: 20px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .menu-btn {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            margin: 15px 0;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .btn-ai {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            border: 2px solid white;
+        }
+        .btn-human {
+            background: linear-gradient(135deg, #FFD700, #FDB931);
+            color: #444;
+            border: 2px solid #fff;
+        }
+        .menu-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
+        .menu-btn:active { transform: translateY(1px); }
+
+        .input-group {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 80px;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 1rem;
+            box-sizing: border-box;
+            resize: none;
+        }
+        textarea:focus { outline: 2px solid var(--primary-color); }
+
+        /* --- GAME AREA (สับไพ่ + เลือกไพ่) จัดให้อยู่กลางจอในแนวนอน --- */
+        #game-area {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- CONTROLS --- */
+        #controls {
+            margin: 10px;
+            text-align: center;
+            z-index: 10;
+            width: 100%;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            margin: 5px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); background-color: #2a3eb1; }
+        .btn-gold { background-color: var(--accent-color); color: #000; font-weight: bold; }
+        .btn-green { background-color: #28a745; color: white; }
+        .btn-blue { background-color: #007bff; color: white; }
+
+        /* --- TABLE AREA --- */
+        /* หมายเหตุ: ไม่ใช้ left:50% + translateX(-50%) เพราะพ่อ (#game-area) จัดกึ่งกลางให้อยู่แล้วด้วย
+           flex align-items:center — การใส่ left/transform ซ้ำเคยทำให้กองไพ่เลื่อนไปทางขวาของจอ
+           อย่างเห็นได้ชัดบนหน้าจอกว้าง (เช่นเดสก์ท็อป) ซึ่งเป็นสาเหตุของปัญหาที่ไม่อยู่กึ่งกลางจอ */
+        #table-area {
+            width: 98%;
+            max-width: 600px;
+            min-height: 68vh;
+            position: relative;
+            margin-bottom: 50px;
+        }
+
+        /* --- CARD STYLES --- */
+        .card {
+            width: 18.5vw; 
+            height: 28vw;
+            max-width: 110px;
+            max-height: 165px;
+            background-image: url('https://i.postimg.cc/d08Nfb0D/56.png'); 
+            background-size: cover;
+            background-position: center;
+            border: 1px solid #c0a16b;
+            border-radius: 6px;
+            position: absolute;
+            top: 0; left: 0;
+            will-change: transform;
+            transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            cursor: pointer;
+        }
+        .card.selected {
+            border: 3px solid var(--accent-color);
+            box-shadow: 0 0 15px var(--accent-color);
+            z-index: 200 !important;
+            transform: translateY(-20px) scale(1.15) !important;
+        }
+
+        #instruction {
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+            color: #555;
+            min-height: 25px;
+            font-weight: bold;
+        }
+
+        /* --- MODAL --- */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0; top: 0;
+            width: 100%; height: 100%; 
+            background-color: rgba(0,0,0,0.85); 
+            justify-content: center; align-items: center;
+            backdrop-filter: blur(3px);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            width: 100%; max-width: 500px;
+            max-height: 90vh; /* ป้องกันล้นจอ */
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: popIn 0.3s ease-out;
+            position: relative;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal h2 { color: var(--primary-color); font-size: 1.5rem; margin-bottom: 15px; margin-top: 0; }
+        .modal p { color: #555; font-size: 1rem; margin-bottom: 20px; }
+
+        /* --- REVEAL LAYOUT (PYRAMID) --- */
+        #revealed-cards-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .card-row {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        .revealed-img {
+            width: 28vw;
+            max-width: 110px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border: 2px solid gold;
+            animation: flipIn 0.6s ease-out;
+        }
+        @keyframes flipIn {
+            from { transform: rotateY(90deg); opacity: 0; }
+            to { transform: rotateY(0); opacity: 1; }
+        }
+
+        /* Action Buttons in Modal */
+        .action-area {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        /* หมายเหตุ: ใช้ !important เพราะ #game-area กำหนด display:flex ไว้ตรงๆ ผ่าน ID selector
+           ซึ่งมีความจำเพาะ (specificity) สูงกว่า .hidden-element (class selector) ทำให้ก่อนหน้านี้
+           แม้เพิ่มคลาส hidden-element ให้ #game-area แล้ว หน้าเลือกไพ่ก็ยังไม่หายไปจริงๆ */
+        .hidden-element { display: none !important; }
+        
+        .hint-text {
+            font-size: 0.85rem;
+            color: #d9534f;
+            background: #f9f2f2;
+            padding: 8px;
+            border-radius: 5px;
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        /* --- กล่องสำรอง "Copy Prompt" แสดงเฉพาะตอนระบบทำนายในแอปคนใช้งานหนาแน่น/โควตาเต็มชั่วคราว --- */
+        .copy-prompt-box {
+            font-size: 0.85rem;
+            color: #333;
+            background: #f0f4ff;
+            border: 1px dashed var(--primary-color);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 8px;
+            text-align: left;
+        }
+        .copy-prompt-box p {
+            margin: 0 0 8px 0;
+            line-height: 1.5;
+        }
+        .copy-prompt-btn {
+            font-size: 0.9rem;
+            padding: 8px 18px;
+            margin: 0;
+            display: inline-block;
+        }
+        .copy-prompt-feedback {
+            font-size: 0.8rem;
+            color: #1e7e34;
+            margin-top: 6px;
+        }
+
+        /* กล่อง "Copy Prompt" เวอร์ชันที่แนบต่อท้ายข้อความในหน้าแชทคุยต่อ ให้ชิดซ้ายและกว้างใกล้เคียงบับเบิลข้อความ */
+        .chat-copy-prompt-box {
+            max-width: 85%;
+            margin-right: auto;
+            margin-top: -2px;
+            margin-bottom: 8px;
+        }
+
+        /* --- STAR RATING --- */
+        .star-rating {
+            margin: 8px 0;
+        }
+        .star {
+            font-size: 1.9rem;
+            cursor: pointer;
+            color: var(--accent-color);
+            margin: 0 3px;
+            user-select: none;
+            display: inline-block;
+            transition: transform 0.15s;
+        }
+        .star:hover { transform: scale(1.15); }
+
+        .review-box {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 14px;
+            text-align: center;
+        }
+        .review-box p {
+            margin: 0 0 4px 0;
+            font-weight: bold;
+            color: #333;
+            font-size: 0.95rem;
+        }
+        .review-box textarea {
+            height: 50px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        /* --- READING (กล่องคำทำนาย) --- */
+        .reading-chat-box {
+            background: #fffbe6;
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 10px;
+            text-align: left;
+        }
+        .reading-text {
+            color: #333;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+        .reading-text b, .chat-msg b { color: var(--primary-color); }
+        .reading-divider {
+            border: none;
+            border-top: 1px dashed #d9c98a;
+            margin: 12px 0;
+        }
+        .chat-msg .reading-divider { border-top-color: #ccc; }
+        .toggle-reading-link {
+            display: inline-block;
+            margin-top: 6px;
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: underline;
+            user-select: none;
+        }
+        .toggle-reading-link:hover { opacity: 0.8; }
+
+        /* --- CHAT BOX (แยกออกจากกล่องคำทำนาย) --- */
+        .chat-box-container {
+            background: #eef4ff;
+            border: 1px solid #d3e2ff;
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 12px;
+            text-align: left;
+        }
+        #chat-messages {
+            max-height: 340px;
+            min-height: 60px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            padding: 4px 0;
+        }
+        #chat-messages:empty {
+            display: none;
+            margin: 0;
+        }
+        .chat-msg {
+            padding: 8px 12px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            max-width: 85%;
+            line-height: 1.4;
+            font-size: 0.92rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .chat-msg.user {
+            background: #e6f0ff;
+            margin-left: auto;
+            text-align: right;
+        }
+        .chat-msg.reader {
+            background: #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            margin-right: auto;
+            text-align: left;
+        }
+        .chat-msg.loading {
+            color: #888;
+            font-style: italic;
+        }
+        .chat-input-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 6px;
+            border-top: 1px dashed #c7d8ff;
+            padding-top: 10px;
+        }
+        .chat-input-row textarea {
+            flex: 1;
+            height: 42px;
+            min-height: 42px;
+            margin: 0;
+            line-height: 1.4;
+            resize: none;
+            overflow-y: hidden;
+        }
+        .chat-retry-hint {
+            font-size: 0.75rem;
+            color: #999;
+            text-align: center;
+            margin-top: 6px;
+        }
+        .chat-input-row .chat-send-btn {
+            margin: 0;
+            white-space: nowrap;
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            padding: 0;
+            border-radius: 50%;
+            font-size: 1.3rem;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- READING STATS TEXT (แสดงล่างซ้าย นอกกรอบคำถาม) --- */
+        .reading-stats-text {
+            text-align: left;
+            font-size: 0.82rem;
+            color: #777;
+            margin: 6px 4px 18px 4px;
+        }
+
+        /* --- REVIEW SUMMARY / CAROUSEL (ใต้ปุ่มสับไพ่เสี่ยงทาย) --- */
+        .review-summary-box {
+            background: white;
+            padding: 18px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .review-summary-title {
+            font-weight: bold;
+            color: #333;
+            margin: 0 0 6px 0;
+            font-size: 1rem;
+        }
+        #reviewsAverageText {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 14px;
+            font-size: 0.95rem;
+        }
+        .reviews-carousel {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .reviews-nav-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            font-size: 1.1rem;
+            line-height: 1;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .reviews-nav-btn:disabled {
+            background: #ccc;
+            cursor: default;
+        }
+        #reviewsList {
+            flex: 1;
+            text-align: left;
+            min-width: 0;
+        }
+        .review-item {
+            border-bottom: 1px solid #eee;
+            padding: 8px 6px;
+        }
+        .review-item:last-child { border-bottom: none; }
+        .review-item .review-stars {
+            color: var(--accent-color);
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
+        .review-item .review-comment {
+            font-size: 0.88rem;
+            color: #444;
+            margin-top: 3px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .review-empty-text {
+            color: #999;
+            font-size: 0.9rem;
+            padding: 10px 0;
+            text-align: center;
+            width: 100%;
+        }
+        .review-item .review-userid {
+            font-size: 0.75rem;
+            color: #999;
+            margin-bottom: 3px;
+        }
+
+        /* --- ADMIN BUTTON (มุมขวาของ header แต่ขยับลงมาอยู่ใต้แถบสีน้ำเงิน ติดเส้นขอบล่างของแถบ) --- */
+        .admin-btn {
+            position: absolute;
+            top: 100%;
+            right: 15px;
+            background: var(--primary-color);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.7);
+            border-top: none;
+            padding: 6px 14px;
+            border-radius: 0 0 16px 16px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            font-family: 'Sarabun', sans-serif;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.25);
+            z-index: 101;
+        }
+        .admin-btn:hover { background: #2a3eb1; }
+
+        /* --- ADMIN MODALS: input ช่องกรอกรหัสผ่าน / รายชื่อลูกดวง --- */
+        .text-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        .text-input:focus { outline: 2px solid var(--primary-color); }
+
+        /* --- ช่องรหัสผ่านพร้อมปุ่มรูปตา (แสดง/ซ่อนรหัสผ่าน) --- */
+        .password-wrapper {
+            position: relative;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+        .password-wrapper .text-input {
+            margin-top: 0;
+            margin-bottom: 0;
+            padding-right: 42px; /* เว้นที่ด้านขวาให้ปุ่มรูปตา ไม่ให้ทับตัวอักษรรหัสผ่าน */
+        }
+        .password-toggle-btn {
+            position: absolute;
+            top: 50%;
+            right: 4px;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            line-height: 1;
+            padding: 6px 8px;
+            color: #888;
+        }
+        .password-toggle-btn:hover { color: var(--primary-color); }
+
+        .admin-user-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 6px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+        .admin-user-row:last-child { border-bottom: none; }
+        .admin-user-id {
+            font-size: 0.95rem;
+            color: #333;
+            word-break: break-all;
+        }
+        .admin-user-usage {
+            font-size: 0.78rem;
+            color: #777;
+            margin-top: 2px;
+        }
+        .admin-status-btn {
+            flex-shrink: 0;
+            padding: 8px 14px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+        .admin-user-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .btn-block {
+            background-color: #c0392b;
+            color: white;
+        }
+        .admin-user-blocked {
+            font-size: 0.78rem;
+            color: #c0392b;
+            font-weight: bold;
+            margin-top: 2px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <button id="adminBtn" class="admin-btn" onclick="openAdminLogin()">Admin</button>
+        <h1>🔮 ดูดวงไพ่มหิทธิเลขฟรี</h1>
+    </header>
+
+    <div id="landing-page" class="container-box">
+        <h2>เลือกรูปแบบการพยากรณ์</h2>
+        <button class="menu-btn btn-ai" onclick="selectMode('ai')">🔮 รับคำทำนายทันที (ฟรี)</button>
+        <button class="menu-btn btn-human" onclick="selectMode('human')">🧙‍♂️ ดูดวงสดกับหมอดู</button>
+    </div>
+
+    <div id="ai-input-section" class="container-box hidden-element">
+        <div class="input-group">
+            <label for="userQuestion" style="font-weight:bold;">✍️ สิ่งที่ท่านอยากรู้:</label>
+            <textarea id="userQuestion" placeholder="พิมพ์คำถามโดยละเอียดของท่านที่นี่..."></textarea>
+            <button class="btn btn-gold" onclick="startAiProcess()">🎴 สับไพ่เสี่ยงทาย</button>
+            <br><br>
+            <button class="btn" style="font-size:0.9rem; background:#ccc; color:#333;" onclick="resetGame()">⬅️ ย้อนกลับ</button>
+        </div>
+
+        <div id="readingStatsText" class="reading-stats-text">🔮 ให้คำทำนายแล้ว <span id="readingStatsCount">-</span> ครั้ง</div>
+
+        <div id="reviews-section" class="review-summary-box">
+            <p class="review-summary-title">⭐ รีวิวจากลูกดวง</p>
+            <div id="reviewsAverageText">กำลังโหลดรีวิว...</div>
+            <div class="reviews-carousel">
+                <button id="reviewsPrevBtn" class="reviews-nav-btn" onclick="showPrevReviews()" disabled>&#10094;</button>
+                <div id="reviewsList"></div>
+                <button id="reviewsNextBtn" class="reviews-nav-btn" onclick="showNextReviews()" disabled>&#10095;</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-area" class="hidden-element">
+        <div id="controls">
+            <div id="instruction"></div>
+            <button id="reset-btn" class="btn btn-gold hidden-element" onclick="resetGame()">🔄 เริ่มใหม่</button>
+        </div>
+
+        <div id="table-area"></div>
+    </div>
+
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <h2>✨ เลือกไพ่ครบแล้ว!</h2>
+            <p>ตั้งจิตอธิษฐานถึงคำถามของท่าน<br>แล้วกดปุ่มเพื่อเปิดไพ่</p>
+            <button class="btn btn-gold" onclick="revealCards()">🔓 เปิดหน้าไพ่</button>
+        </div>
+    </div>
+
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <h2>ผลการเสี่ยงทาย</h2>
+            <div id="revealed-cards-container"></div>
+            
+            <div id="ai-actions" class="action-area hidden-element">
+                <button id="ask-ai-btn" class="btn btn-green" onclick="askAiForReading()">🔮 เปิดคำทำนาย</button>
+                <div id="ai-loading" class="hint-text hidden-element" style="color:#00008B; background:#f0f4ff; text-align:center;">
+                    ⏳ กำลังทำนาย กรุณารอสักครู่...
+                </div>
+                <div id="ai-error" class="hint-text hidden-element"></div>
+                <div id="ai-error-copy-box" class="copy-prompt-box hidden-element">
+                    <p>📸 ระหว่างที่ระบบยังไม่ว่าง คุณลูกดวงสามารถแคปหน้าจอ "หน้าไพ่" ที่เปิดอยู่นี้ไว้ก่อน แล้วกดปุ่มด้านล่างเพื่อคัดลอกคำสั่งสำหรับส่งให้ AI (เช่น แอป Gemini) จากนั้นนำภาพที่แคปไว้ไปส่ง พร้อมวางข้อความที่คัดลอกลงไปด้วย ก็จะได้รับคำทำนายเหมือนกับในหน้าแอปนี้ค่ะ</p>
+                    <button type="button" id="copyPromptBtn" class="btn btn-blue copy-prompt-btn" onclick="copyPredictionPrompt()">📋 Copy Prompt</button>
+                    <div id="copyPromptFeedback" class="copy-prompt-feedback hidden-element">✅ คัดลอกแล้ว! นำไปวางพร้อมภาพที่แคปไว้ในแอป AI ได้เลยค่ะ</div>
+                </div>
+
+                <div id="reading-chat-box" class="reading-chat-box hidden-element">
+                    <div id="reading-text-container">
+                        <div id="ai-result" class="reading-text"></div>
+                    </div>
+                    <div id="toggle-reading-text" class="toggle-reading-link hidden-element" onclick="toggleReadingText()">📜 ...คำทำนายทั้งหมด</div>
+                </div>
+
+                <div id="chat-box-container" class="chat-box-container hidden-element">
+                    <div id="chat-messages"></div>
+                    <div class="chat-input-row">
+                        <textarea id="chatInput" rows="1" placeholder="ถามต่อเรื่องเดิม..." oninput="autoGrowChatInput(this)"></textarea>
+                        <button class="btn btn-blue chat-send-btn" onclick="sendChatMessage()" aria-label="ส่ง" title="ส่ง">➤</button>
+                    </div>
+                    <div id="chatRetryHint" class="chat-retry-hint hidden-element">กดส่งอีกครั้ง ลูกดวงจะได้ไม่ต้องพิมพ์ซ้ำ</div>
+                </div>
+
+                <div id="rating-section" class="review-box hidden-element">
+                    <p>⭐ ให้คะแนนคำทำนายนี้</p>
+                    <div id="resultStars" class="star-rating"></div>
+                    <textarea id="resultComment" placeholder="ความคิดเห็นเพิ่มเติม (ถ้ามี)"></textarea>
+                    <button class="btn btn-blue" onclick="submitResultReview()">ส่งคะแนน</button>
+                    <div id="resultReviewThanks" class="hidden-element" style="color:#28a745; margin-top:8px; font-weight:bold;">🙏 ขอบคุณสำหรับคะแนนค่ะ/ครับ</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px;">
+                <button class="btn" onclick="resetGame()">ปิด / เริ่มใหม่</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="reviewModal" class="modal">
+        <div class="modal-content">
+            <h2>🙏 ก่อนเสี่ยงทายครั้งใหม่</h2>
+            <p>กรุณาให้คะแนนคำทำนายครั้งก่อนหน้า<br>(คำถาม: "<span id="reviewQuestionText"></span>")<br>ก่อนเริ่มคำถามใหม่ครั้งนี้</p>
+            <div id="reviewStars" class="star-rating"></div>
+            <textarea id="reviewComment" placeholder="ความคิดเห็นเพิ่มเติม (ถ้ามี)"></textarea>
+            <button class="btn btn-gold" onclick="submitPendingReview()">ส่งคะแนนแล้วเริ่มคำถามใหม่</button>
+        </div>
+    </div>
+
+    <div id="adminLoginModal" class="modal">
+        <div class="modal-content">
+            <h2>🔐 Admin Login</h2>
+            <p>กรุณากรอกรหัสผ่านเพื่อเข้าสู่ระบบจัดการ</p>
+            <div class="password-wrapper">
+                <input type="password" id="adminPasswordInput" class="text-input" placeholder="Password" autocomplete="off" onkeypress="if(event.key==='Enter'){ submitAdminLogin(); }">
+                <button type="button" id="adminPasswordToggleBtn" class="password-toggle-btn" onclick="toggleAdminPasswordVisibility()" aria-label="แสดง/ซ่อนรหัสผ่าน" title="แสดง/ซ่อนรหัสผ่าน">👁️</button>
+            </div>
+            <div id="adminLoginError" class="hint-text hidden-element">⚠️ รหัสผ่านไม่ถูกต้อง</div>
+            <div class="action-area">
+                <button class="btn btn-gold" onclick="submitAdminLogin()">เข้าสู่ระบบ</button>
+                <button class="btn" style="background:#ccc; color:#333;" onclick="closeAdminLogin()">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminPanelModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <h2>👑 จัดการสิทธิ์ลูกดวง</h2>
+            <p style="font-size:0.85rem;">
+                🔒 ล็อค = จำกัดสิทธิ์ตามปกติ (ทำนายได้ 3 ครั้ง/วัน, แชทเพิ่มได้ 6 ครั้ง/วัน, รีเซ็ตทุกเที่ยงคืน)<br>
+                🔓 ปลดล็อค = ใช้งานได้ไม่จำกัด<br>
+                🚫 บล็อค = ระงับสิทธิ์ "ออกคำทำนาย" ชั่วคราวเป็นรายวัน (ยังตั้งคำถาม/เปิดไพ่ได้ตามปกติ) ใช้กรณีทำผิดกฎ/สร้างความรำคาญ
+            </p>
+            <input type="text" id="adminUserSearchInput" class="text-input" placeholder="🔍 ค้นหาไอดีลูกดวง..." oninput="filterAdminUsers()" style="margin-top:10px; margin-bottom:10px;">
+            <div id="adminUsersList" style="text-align:left; max-height:50vh; overflow-y:auto;">กำลังโหลดข้อมูล...</div>
+            <div class="action-area">
+                <button class="btn" style="background:#ccc; color:#333;" onclick="closeAdminPanel()">ปิด</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="blockUserModal" class="modal">
+        <div class="modal-content">
+            <h2>🚫 บล็อคลูกดวง</h2>
+            <p style="font-size:0.85rem;">ลูกดวงที่ถูกบล็อค จะยังตั้งคำถามและเปิดไพ่ได้ตามปกติ แต่จะไม่สามารถออกคำทำนายได้จนกว่าจะครบกำหนด หรือแอดมินปลดบล็อคให้ก่อน</p>
+            <p id="blockUserIdText" style="font-weight:bold; word-break:break-all;"></p>
+            <label for="blockDaysInput" style="font-weight:bold; display:block; text-align:left;">ระงับสิทธิ์เป็นเวลา (วัน):</label>
+            <input type="number" id="blockDaysInput" class="text-input" min="1" step="1" value="7">
+            <div id="blockUserError" class="hint-text hidden-element">⚠️ กรุณาระบุจำนวนวันบล็อคให้ถูกต้อง</div>
+            <div class="action-area">
+                <button class="btn btn-gold" onclick="confirmBlockUser()">ยืนยันบล็อค</button>
+                <button class="btn" style="background:#ccc; color:#333;" onclick="closeBlockUserModal()">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="blockedNoticeModal" class="modal">
+        <div class="modal-content">
+            <h2>🚫 แจ้งเตือน</h2>
+            <p id="blockedNoticeMessage" style="font-weight:bold; color:#c0392b;"></p>
+            <div class="copy-prompt-box">
+                <p>📸 คุณลูกดวงสามารถแคปหน้าจอ "หน้าไพ่" ที่เปิดอยู่นี้ไว้ก่อน แล้วกดปุ่มด้านล่างเพื่อคัดลอกคำสั่ง (รวมคำทำนายเดิมและคำถามเพิ่มเติมนี้) สำหรับส่งให้ AI (เช่น แอป Gemini) จากนั้นนำภาพที่แคปไว้ไปส่ง พร้อมวางข้อความที่คัดลอกลงไปด้วย ก็จะได้รับคำตอบต่อเนื่องเหมือนกับในหน้าแอปนี้ค่ะ</p>
+                <button type="button" id="blockedCopyPromptBtn" class="btn btn-blue copy-prompt-btn" onclick="copyBlockedPrompt()">📋 Copy Prompt</button>
+                <div id="blockedCopyPromptFeedback" class="copy-prompt-feedback hidden-element">✅ คัดลอกแล้ว! นำไปวางพร้อมภาพที่แคปไว้ในแอป AI ได้เลยค่ะ</div>
+            </div>
+            <div class="action-area">
+                <button class="btn" style="background:#ccc; color:#333;" onclick="closeBlockedNoticeModal()">ปิด</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allCardUrls = [];
+        let shuffledDeck = [];
+        let selectedIndices = [];
+        let isGameActive = false;
+        let currentMode = ''; // 'ai' or 'human'
+        let userQuestionText = '';
+        const TOTAL_CARDS = 55;
+        const SELECT_COUNT_AI = 3;
+
+        // ระบบสถิติ / รีวิว / แชทต่อ
+        let currentReadingId = null;
+        let lastAnswerText = '';
+        let chatHistory = []; // [{role:'user'|'model', text:'...'}]
+        let chatEnded = false;
+        let pendingQuestionText = '';
+        let pendingReviewId = null;
+
+        // ระบบสถิติจำนวนคำทำนาย / รีวิว (แสดงที่หน้ากรอกคำถาม)
+        let allReviews = [];
+        let reviewsPage = 0;
+        const REVIEWS_PER_PAGE = 5;
+
+        // =================================================================================
+        // 🔧 ตั้งค่า URL ของ Apps Script Web App (API) ที่ deploy ไว้
+        // หลัง deploy แล้วให้นำ URL ที่ลงท้ายด้วย /exec มาแทนที่ค่านี้
+        // =================================================================================
+        const API_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+
+        /**
+         * เรียกฟังก์ชันฝั่ง Apps Script ผ่าน fetch() แทน google.script.run เดิม
+         * (ใช้ POST + body เป็น string ธรรมดา เพื่อเลี่ยงปัญหา CORS preflight ของ Apps Script)
+         * @param {string} action - ชื่อฟังก์ชันฝั่งเซิร์ฟเวอร์ที่ต้องการเรียก
+         * @param {Array} params - พารามิเตอร์ตามลำดับของฟังก์ชันนั้น
+         * @return {Promise} resolve ด้วยผลลัพธ์ของฟังก์ชัน หรือ reject ด้วย Error เมื่อผิดพลาด
+         */
+        function callApi(action, params) {
+            return fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: action, params: params || [] })
+            })
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    if (!data || !data.ok) {
+                        throw new Error((data && data.error) ? data.error : 'เกิดข้อผิดพลาดไม่ทราบสาเหตุ');
+                    }
+                    return data.result;
+                });
+        }
+
+        window.onload = function() {
+            callApi('getCardDeck', [])
+                .then(initDeck)
+                .catch(function (e) { alert("Error loading deck"); });
+        };
+
+        function initDeck(urls) {
+            allCardUrls = urls;
+        }
+
+        /**
+         * รหัสประจำตัวลูกดวง เก็บไว้ที่เบราว์เซอร์ (localStorage) เพื่อใช้ผูกกับสถิติ/รีวิว
+         */
+        function getUserId() {
+            let uid = localStorage.getItem('mahitthalek_uid');
+            if (!uid) {
+                uid = 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10);
+                localStorage.setItem('mahitthalek_uid', uid);
+            }
+            return uid;
+        }
+
+        /**
+         * โหลดจำนวนคำทำนายที่เคยออกไปแล้วทั้งหมด มาแสดงใต้กรอบคำถาม (ล่างซ้าย นอกกรอบ)
+         */
+        function loadReadingStats() {
+            const countEl = document.getElementById('readingStatsCount');
+            callApi('getReadingCount', [])
+                .then(function(count) {
+                    countEl.innerText = (typeof count === 'number') ? count : '0';
+                })
+                .catch(function() {
+                    countEl.innerText = '0';
+                });
+        }
+
+        /**
+         * โหลดรีวิวทั้งหมดจากชีท (เรียงใหม่สุดก่อน) มาเตรียมแสดงเป็นชุดๆ ละ 5 รีวิว
+         */
+        function loadReviews() {
+            document.getElementById('reviewsAverageText').innerText = 'กำลังโหลดรีวิว...';
+
+            callApi('getReviewsData', [])
+                .then(function(data) {
+                    allReviews = (data && data.reviews) ? data.reviews : [];
+                    reviewsPage = 0;
+                    renderReviewSummary(data);
+                    renderReviewsPage();
+                })
+                .catch(function() {
+                    allReviews = [];
+                    reviewsPage = 0;
+                    renderReviewSummary(null);
+                    renderReviewsPage();
+                });
+        }
+
+        function renderReviewSummary(data) {
+            const avgEl = document.getElementById('reviewsAverageText');
+            if (data && data.count > 0) {
+                avgEl.innerHTML = '⭐ คะแนนเฉลี่ย <b>' + Number(data.average).toFixed(1) + '</b> ดาว (จาก ' + data.count + ' รีวิว)';
+            } else {
+                avgEl.innerText = 'ยังไม่มีรีวิวในขณะนี้';
+            }
+        }
+
+        function renderReviewsPage() {
+            const listEl = document.getElementById('reviewsList');
+            const prevBtn = document.getElementById('reviewsPrevBtn');
+            const nextBtn = document.getElementById('reviewsNextBtn');
+            listEl.innerHTML = '';
+
+            const start = reviewsPage * REVIEWS_PER_PAGE;
+            const pageItems = allReviews.slice(start, start + REVIEWS_PER_PAGE);
+
+            if (pageItems.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'review-empty-text';
+                empty.innerText = 'ยังไม่มีรีวิวในขณะนี้';
+                listEl.appendChild(empty);
+            } else {
+                pageItems.forEach(function(r) {
+                    const item = document.createElement('div');
+                    item.className = 'review-item';
+
+                    const idDiv = document.createElement('div');
+                    idDiv.className = 'review-userid';
+                    const uidFull = r.userId || '';
+                    const uidShort = uidFull.length > 5 ? uidFull.slice(-5) : uidFull;
+                    idDiv.innerText = uidShort ? ('ID...' + uidShort) : 'ID...-----';
+                    item.appendChild(idDiv);
+
+                    const starsDiv = document.createElement('div');
+                    starsDiv.className = 'review-stars';
+                    const fullStars = Math.max(0, Math.min(5, Math.round(Number(r.rating) || 0)));
+                    starsDiv.innerText = '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars);
+                    item.appendChild(starsDiv);
+
+                    const commentDiv = document.createElement('div');
+                    commentDiv.className = 'review-comment';
+                    commentDiv.innerText = r.comment ? r.comment : '(ไม่มีความคิดเห็นเพิ่มเติม)';
+                    item.appendChild(commentDiv);
+
+                    listEl.appendChild(item);
+                });
+            }
+
+            prevBtn.disabled = (reviewsPage <= 0);
+            nextBtn.disabled = (start + REVIEWS_PER_PAGE >= allReviews.length);
+        }
+
+        function showPrevReviews() {
+            if (reviewsPage > 0) {
+                reviewsPage--;
+                renderReviewsPage();
+            }
+        }
+
+        function showNextReviews() {
+            const start = (reviewsPage + 1) * REVIEWS_PER_PAGE;
+            if (start < allReviews.length) {
+                reviewsPage++;
+                renderReviewsPage();
+            }
+        }
+
+        function selectMode(mode) {
+            currentMode = mode;
+            document.getElementById('landing-page').classList.add('hidden-element');
+
+            if (mode === 'ai') {
+                document.getElementById('ai-input-section').classList.remove('hidden-element');
+                document.getElementById('userQuestion').focus();
+                loadReadingStats();
+                loadReviews();
+            } else {
+                window.open('https://horos999.github.io/mahitthilekh/', '_blank');
+                resetGame();
+            }
+        }
+
+        function startAiProcess() {
+            const q = document.getElementById('userQuestion').value.trim();
+            if (!q) {
+                alert("กรุณาพิมพ์คำถามก่อนเริ่มสับไพ่ครับ");
+                return;
+            }
+
+            const uid = getUserId();
+            callApi('checkPendingReview', [uid])
+                .then(function(res) {
+                    if (res && res.pending) {
+                        pendingQuestionText = q;
+                        pendingReviewId = res.readingId;
+                        document.getElementById('reviewQuestionText').innerText = res.question || '';
+                        buildStarRating(document.getElementById('reviewStars'), 0);
+                        document.getElementById('reviewComment').value = '';
+                        document.getElementById('reviewModal').style.display = 'flex';
+                    } else {
+                        proceedToShuffle(q);
+                    }
+                })
+                .catch(function(err) {
+                    // ถ้าตรวจสอบไม่สำเร็จ ไม่ควรบล็อกลูกดวง ให้ทำนายต่อได้เลย
+                    proceedToShuffle(q);
+                });
+        }
+
+        function proceedToShuffle(q) {
+            userQuestionText = q;
+            document.getElementById('ai-input-section').classList.add('hidden-element');
+            document.getElementById('game-area').classList.remove('hidden-element');
+
+            renderStackedDeck();
+            startShuffle(SELECT_COUNT_AI);
+        }
+
+        function submitPendingReview() {
+            const container = document.getElementById('reviewStars');
+            const rating = Number(container.dataset.value || 0);
+            if (!rating) {
+                alert('กรุณาให้คะแนนก่อนดำเนินการต่อ');
+                return;
+            }
+            const comment = document.getElementById('reviewComment').value.trim();
+
+            callApi('submitReview', [pendingReviewId, rating, comment])
+                .then(function() {
+                    document.getElementById('reviewModal').style.display = 'none';
+                    proceedToShuffle(pendingQuestionText);
+                })
+                .catch(function(err) {
+                    document.getElementById('reviewModal').style.display = 'none';
+                    proceedToShuffle(pendingQuestionText);
+                });
+        }
+
+        function renderStackedDeck() {
+            const table = document.getElementById('table-area');
+            table.innerHTML = '';
+            table.style.height = '';
+
+            for (let i = 0; i < TOTAL_CARDS; i++) {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.id = `card-${i}`;
+                table.appendChild(card);
+            }
+
+            // จัดกองไพ่ให้อยู่ตรงกึ่งกลางของพื้นที่ (ทั้งแนวนอนและแนวตั้ง)
+            const cards = document.getElementsByClassName('card');
+            const cw = cards[0].offsetWidth;
+            const ch = cards[0].offsetHeight;
+
+            for (let i = 0; i < TOTAL_CARDS; i++) {
+                const card = cards[i];
+                const rR = (Math.random() - 0.5) * 6;
+                const rX = (Math.random() - 0.5) * 4;
+                const rY = (Math.random() - 0.5) * 4;
+
+                card.style.left = '50%';
+                card.style.top = '50%';
+                card.style.marginLeft = `-${cw / 2}px`;
+                card.style.marginTop = `-${ch / 2}px`;
+                card.style.transform = `translate(${rX}px, ${rY}px) rotate(${rR}deg)`;
+                card.style.zIndex = i;
+            }
+        }
+
+        /**
+         * แอนิเมชันสับไพ่แบบ "ริฟเฟิล" เลียนแบบการสับไพ่จริง:
+         * แยกกองไพ่เป็นสองกอง (เหมือนถือด้วยสองมือ) แล้วสอดใบไพ่สลับกันกลับมารวมกองตรงกลาง ทำซ้ำหลายรอบ
+         */
+        function startShuffle(count) {
+            if (allCardUrls.length === 0) return;
+            selectedIndices = [];
+            isGameActive = true;
+
+            document.getElementById('instruction').innerText = "กำลังสับไพ่...";
+
+            shuffledDeck = [...allCardUrls];
+            shuffleArray(shuffledDeck);
+
+            const cards = Array.from(document.getElementsByClassName('card'));
+            if (cards.length === 0) return;
+            const cw = cards[0].offsetWidth;
+
+            let round = 0;
+            const totalRounds = 3;
+
+            function riffleRound(onDone) {
+                const half = Math.ceil(cards.length / 2);
+
+                // ยกไพ่แยกเป็นสองกอง เหมือนถือไพ่ไว้สองมือก่อนสับ
+                cards.forEach((c, i) => {
+                    const isLeft = i < half;
+                    c.style.transition = 'transform 0.28s ease-in-out';
+                    c.style.transform = `translate(${isLeft ? -cw * 0.85 : cw * 0.85}px, -6px) rotate(${isLeft ? -10 : 10}deg)`;
+                });
+
+                setTimeout(() => {
+                    // สอดไพ่จากสองกองสลับกันทีละใบ (riffle) กลับมารวมกองตรงกลาง
+                    const left = cards.slice(0, half);
+                    const right = cards.slice(half);
+                    const seq = [];
+                    const maxLen = Math.max(left.length, right.length);
+                    for (let k = 0; k < maxLen; k++) {
+                        if (right[k]) seq.push(right[k]);
+                        if (left[k]) seq.push(left[k]);
+                    }
+
+                    seq.forEach((c, idx) => {
+                        setTimeout(() => {
+                            const jitterX = (Math.random() - 0.5) * 8;
+                            const jitterY = (Math.random() - 0.5) * 8;
+                            const jitterR = (Math.random() - 0.5) * 12;
+                            c.style.transition = 'transform 0.18s ease-out';
+                            c.style.zIndex = 500 + idx;
+                            c.style.transform = `translate(${jitterX}px, ${jitterY}px) rotate(${jitterR}deg)`;
+                        }, idx * 10);
+                    });
+
+                    setTimeout(() => {
+                        round++;
+                        if (round < totalRounds) {
+                            riffleRound(onDone);
+                        } else {
+                            onDone();
+                        }
+                    }, seq.length * 10 + 250);
+                }, 300);
+            }
+
+            riffleRound(() => {
+                cards.forEach((c, i) => {
+                    c.style.transition = 'transform 0.3s ease';
+                    c.style.zIndex = i;
+                    const rR = (Math.random() - 0.5) * 6;
+                    c.style.transform = `translate(0px, 0px) rotate(${rR}deg)`;
+                });
+                setTimeout(() => {
+                    document.getElementById('instruction').innerText = `กรุณาเลือกไพ่ ${count} ใบ`;
+                    spreadCards();
+                }, 350);
+            });
+        }
+
+        function spreadCards() {
+            const cards = document.getElementsByClassName('card');
+            const table = document.getElementById('table-area');
+            const cols = 5; 
+            const cardWidth = cards[0].offsetWidth;
+            const cardHeight = cards[0].offsetHeight;
+            const xGap = cardWidth + 4;
+            const yGap = cardHeight * 0.75;
+            const totalGridWidth = (cols * xGap) - 4;
+            const startX = (table.offsetWidth - totalGridWidth) / 2;
+            const startY = 20;
+
+            for (let i = 0; i < TOTAL_CARDS; i++) {
+                const c = cards[i];
+                const col = i % cols;
+                const row = Math.floor(i / cols);
+                const posX = startX + (col * xGap);
+                const posY = startY + (row * yGap);
+
+                c.style.zIndex = i + 10;
+                
+                setTimeout(() => {
+                    c.style.left = '0'; 
+                    c.style.marginLeft = '0';
+                    c.style.marginTop = '0';
+                    c.style.top = '0';
+                    c.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1)';
+                    c.style.transform = `translate(${posX}px, ${posY}px)`;
+                    c.onclick = () => selectCard(i);
+                }, i * 15);
+            }
+            const totalHeight = (Math.ceil(TOTAL_CARDS/cols) * yGap) + (cardHeight * 0.5);
+            table.style.height = `${totalHeight}px`;
+        }
+
+        function selectCard(index) {
+            if (!isGameActive) return;
+            if (selectedIndices.includes(index)) return;
+
+            const card = document.getElementById(`card-${index}`);
+            selectedIndices.push(index);
+            card.classList.add('selected');
+
+            const remaining = SELECT_COUNT_AI - selectedIndices.length;
+            if (remaining === 0) {
+                isGameActive = false;
+                setTimeout(() => document.getElementById('confirmModal').style.display = 'flex', 400);
+            } else {
+                document.getElementById('instruction').innerText = `เหลืออีก ${remaining} ใบ`;
+            }
+        }
+
+        function revealCards() {
+            document.getElementById('confirmModal').style.display = 'none';
+            // ซ่อนหน้าจอเลือกไพ่ (กองไพ่/ตารางไพ่) ทันทีที่เปิดหน้าไพ่ ไม่ต้องรอจนกว่าจะสับไพ่รอบใหม่
+            document.getElementById('game-area').classList.add('hidden-element');
+            const container = document.getElementById('revealed-cards-container');
+            container.innerHTML = '';
+            document.getElementById('resultModal').style.display = 'flex';
+
+            // สร้าง Layout ปิรามิด (บน 1, ล่าง 2)
+            const row1 = document.createElement('div');
+            row1.className = 'card-row';
+            const img1 = createCardImage(selectedIndices[0], 0);
+            row1.appendChild(img1);
+            container.appendChild(row1);
+
+            const row2 = document.createElement('div');
+            row2.className = 'card-row';
+            const img2 = createCardImage(selectedIndices[1], 0.2);
+            const img3 = createCardImage(selectedIndices[2], 0.4);
+            row2.appendChild(img2);
+            row2.appendChild(img3);
+            container.appendChild(row2);
+
+            if (currentMode === 'ai') {
+                document.getElementById('ai-actions').classList.remove('hidden-element');
+            }
+        }
+
+        function createCardImage(deckIndex, delay) {
+            const img = document.createElement('img');
+            img.src = shuffledDeck[deckIndex];
+            img.classList.add('revealed-img');
+            img.style.animationDelay = `${delay}s`;
+            // เพิ่ม attribute เพื่อช่วยในการระบุตัวตน (เผื่ออนาคต)
+            img.title = "Mahitthalek Card"; 
+            return img;
+        }
+
+        /**
+         * สร้างวิดเจ็ตให้ดาว 5 ระดับ ลงใน containerEl ที่ระบุ
+         */
+        function buildStarRating(containerEl, initialValue) {
+            containerEl.innerHTML = '';
+            containerEl.dataset.value = initialValue || 0;
+            for (let i = 1; i <= 5; i++) {
+                const star = document.createElement('span');
+                star.textContent = i <= (initialValue || 0) ? '★' : '☆';
+                star.className = 'star';
+                star.dataset.val = i;
+                star.onclick = () => {
+                    containerEl.dataset.value = i;
+                    Array.from(containerEl.children).forEach((s, idx) => {
+                        s.textContent = (idx < i) ? '★' : '☆';
+                    });
+                };
+                containerEl.appendChild(star);
+            }
+        }
+
+        /**
+         * ป้องกันอักขระ HTML พิเศษ (&, <, >) ก่อนแสดงผล เพื่อความปลอดภัย
+         */
+        function escapeHtml(str) {
+            return String(str == null ? '' : str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
+        /**
+         * แปลงข้อความจากแม่หมอที่อาจมีสัญลักษณ์ markdown ดิบๆ ปนมา
+         * เช่น **ตัวหนา**, <u>ขีดเส้นใต้</u>, บุลเลต * หรือเส้นคั่น ---
+         * ให้กลายเป็นการจัดรูปแบบจริง (ตัวหนา / จุดบุลเลต / เส้นคั่น)
+         * แทนที่จะโชว์สัญลักษณ์ดิบๆ ให้ลูกดวงเห็น
+         */
+        function formatAiText(raw) {
+            if (!raw) return '';
+            let text = escapeHtml(raw);
+
+            // <u>...</u> ที่ตั้งใจเน้นข้อความ ให้แสดงเป็นตัวหนาแทนการขีดเส้นใต้
+            text = text.replace(/&lt;u&gt;([\s\S]*?)&lt;\/u&gt;/g, '<b>$1</b>');
+            // เผื่อมี tag ที่ไม่ครบคู่หลงเหลืออยู่ ให้ตัดทิ้ง ไม่ให้โชว์สัญลักษณ์ดิบ
+            text = text.replace(/&lt;\/?u&gt;/g, '');
+
+            // **ข้อความ** ให้แสดงเป็นตัวหนาจริง
+            text = text.replace(/\*\*([^\n*]+?)\*\*/g, '<b>$1</b>');
+
+            // เส้นคั่นหัวข้อ --- ให้แสดงเป็นเส้นแบ่งจริง
+            text = text.replace(/^[ \t]*-{3,}[ \t]*$/gm, '<hr class="reading-divider">');
+
+            // บรรทัดที่ขึ้นต้นด้วยเครื่องหมาย * (บุลเลต) ให้แสดงเป็นจุดบุลเลตแทนดอกจัน
+            text = text.replace(/^[ \t]*\*[ \t]+/gm, '• ');
+
+            return text;
+        }
+
+        function appendChatMessage(role, text, followUpMessage) {
+            const container = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+            div.className = 'chat-msg ' + (role === 'user' ? 'user' : 'reader');
+            div.innerHTML = (role === 'user') ? escapeHtml(text) : formatAiText(text);
+            container.appendChild(div);
+
+            // ถ้าเป็นข้อความแจ้งระบบทำนายคนใช้งานหนาแน่น/โควตาเต็มชั่วคราว ให้แนบกล่อง "Copy Prompt" สำรองต่อท้ายทันที
+            // (จะแนบเฉพาะตอนที่ข้อความนี้ปรากฏจริงเท่านั้น ไม่ค้างแสดงไว้กับข้อความคุยต่ออื่นๆ)
+            if (role !== 'user' && typeof text === 'string' && text.indexOf(AI_BUSY_ERROR_TEXT) !== -1) {
+                container.appendChild(createChatCopyPromptBox(followUpMessage));
+            }
+
+            container.scrollTop = container.scrollHeight;
+            return div;
+        }
+
+        // สร้างกล่อง "Copy Prompt" สำรอง ไว้แนบต่อท้ายข้อความแจ้งระบบคนใช้งานหนาแน่นในหน้าแชทคุยต่อ
+        // (สร้างเป็น element ใหม่ทุกครั้ง เพื่อรองรับกรณีข้อความนี้ขึ้นซ้ำหลายครั้งในบทสนทนาเดียวกัน)
+        // followUpMessage คือคำถามเพิ่มเติมที่ลูกดวงเพิ่งพิมพ์ในแชท (ใช้ประกอบ prompt ที่จะคัดลอก เพื่อให้ต่อเนื่องกับคำทำนายเดิม)
+        function createChatCopyPromptBox(followUpMessage) {
+            const box = document.createElement('div');
+            box.className = 'copy-prompt-box chat-copy-prompt-box';
+
+            const desc = document.createElement('p');
+            desc.innerText = '📸 ระหว่างที่ระบบยังไม่ว่าง คุณลูกดวงสามารถแคปหน้าจอ "หน้าไพ่" ที่เปิดอยู่นี้ไว้ก่อน แล้วกดปุ่มด้านล่างเพื่อคัดลอกคำสั่ง (รวมคำทำนายเดิมและคำถามเพิ่มเติมนี้) สำหรับส่งให้ AI (เช่น แอป Gemini) จากนั้นนำภาพที่แคปไว้ไปส่ง พร้อมวางข้อความที่คัดลอกลงไปด้วย ก็จะได้รับคำตอบต่อเนื่องเหมือนกับในหน้าแอปนี้ค่ะ';
+            box.appendChild(desc);
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'btn btn-blue copy-prompt-btn';
+            btn.innerText = '📋 Copy Prompt';
+            box.appendChild(btn);
+
+            const feedback = document.createElement('div');
+            feedback.className = 'copy-prompt-feedback hidden-element';
+            feedback.innerText = '✅ คัดลอกแล้ว! นำไปวางพร้อมภาพที่แคปไว้ในแอป AI ได้เลยค่ะ';
+            box.appendChild(feedback);
+
+            btn.addEventListener('click', function() {
+                copyPredictionPromptToEl(feedback, buildCopyPromptTextForChat(followUpMessage));
+            });
+
+            return box;
+        }
+
+        // ⚠️ ข้อความนี้ต้องตรงกับข้อความที่ฝั่งเซิร์ฟเวอร์ส่งมาตอนระบบทำนายคนใช้งานหนาแน่น/โควตาเต็มชั่วคราว
+        // (ดูฟังก์ชัน callGemini_ ใน Code.gs) ใช้เช็คว่าจะโชว์กล่อง "Copy Prompt" สำรองให้ลูกดวงหรือไม่
+        const AI_BUSY_ERROR_TEXT = 'ขณะนี้ระบบทำนายมีผู้ใช้งานหนาแน่น หรือโควตาการใช้งานเต็มชั่วคราว กรุณาลองใหม่อีกครั้งในอีก 2-3 นาที 🙏';
+
+        // แสดงข้อความ error ในกล่องคำทำนาย และโชว์ปุ่ม "Copy Prompt" สำรองให้อัตโนมัติ
+        // เฉพาะตอนที่ error เป็นข้อความ "ระบบคนใช้งานหนาแน่น/โควตาเต็มชั่วคราว" เท่านั้น จะไม่ค้างแสดงตอน error อื่นๆ
+        function showAiErrorMessage(msg) {
+            const errorBox = document.getElementById('ai-error');
+            const copyBox = document.getElementById('ai-error-copy-box');
+            errorBox.innerText = msg;
+            errorBox.classList.remove('hidden-element');
+
+            const isBusyError = !!msg && msg.indexOf(AI_BUSY_ERROR_TEXT) !== -1;
+            if (copyBox) {
+                document.getElementById('copyPromptFeedback').classList.add('hidden-element');
+                copyBox.classList.toggle('hidden-element', !isBusyError);
+            }
+        }
+
+        // สร้างข้อความ prompt แบบเดียวกับที่เซิร์ฟเวอร์ใช้ส่งให้ AI (อ้างอิงจาก buildInitialPrompt_ ใน Code.gs)
+        // เพื่อให้ลูกดวงคัดลอกไปวางเองพร้อมภาพแคปหน้าไพ่ ในแอป AI ทั่วไป (เช่น Gemini) แล้วได้คำทำนายสไตล์เดียวกัน
+        function buildCopyPromptText() {
+            const question = userQuestionText || '(ไม่ได้ระบุคำถาม)';
+            return 'ฉันต้องการดูดวงด้วยไพ่มหิทธิเลข (Mahitthalek Thai Oracle)\n' +
+                'คำถามคือ: "' + question + '"\n\n' +
+                'ฉันได้แนบภาพหน้าจอไพ่ที่จับได้ 3 ใบมาให้ (เรียงลำดับตามที่เห็นในภาพ):\n' +
+                '1. ตำแหน่งประธาน (สถานการณ์ปัจจุบัน)\n' +
+                '2. ตำแหน่งสนับสนุน/อุปสรรค\n' +
+                '3. ตำแหน่งสรุป (แนวโน้ม/คำแนะนำ)\n\n' +
+                'คำสั่ง:\n' +
+                '1. บรรยายลักษณะเด่นของไพ่แต่ละใบสั้นๆ ก่อน (เช่น รูปยักษ์, รูปเทวดา, รูปสัตว์ ฯลฯ) เพื่อยืนยันว่าเห็นภาพถูกต้อง\n' +
+                '2. ทำนายดวงชะตาตามความหมายของแต่ละใบอย่างละเอียด เชื่อมโยงกับคำถามที่ถาม และที่สำคัญต้องตรงประเด็นไม่อ้อมค้อม เป็นหมอดูที่พูดตรง ๆ ไม่เอาใจลูกดวง ให้คำทำนายตามหน้าไพ่ หากมีการยกตำแหน่งไพ่ ลักษณะไพ่ คำทำนาย ให้มีอิโมจิหรือไอคอนอยู่หน้าหัวข้อหลัก ให้ดูสวยงามเป็นมืออาชีพ และไม่ต้องใส่ * ให้เยอะจนดูยุ่ง\n' +
+                '3. สรุปภาพรวมและให้คำแนะนำวิธีเสริมดวงหรือแก้ไขหากผลออกมาไม่ดี\n' +
+                '4. ใช้ภาษาไทย น้ำเสียงเป็นมิตร อบอุ่น เหมือนหมอดูที่ให้กำลังใจ โดยแทนตัวเองว่า "แม่หมอ" และเรียกผู้ถามว่า "คุณลูกดวง" ตลอดบทสนทนา โดยประโยคขึ้นต้นต้องเป็น "สวัสดีค่ะคุณลูกดวงที่รัก"\n' +
+                '5. กรณีที่คุณลูกดวงถามหลายเรื่องพร้อมกันในการเปิดไพ่ 1 ครั้ง (เช่น ถามทั้งเรื่องความรักและเรื่องการงานในคำถามเดียวกัน) ห้ามออกคำทำนายเด็ดขาด ให้ตอบปฏิเสธอย่างสุภาพด้วยข้อความนี้เท่านั้น: "สวัสดีค่ะคุณลูกดวงที่รัก สำหรับการเปิดไพ่พยากรณ์ในรอบนี้ แม่หมอขออนุญาตชี้แจงนิดนึงนะคะ เพื่อความแม่นยำและพลังงานที่โฟกัสอย่างเต็มที่ การจับไพ่ 1 ชุด จะสามารถตอบคำถามได้เพียง 1 เรื่องเท่านั้นค่ะ ตอนนี้คุณลูกดวงถามควบมาหลายเรื่องในคราวเดียวกัน แม่หมอจึงยังไม่สามารถออกคำทำนายให้ได้น้า แนะนำให้คุณลูกดวงเลือกเรื่องที่กังวลใจที่สุดมา 1 เรื่อง หรือตั้งคำถามใหม่แล้วแยกจับไพ่ทีละชุด เพื่อความแม่นยำของคำทำนายและเพื่อที่แม่หมอจะได้ส่องดวงชะตาให้อย่างละเอียดที่สุดค่ะ แม่หมอรอช่วยหาคำตอบให้อยู่นะคะ"\n' +
+                '6. ห้ามพูดถึงคำว่า AI, ปัญญาประดิษฐ์, Gemini, โมเดลภาษา หรือระบบคอมพิวเตอร์ใด ๆ เด็ดขาด ให้พูดในฐานะหมอดูจริงที่มีชีวิตเท่านั้น';
+        }
+
+        // สร้างข้อความ prompt สำหรับหน้าแชทคุยต่อ โดยรวมทั้งคำถามหลัก + คำทำนายเดิมที่เคยได้รับไปแล้ว
+        // (เพื่อความต่อเนื่องของบทสนทนา) และคำถามเพิ่มเติมที่ลูกดวงเพิ่งพิมพ์ ไม่ใช่แค่คำถามหลักเหมือนหน้าคำทำนายแรก
+        // (เนื้อหาคำสั่งช่วงท้ายอ้างอิงจาก followUpInstruction ในฟังก์ชัน continueReading ของ Code.gs)
+        function buildCopyPromptTextForChat(followUpMessage) {
+            const previousReading = lastAnswerText || '(ไม่มีคำทำนายก่อนหน้า)';
+            const followUp = followUpMessage || '(ไม่ได้ระบุคำถามเพิ่มเติม)';
+
+            return buildCopyPromptText() + '\n\n' +
+                '----------------------------------------\n' +
+                'ฉันได้รับคำทำนายจากไพ่ชุดนี้ไปแล้วก่อนหน้านี้ ดังนี้:\n' +
+                previousReading + '\n' +
+                '----------------------------------------\n\n' +
+                'ตอนนี้ฉันมีคำถามเพิ่มเติมเกี่ยวกับเรื่องเดิมว่า: "' + followUp + '"\n\n' +
+                'กรุณาพิจารณาว่าคำถามเพิ่มเติมนี้ยังอยู่ในเรื่องเดียวกัน/ต่อเนื่องจากคำถามและไพ่ที่ทำนายไปแล้วหรือไม่\n' +
+                '- ถ้ายังเกี่ยวข้อง: ตอบคำถามต่อในฐานะหมอดู โดยอ้างอิงจากไพ่และคำทำนายเดิมด้านบน น้ำเสียงเป็นมิตรอบอุ่นเหมือนเดิม กระชับ ตรงประเด็น ไม่อ้อมค้อม ไม่ต้องบรรยายลักษณะหน้าไพ่ซ้ำอีก\n' +
+                '- ถ้าเป็นคำถามใหม่ คนละเรื่องกับคำถามตั้งต้น: ห้ามทำนายเรื่องใหม่นี้ ให้ตอบอย่างสุภาพว่าเรื่องนี้ควรตั้งคำถามใหม่แล้วจับไพ่ชุดใหม่ เพื่อความแม่นยำของคำทำนาย\n\n' +
+                'แทนตัวเองว่า "แม่หมอ" และเรียกผู้ถามว่า "คุณลูกดวง" ตลอดบทสนทนา\n' +
+                'ห้ามพูดถึงคำว่า AI, ปัญญาประดิษฐ์, Gemini, โมเดลภาษา หรือระบบคอมพิวเตอร์ใด ๆ เด็ดขาด ให้พูดในฐานะหมอดูจริงที่มีชีวิตเท่านั้น';
+        }
+
+        // คัดลอกข้อความ prompt สำรองไปที่คลิปบอร์ด แล้วโชว์ข้อความยืนยันสั้นๆ ที่ feedbackEl ที่ระบุ
+        // (ใช้ฟังก์ชันกลางนี้ร่วมกัน ทั้งปุ่มใต้ข้อความ error หน้าคำทำนายแรก และปุ่มในกล่องแชทคุยต่อ)
+        // textOverride: ถ้าระบุมา จะใช้ข้อความนี้แทนการสร้างจาก buildCopyPromptText() ปกติ (ใช้กับหน้าแชทคุยต่อ)
+        function copyPredictionPromptToEl(feedbackEl, textOverride) {
+            const text = (typeof textOverride === 'string') ? textOverride : buildCopyPromptText();
+            const showFeedback = function() {
+                if (!feedbackEl) return;
+                feedbackEl.classList.remove('hidden-element');
+                clearTimeout(feedbackEl._copyHideTimer);
+                feedbackEl._copyHideTimer = setTimeout(function() {
+                    feedbackEl.classList.add('hidden-element');
+                }, 4000);
+            };
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(showFeedback).catch(function() {
+                    fallbackCopyPromptText(text, showFeedback);
+                });
+            } else {
+                fallbackCopyPromptText(text, showFeedback);
+            }
+        }
+
+        // ปุ่ม "Copy Prompt" ใต้ข้อความ error หน้าคำทำนายแรก
+        function copyPredictionPrompt() {
+            copyPredictionPromptToEl(document.getElementById('copyPromptFeedback'));
+        }
+
+        // สำรองกรณีเบราว์เซอร์ไม่รองรับ navigator.clipboard (เช่น ในบาง WebView)
+        // หมายเหตุ (แก้ไข): เบราว์เซอร์มือถือบางตัว (เช่น iOS Safari หรือ WebView ในแอปแชทต่างๆ) มีบั๊กที่ทำให้
+        // textarea.select() แบบเดิมเลือกข้อความได้ไม่ครบทุกตัวอักษรเมื่อ textarea ถูกวางไว้นอกจอไกลๆ (left: -9999px)
+        // ทำให้คัดลอกพรอมต์ยาวๆ ไปวางแล้วข้อความขาดหายไปบางส่วน จึงปรับให้วาง textarea ไว้ในตำแหน่งที่มองเห็นได้ในเลย์เอาต์
+        // (แต่ทำให้เล็ก/โปร่งใสจนมองไม่เห็นด้วยตา) และสั่ง setSelectionRange ครอบคลุมทั้งข้อความอย่างชัดเจน
+        // พร้อมสำรองด้วย Range/Selection API เพื่อให้คัดลอกได้ครบทุกตัวอักษรเสมอในทุกเบราว์เซอร์
+        function fallbackCopyPromptText(text, cb) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.setAttribute('readonly', '');
+            ta.style.position = 'fixed';
+            ta.style.top = '0';
+            ta.style.left = '0';
+            ta.style.width = '1px';
+            ta.style.height = '1px';
+            ta.style.padding = '0';
+            ta.style.border = 'none';
+            ta.style.outline = 'none';
+            ta.style.boxShadow = 'none';
+            ta.style.background = 'transparent';
+            ta.style.opacity = '0';
+            ta.style.fontSize = '16px';
+            document.body.appendChild(ta);
+            ta.focus();
+            ta.select();
+            ta.setSelectionRange(0, text.length);
+
+            // เผื่อกรณีเบราว์เซอร์/WebView ที่ select() + setSelectionRange ปกติยังเลือกข้อความได้ไม่ครบ
+            // ใช้ Range + Selection API ช่วยยืนยันการเลือกข้อความทั้งหมดอีกชั้นหนึ่ง
+            try {
+                const range = document.createRange();
+                range.selectNodeContents(ta);
+                const sel = window.getSelection();
+                if (sel) {
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }
+                ta.setSelectionRange(0, text.length);
+            } catch (e) { /* เบราว์เซอร์บางตัวไม่รองรับ ก็ใช้ผลจาก select() ปกติด้านบนแทน */ }
+
+            try { document.execCommand('copy'); } catch (e) { /* ทำอะไรไม่ได้แล้วถ้าคัดลอกไม่สำเร็จ */ }
+            document.body.removeChild(ta);
+            if (cb) cb();
+        }
+
+        // ✅ ขอคำทำนายทันที (เบื้องหลังคือระบบวิเคราะห์ไพ่อัตโนมัติ แต่ลูกดวงจะเห็นเป็นคำทำนายจากหมอดูเท่านั้น)
+        function askAiForReading() {
+            const card1 = shuffledDeck[selectedIndices[0]];
+            const card2 = shuffledDeck[selectedIndices[1]];
+            const card3 = shuffledDeck[selectedIndices[2]];
+
+            const btn = document.getElementById('ask-ai-btn');
+            const loading = document.getElementById('ai-loading');
+            const errorBox = document.getElementById('ai-error');
+            const chatBox = document.getElementById('reading-chat-box');
+            const resultText = document.getElementById('ai-result');
+
+            btn.classList.add('hidden-element');
+            errorBox.classList.add('hidden-element');
+            document.getElementById('ai-error-copy-box').classList.add('hidden-element');
+            chatBox.classList.add('hidden-element');
+            loading.classList.remove('hidden-element');
+
+            const uid = getUserId();
+
+            callApi('getAiReading', [userQuestionText, [card1, card2, card3], uid])
+                .then(function(response) {
+                    loading.classList.add('hidden-element');
+                    if (response && response.success) {
+                        resultText.innerHTML = formatAiText(response.text);
+                        chatBox.classList.remove('hidden-element');
+
+                        document.getElementById('reading-text-container').classList.remove('hidden-element');
+                        const toggleLink = document.getElementById('toggle-reading-text');
+                        toggleLink.classList.add('hidden-element');
+                        toggleLink.innerText = '📜 ...คำทำนายทั้งหมด';
+                        document.getElementById('chat-box-container').classList.remove('hidden-element');
+
+                        lastAnswerText = response.text;
+                        currentReadingId = response.readingId;
+                        chatHistory = [];
+                        chatEnded = false;
+
+                        document.getElementById('chat-messages').innerHTML = '';
+                        const chatInputEl = document.getElementById('chatInput');
+                        chatInputEl.value = '';
+                        chatInputEl.disabled = false;
+                        chatInputEl.style.height = '42px';
+                        chatInputEl.style.overflowY = 'hidden';
+
+                        document.getElementById('resultComment').value = '';
+                        document.getElementById('resultReviewThanks').classList.add('hidden-element');
+                        buildStarRating(document.getElementById('resultStars'), 0);
+
+                        document.getElementById('rating-section').classList.remove('hidden-element');
+                    } else if (response && response.blocked) {
+                        // ลูกดวงถูกแอดมินบล็อคอยู่ ยังตั้งคำถาม/เปิดไพ่ได้ปกติ แต่ขอคำทำนายไม่ได้ชั่วคราว
+                        btn.classList.remove('hidden-element');
+                        showBlockedNoticeModal(response.daysRemaining);
+                    } else {
+                        showAiErrorMessage("⚠️ " + (response && response.error ? response.error : "เกิดข้อผิดพลาดไม่ทราบสาเหตุ"));
+                        btn.classList.remove('hidden-element');
+                    }
+                })
+                .catch(function(err) {
+                    loading.classList.add('hidden-element');
+                    showAiErrorMessage("⚠️ เกิดข้อผิดพลาด: " + err.message);
+                    btn.classList.remove('hidden-element');
+                });
+        }
+
+        function submitResultReview() {
+            const container = document.getElementById('resultStars');
+            const rating = Number(container.dataset.value || 0);
+            if (!rating) {
+                alert('กรุณาเลือกจำนวนดาวก่อนส่งคะแนน');
+                return;
+            }
+            const comment = document.getElementById('resultComment').value.trim();
+
+            callApi('submitReview', [currentReadingId, rating, comment])
+                .then(function(res) {
+                    if (res && res.success) {
+                        document.getElementById('resultReviewThanks').classList.remove('hidden-element');
+                    } else {
+                        alert((res && res.error) ? res.error : 'ส่งคะแนนไม่สำเร็จ กรุณาลองใหม่');
+                    }
+                })
+                .catch(function(err) {
+                    alert('เกิดข้อผิดพลาด: ' + err.message);
+                });
+        }
+
+        /**
+         * เปิด/ปิดการแสดงคำทำนายทั้งหมด (ใช้เมื่อคำทำนายถูกซ่อนอัตโนมัติหลังส่งคำถามเพิ่มเติม)
+         */
+        function toggleReadingText() {
+            const container = document.getElementById('reading-text-container');
+            const toggle = document.getElementById('toggle-reading-text');
+            const isHidden = container.classList.contains('hidden-element');
+            if (isHidden) {
+                container.classList.remove('hidden-element');
+                toggle.innerText = '🔼 ซ่อนคำทำนาย';
+            } else {
+                container.classList.add('hidden-element');
+                toggle.innerText = '📜 ...คำทำนายทั้งหมด';
+            }
+        }
+
+        /**
+         * ปรับความสูงกล่องพิมพ์คำถามเพิ่มเติมให้สูงขึ้นตามข้อความ สูงสุด 5 บรรทัด
+         * เกินกว่านั้นให้เลื่อน (scroll) แทนการขยายกล่องต่อไปเรื่อยๆ
+         */
+        function autoGrowChatInput(el) {
+            const style = window.getComputedStyle(el);
+            let lineHeight = parseFloat(style.lineHeight);
+            if (!lineHeight || isNaN(lineHeight)) {
+                lineHeight = parseFloat(style.fontSize) * 1.2;
+            }
+            const paddingTop = parseFloat(style.paddingTop) || 0;
+            const paddingBottom = parseFloat(style.paddingBottom) || 0;
+            const borderTop = parseFloat(style.borderTopWidth) || 0;
+            const borderBottom = parseFloat(style.borderBottomWidth) || 0;
+            const maxHeight = (lineHeight * 5) + paddingTop + paddingBottom + borderTop + borderBottom;
+
+            el.style.height = 'auto';
+            const newHeight = Math.min(el.scrollHeight, maxHeight);
+            el.style.height = newHeight + 'px';
+            el.style.overflowY = (el.scrollHeight > maxHeight) ? 'auto' : 'hidden';
+        }
+
+        function sendChatMessage() {
+            if (chatEnded) return;
+            const input = document.getElementById('chatInput');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            // ซ่อนคำทำนายเดิมไว้ด้านบนโดยอัตโนมัติ เพื่อให้เห็นบทสนทนาได้ง่ายขึ้น
+            document.getElementById('reading-text-container').classList.add('hidden-element');
+            const toggleLink = document.getElementById('toggle-reading-text');
+            toggleLink.classList.remove('hidden-element');
+            toggleLink.innerText = '📜 ...คำทำนายทั้งหมด';
+
+            // ซ่อนข้อความ "ส่งอีกครั้ง..." (ถ้าเคยแสดงจากการส่งครั้งก่อนที่ล้มเหลว)
+            const retryHint = document.getElementById('chatRetryHint');
+            retryHint.classList.add('hidden-element');
+
+            appendChatMessage('user', msg);
+            input.value = '';
+            input.style.height = '42px';
+            input.style.overflowY = 'hidden';
+            input.disabled = true;
+
+            // แสดงข้อความสถานะ "กำลังทำนาย กรุณารอสักครู่..." ระหว่างรอคำตอบ
+            // แล้วลบออกทันทีที่ได้รับผลลัพธ์ (ไม่ว่าจะสำเร็จหรือผิดพลาด)
+            const loadingMsgEl = appendChatMessage('reader', '⏳ กำลังทำนาย กรุณารอสักครู่...');
+            loadingMsgEl.classList.add('loading');
+
+            const card1 = shuffledDeck[selectedIndices[0]];
+            const card2 = shuffledDeck[selectedIndices[1]];
+            const card3 = shuffledDeck[selectedIndices[2]];
+
+            callApi('continueReading', [userQuestionText, [card1, card2, card3], lastAnswerText, chatHistory, msg, currentReadingId])
+                .then(function(res) {
+                    if (loadingMsgEl && loadingMsgEl.parentNode) loadingMsgEl.parentNode.removeChild(loadingMsgEl);
+                    if (res && res.success) {
+                        appendChatMessage('reader', res.reply);
+                        if (res.related) {
+                            chatHistory.push({ role: 'user', text: msg });
+                            chatHistory.push({ role: 'model', text: res.reply });
+                            input.disabled = false;
+                            input.focus();
+                        } else {
+                            chatEnded = true;
+                            input.disabled = true;
+                            const endBtn = document.createElement('button');
+                            endBtn.className = 'btn btn-gold';
+                            endBtn.style.marginTop = '6px';
+                            endBtn.innerText = '🔄 ตั้งคำถามใหม่';
+                            endBtn.onclick = resetGame;
+                            document.getElementById('chat-messages').appendChild(endBtn);
+                            document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+                        }
+                    } else {
+                        // ส่งไม่สำเร็จ (เช่น โควต้าเต็ม) — คืนข้อความเดิมกลับไปที่กล่องพิมพ์ และแจ้งให้กดส่งอีกครั้ง
+                        appendChatMessage('reader', '⚠️ ' + (res && res.error ? res.error : 'เกิดข้อผิดพลาด กรุณาลองใหม่'), msg);
+                        input.value = msg;
+                        input.disabled = false;
+                        retryHint.classList.remove('hidden-element');
+                    }
+                })
+                .catch(function(err) {
+                    if (loadingMsgEl && loadingMsgEl.parentNode) loadingMsgEl.parentNode.removeChild(loadingMsgEl);
+                    appendChatMessage('reader', '⚠️ เกิดข้อผิดพลาด: ' + err.message, msg);
+                    input.value = msg;
+                    input.disabled = false;
+                    retryHint.classList.remove('hidden-element');
+                });
+        }
+
+        // ===================== ระบบ Admin (ล็อค/ปลดล็อคสิทธิ์ลูกดวง) =====================
+        let adminPasswordCache = '';
+        let allAdminUsers = []; // เก็บรายชื่อลูกดวงทั้งหมดที่โหลดมาล่าสุด ไว้ใช้กรองตอนค้นหาไอดี โดยไม่ต้องโหลดซ้ำ
+
+        function openAdminLogin() {
+            const pwInput = document.getElementById('adminPasswordInput');
+            pwInput.value = '';
+            pwInput.type = 'password';
+            document.getElementById('adminPasswordToggleBtn').innerText = '👁️';
+            document.getElementById('adminLoginError').classList.add('hidden-element');
+            document.getElementById('adminLoginModal').style.display = 'flex';
+            setTimeout(function() {
+                document.getElementById('adminPasswordInput').focus();
+            }, 100);
+        }
+
+        function toggleAdminPasswordVisibility() {
+            const input = document.getElementById('adminPasswordInput');
+            const btn = document.getElementById('adminPasswordToggleBtn');
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerText = '🙈';
+            } else {
+                input.type = 'password';
+                btn.innerText = '👁️';
+            }
+        }
+
+        function closeAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'none';
+        }
+
+        function submitAdminLogin() {
+            const pass = document.getElementById('adminPasswordInput').value;
+            if (pass !== 'Tacx4289!') {
+                document.getElementById('adminLoginError').classList.remove('hidden-element');
+                return;
+            }
+            adminPasswordCache = pass;
+            document.getElementById('adminLoginModal').style.display = 'none';
+            openAdminPanel();
+        }
+
+        function openAdminPanel() {
+            document.getElementById('adminPanelModal').style.display = 'flex';
+            document.getElementById('adminUserSearchInput').value = '';
+            refreshAdminUsersList();
+        }
+
+        // โหลดรายชื่อลูกดวงใหม่จากเซิร์ฟเวอร์ โดยคงคำค้นหาที่แอดมินพิมพ์ไว้อยู่ (ใช้ตอนรีเฟรชหลังล็อค/ปลดล็อค/บล็อค/ปลดบล็อค)
+        function refreshAdminUsersList() {
+            document.getElementById('adminUsersList').innerText = 'กำลังโหลดข้อมูล...';
+
+            callApi('adminGetAllUsers', [adminPasswordCache])
+                .then(function(res) {
+                    if (res && res.success) {
+                        allAdminUsers = res.users || [];
+                        filterAdminUsers();
+                    } else {
+                        allAdminUsers = [];
+                        document.getElementById('adminUsersList').innerText = '⚠️ ' + (res && res.error ? res.error : 'โหลดข้อมูลไม่สำเร็จ');
+                    }
+                })
+                .catch(function(err) {
+                    allAdminUsers = [];
+                    document.getElementById('adminUsersList').innerText = '⚠️ เกิดข้อผิดพลาด: ' + err.message;
+                });
+        }
+
+        // กรองรายชื่อลูกดวงตามข้อความค้นหาไอดี (ค้นหาจากข้อมูลที่โหลดมาแล้ว ไม่ต้องยิงคำขอไปเซิร์ฟเวอร์ใหม่ทุกครั้งที่พิมพ์)
+        function filterAdminUsers() {
+            const query = document.getElementById('adminUserSearchInput').value.trim().toLowerCase();
+            if (!query) {
+                renderAdminUsersList(allAdminUsers, false);
+                return;
+            }
+            const filtered = allAdminUsers.filter(function(u) {
+                return u.userId && u.userId.toLowerCase().indexOf(query) !== -1;
+            });
+            renderAdminUsersList(filtered, true);
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminPanelModal').style.display = 'none';
+        }
+
+        function renderAdminUsersList(users, isSearchResult) {
+            const container = document.getElementById('adminUsersList');
+            container.innerHTML = '';
+
+            if (!users || users.length === 0) {
+                container.innerHTML = '<div class="review-empty-text">' +
+                    (isSearchResult ? 'ไม่พบไอดีที่ค้นหา' : 'ยังไม่มีลูกดวงในระบบ') +
+                    '</div>';
+                return;
+            }
+
+            users.forEach(function(u) {
+                const row = document.createElement('div');
+                row.className = 'admin-user-row';
+
+                const info = document.createElement('div');
+                const idLine = document.createElement('div');
+                idLine.className = 'admin-user-id';
+                idLine.innerText = u.userId;
+                const usageLine = document.createElement('div');
+                usageLine.className = 'admin-user-usage';
+                usageLine.innerText = 'ทำนายวันนี้ ' + u.readingCountToday + '/3 ครั้ง   |   แชทเพิ่มวันนี้ ' + u.chatCountToday + '/6 ครั้ง';
+                info.appendChild(idLine);
+                info.appendChild(usageLine);
+
+                if (u.blocked) {
+                    const blockLine = document.createElement('div');
+                    blockLine.className = 'admin-user-blocked';
+                    blockLine.innerText = '🚫 ถูกบล็อคถึง ' + u.blockedUntil + ' (เหลืออีก ' + u.daysRemaining + ' วัน)';
+                    info.appendChild(blockLine);
+                }
+
+                row.appendChild(info);
+
+                const actionsWrap = document.createElement('div');
+                actionsWrap.className = 'admin-user-actions';
+
+                const isLocked = (u.status !== 'unlocked');
+                const statusBtn = document.createElement('button');
+                statusBtn.className = 'btn admin-status-btn ' + (isLocked ? 'btn-gold' : 'btn-green');
+                statusBtn.innerText = isLocked ? '🔒 ล็อค' : '🔓 ปลดล็อค';
+                statusBtn.onclick = function() {
+                    toggleUserLock(u.userId, isLocked ? 'unlocked' : 'locked', statusBtn);
+                };
+                actionsWrap.appendChild(statusBtn);
+
+                const blockBtn = document.createElement('button');
+                blockBtn.className = 'btn admin-status-btn ' + (u.blocked ? 'btn-green' : 'btn-block');
+                blockBtn.innerText = u.blocked ? '✅ ปลดบล็อค' : '🚫 บล็อค';
+                blockBtn.onclick = function() {
+                    if (u.blocked) {
+                        unblockUser(u.userId, blockBtn);
+                    } else {
+                        openBlockUserModal(u.userId);
+                    }
+                };
+                actionsWrap.appendChild(blockBtn);
+
+                row.appendChild(actionsWrap);
+                container.appendChild(row);
+            });
+        }
+
+        function toggleUserLock(userId, newStatus, btnEl) {
+            btnEl.disabled = true;
+            callApi('adminSetUserStatus', [adminPasswordCache, userId, newStatus])
+                .then(function(res) {
+                    if (res && res.success) {
+                        refreshAdminUsersList();
+                    } else {
+                        btnEl.disabled = false;
+                        alert((res && res.error) ? res.error : 'เปลี่ยนสถานะไม่สำเร็จ');
+                    }
+                })
+                .catch(function(err) {
+                    btnEl.disabled = false;
+                    alert('เกิดข้อผิดพลาด: ' + err.message);
+                });
+        }
+
+        // ===================== ระบบ Admin: บล็อค/ปลดบล็อค ลูกดวง (ระงับสิทธิ์ "ออกคำทำนาย" ชั่วคราว) =====================
+        let blockUserTargetId = '';
+
+        function openBlockUserModal(userId) {
+            blockUserTargetId = userId;
+            document.getElementById('blockUserIdText').innerText = userId;
+            document.getElementById('blockDaysInput').value = '7';
+            document.getElementById('blockUserError').classList.add('hidden-element');
+            document.getElementById('blockUserModal').style.display = 'flex';
+        }
+
+        function closeBlockUserModal() {
+            document.getElementById('blockUserModal').style.display = 'none';
+            blockUserTargetId = '';
+        }
+
+        function confirmBlockUser() {
+            const days = Number(document.getElementById('blockDaysInput').value);
+            if (!days || days <= 0) {
+                document.getElementById('blockUserError').classList.remove('hidden-element');
+                return;
+            }
+            const uid = blockUserTargetId;
+            document.getElementById('blockUserModal').style.display = 'none';
+
+            callApi('adminBlockUser', [adminPasswordCache, uid, days])
+                .then(function(res) {
+                    if (res && res.success) {
+                        refreshAdminUsersList();
+                    } else {
+                        alert((res && res.error) ? res.error : 'บล็อคไม่สำเร็จ');
+                    }
+                })
+                .catch(function(err) {
+                    alert('เกิดข้อผิดพลาด: ' + err.message);
+                });
+        }
+
+        function unblockUser(userId, btnEl) {
+            if (btnEl) btnEl.disabled = true;
+            callApi('adminUnblockUser', [adminPasswordCache, userId])
+                .then(function(res) {
+                    if (res && res.success) {
+                        refreshAdminUsersList();
+                    } else {
+                        if (btnEl) btnEl.disabled = false;
+                        alert((res && res.error) ? res.error : 'ปลดบล็อคไม่สำเร็จ');
+                    }
+                })
+                .catch(function(err) {
+                    if (btnEl) btnEl.disabled = false;
+                    alert('เกิดข้อผิดพลาด: ' + err.message);
+                });
+        }
+
+        // ===================== ป็อปอัปแจ้งเตือนลูกดวงที่ถูกบล็อค (กดปุ่ม "ออกคำทำนาย" ไม่ได้) =====================
+        function showBlockedNoticeModal(daysRemaining) {
+            const days = (daysRemaining && daysRemaining > 0) ? daysRemaining : 0;
+            document.getElementById('blockedNoticeMessage').innerText =
+                'ขออภัยอย่างสูง คุณลูกดวงถูกระงับการออกคำทำนายเป็นเวลา ' + days + ' วัน';
+            document.getElementById('blockedCopyPromptFeedback').classList.add('hidden-element');
+            document.getElementById('blockedNoticeModal').style.display = 'flex';
+        }
+
+        function closeBlockedNoticeModal() {
+            document.getElementById('blockedNoticeModal').style.display = 'none';
+        }
+
+        function copyBlockedPrompt() {
+            copyPredictionPromptToEl(document.getElementById('blockedCopyPromptFeedback'), buildCopyPromptText());
+        }
+
+        function resetGame() {
+            isGameActive = false;
+            selectedIndices = [];
+            userQuestionText = '';
+            currentMode = '';
+
+            currentReadingId = null;
+            lastAnswerText = '';
+            chatHistory = [];
+            chatEnded = false;
+            
+            document.getElementById('confirmModal').style.display = 'none';
+            document.getElementById('resultModal').style.display = 'none';
+            document.getElementById('reviewModal').style.display = 'none';
+            document.getElementById('blockedNoticeModal').style.display = 'none';
+            document.getElementById('ai-input-section').classList.add('hidden-element');
+            document.getElementById('game-area').classList.add('hidden-element');
+            document.getElementById('ai-actions').classList.add('hidden-element');
+            document.getElementById('ask-ai-btn').classList.remove('hidden-element');
+            document.getElementById('ai-loading').classList.add('hidden-element');
+            document.getElementById('ai-error').classList.add('hidden-element');
+            document.getElementById('ai-error-copy-box').classList.add('hidden-element');
+            document.getElementById('ai-result').innerText = '';
+            document.getElementById('userQuestion').value = '';
+
+            document.getElementById('rating-section').classList.add('hidden-element');
+            document.getElementById('resultReviewThanks').classList.add('hidden-element');
+            document.getElementById('resultComment').value = '';
+            document.getElementById('reading-chat-box').classList.add('hidden-element');
+            document.getElementById('reading-text-container').classList.remove('hidden-element');
+            document.getElementById('toggle-reading-text').classList.add('hidden-element');
+            document.getElementById('toggle-reading-text').innerText = '📜 ...คำทำนายทั้งหมด';
+            document.getElementById('chat-box-container').classList.add('hidden-element');
+            document.getElementById('chat-messages').innerHTML = '';
+            document.getElementById('chatInput').value = '';
+            document.getElementById('chatInput').disabled = false;
+            document.getElementById('chatInput').style.height = '42px';
+            document.getElementById('chatInput').style.overflowY = 'hidden';
+            document.getElementById('chatRetryHint').classList.add('hidden-element');
+            
+            document.getElementById('landing-page').classList.remove('hidden-element');
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+    </script>
+</body>
+</html>
