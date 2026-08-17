@@ -772,14 +772,15 @@
     <div id="adminLoginModal" class="modal">
         <div class="modal-content">
             <h2>🔐 Admin Login</h2>
-            <p>กรุณากรอกรหัสผ่านเพื่อเข้าสู่ระบบจัดการ</p>
+            <p>กรุณากรอกเบอร์โทรและรหัสผ่านเพื่อเข้าสู่ระบบจัดการ</p>
+            <input type="tel" id="adminPhoneInput" class="text-input" placeholder="เบอร์โทรศัพท์" autocomplete="off" inputmode="numeric" onkeypress="if(event.key==='Enter'){ document.getElementById('adminPasswordInput').focus(); }" style="margin-bottom:10px;">
             <div class="password-wrapper">
                 <input type="password" id="adminPasswordInput" class="text-input" placeholder="Password" autocomplete="off" onkeypress="if(event.key==='Enter'){ submitAdminLogin(); }">
                 <button type="button" id="adminPasswordToggleBtn" class="password-toggle-btn" onclick="toggleAdminPasswordVisibility()" aria-label="แสดง/ซ่อนรหัสผ่าน" title="แสดง/ซ่อนรหัสผ่าน">👁️</button>
             </div>
-            <div id="adminLoginError" class="hint-text hidden-element">⚠️ รหัสผ่านไม่ถูกต้อง</div>
+            <div id="adminLoginError" class="hint-text hidden-element">⚠️ เบอร์โทรหรือรหัสผ่านไม่ถูกต้อง</div>
             <div class="action-area">
-                <button class="btn btn-gold" onclick="submitAdminLogin()">เข้าสู่ระบบ</button>
+                <button class="btn btn-gold" id="adminLoginSubmitBtn" onclick="submitAdminLogin()">เข้าสู่ระบบ</button>
                 <button class="btn" style="background:#ccc; color:#333;" onclick="closeAdminLogin()">ยกเลิก</button>
             </div>
         </div>
@@ -1709,6 +1710,7 @@
         }
 
         // ===================== ระบบ Admin (ล็อค/ปลดล็อคสิทธิ์ลูกดวง) =====================
+        let adminPhoneCache = '';
         let adminPasswordCache = '';
         let allAdminUsers = []; // เก็บรายชื่อลูกดวงทั้งหมดที่โหลดมาล่าสุด ไว้ใช้กรองตอนค้นหาไอดี โดยไม่ต้องโหลดซ้ำ
 
@@ -1716,11 +1718,12 @@
             const pwInput = document.getElementById('adminPasswordInput');
             pwInput.value = '';
             pwInput.type = 'password';
+            document.getElementById('adminPhoneInput').value = '';
             document.getElementById('adminPasswordToggleBtn').innerText = '👁️';
             document.getElementById('adminLoginError').classList.add('hidden-element');
             document.getElementById('adminLoginModal').style.display = 'flex';
             setTimeout(function() {
-                document.getElementById('adminPasswordInput').focus();
+                document.getElementById('adminPhoneInput').focus();
             }, 100);
         }
 
@@ -1740,15 +1743,40 @@
             document.getElementById('adminLoginModal').style.display = 'none';
         }
 
+        // ตรวจสอบเบอร์โทร+รหัสผ่านฝั่งเซิร์ฟเวอร์เท่านั้น (ไม่มีการเช็ครหัสผ่านฝังไว้ในหน้าเว็บอีกต่อไป)
         function submitAdminLogin() {
+            const phone = document.getElementById('adminPhoneInput').value.trim();
             const pass = document.getElementById('adminPasswordInput').value;
-            if (pass !== 'Tacx4289!') {
-                document.getElementById('adminLoginError').classList.remove('hidden-element');
+            const errorEl = document.getElementById('adminLoginError');
+            errorEl.classList.add('hidden-element');
+
+            if (!phone || !pass) {
+                errorEl.innerText = '⚠️ กรุณากรอกเบอร์โทรและรหัสผ่านให้ครบ';
+                errorEl.classList.remove('hidden-element');
                 return;
             }
-            adminPasswordCache = pass;
-            document.getElementById('adminLoginModal').style.display = 'none';
-            openAdminPanel();
+
+            const loginBtn = document.getElementById('adminLoginSubmitBtn');
+            if (loginBtn) loginBtn.disabled = true;
+
+            callApi('adminLogin', [phone, pass])
+                .then(function(res) {
+                    if (loginBtn) loginBtn.disabled = false;
+                    if (res && res.success) {
+                        adminPhoneCache = phone;
+                        adminPasswordCache = pass;
+                        document.getElementById('adminLoginModal').style.display = 'none';
+                        openAdminPanel();
+                    } else {
+                        errorEl.innerText = '⚠️ ' + ((res && res.error) ? res.error : 'เบอร์โทรหรือรหัสผ่านไม่ถูกต้อง');
+                        errorEl.classList.remove('hidden-element');
+                    }
+                })
+                .catch(function(err) {
+                    if (loginBtn) loginBtn.disabled = false;
+                    errorEl.innerText = '⚠️ เข้าสู่ระบบไม่สำเร็จ: ' + err.message;
+                    errorEl.classList.remove('hidden-element');
+                });
         }
 
         function openAdminPanel() {
@@ -1761,7 +1789,7 @@
         function refreshAdminUsersList() {
             document.getElementById('adminUsersList').innerText = 'กำลังโหลดข้อมูล...';
 
-            callApi('adminGetAllUsers', [adminPasswordCache])
+            callApi('adminGetAllUsers', [adminPhoneCache, adminPasswordCache])
                 .then(function(res) {
                     if (res && res.success) {
                         allAdminUsers = res.users || [];
@@ -1859,7 +1887,7 @@
 
         function toggleUserLock(userId, newStatus, btnEl) {
             btnEl.disabled = true;
-            callApi('adminSetUserStatus', [adminPasswordCache, userId, newStatus])
+            callApi('adminSetUserStatus', [adminPhoneCache, adminPasswordCache, userId, newStatus])
                 .then(function(res) {
                     if (res && res.success) {
                         refreshAdminUsersList();
@@ -1899,7 +1927,7 @@
             const uid = blockUserTargetId;
             document.getElementById('blockUserModal').style.display = 'none';
 
-            callApi('adminBlockUser', [adminPasswordCache, uid, days])
+            callApi('adminBlockUser', [adminPhoneCache, adminPasswordCache, uid, days])
                 .then(function(res) {
                     if (res && res.success) {
                         refreshAdminUsersList();
@@ -1914,7 +1942,7 @@
 
         function unblockUser(userId, btnEl) {
             if (btnEl) btnEl.disabled = true;
-            callApi('adminUnblockUser', [adminPasswordCache, userId])
+            callApi('adminUnblockUser', [adminPhoneCache, adminPasswordCache, userId])
                 .then(function(res) {
                     if (res && res.success) {
                         refreshAdminUsersList();
