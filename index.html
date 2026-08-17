@@ -797,7 +797,27 @@
             <input type="text" id="adminUserSearchInput" class="text-input" placeholder="🔍 ค้นหาไอดีลูกดวง..." oninput="filterAdminUsers()" style="margin-top:10px; margin-bottom:10px;">
             <div id="adminUsersList" style="text-align:left; max-height:50vh; overflow-y:auto;">กำลังโหลดข้อมูล...</div>
             <div class="action-area">
+                <button class="btn btn-blue" onclick="openChangeAdminPasswordModal()">🔑 เปลี่ยนรหัสผ่าน</button>
                 <button class="btn" style="background:#ccc; color:#333;" onclick="closeAdminPanel()">ปิด</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="changeAdminPasswordModal" class="modal">
+        <div class="modal-content">
+            <h2>🔑 เปลี่ยนรหัสผ่านแอดมิน</h2>
+            <p style="font-size:0.85rem;">ตั้งเบอร์โทรและรหัสผ่านใหม่ของตัวเอง (ถ้าไม่ต้องการเปลี่ยนเบอร์ ปล่อยให้เป็นเบอร์เดิมได้)</p>
+            <label for="changeAdminPhoneInput" style="font-weight:bold; display:block; text-align:left;">เบอร์โทรใหม่:</label>
+            <input type="tel" id="changeAdminPhoneInput" class="text-input" placeholder="เบอร์โทรศัพท์" autocomplete="off" inputmode="numeric">
+            <label for="changeAdminNewPasswordInput" style="font-weight:bold; display:block; text-align:left; margin-top:10px;">รหัสผ่านใหม่:</label>
+            <input type="password" id="changeAdminNewPasswordInput" class="text-input" placeholder="รหัสผ่านใหม่ (อย่างน้อย 6 ตัวอักษร)" autocomplete="off">
+            <label for="changeAdminConfirmPasswordInput" style="font-weight:bold; display:block; text-align:left; margin-top:10px;">ยืนยันรหัสผ่านใหม่:</label>
+            <input type="password" id="changeAdminConfirmPasswordInput" class="text-input" placeholder="พิมพ์รหัสผ่านใหม่อีกครั้ง" autocomplete="off">
+            <div id="changeAdminPasswordError" class="hint-text hidden-element">⚠️ เกิดข้อผิดพลาด</div>
+            <div id="changeAdminPasswordSuccess" class="hint-text hidden-element" style="color:#2e7d32;">✅ เปลี่ยนรหัสผ่านสำเร็จแล้วค่ะ</div>
+            <div class="action-area">
+                <button class="btn btn-gold" id="changeAdminPasswordSubmitBtn" onclick="submitChangeAdminPassword()">บันทึก</button>
+                <button class="btn" style="background:#ccc; color:#333;" onclick="closeChangeAdminPasswordModal()">ยกเลิก</button>
             </div>
         </div>
     </div>
@@ -1820,6 +1840,68 @@
 
         function closeAdminPanel() {
             document.getElementById('adminPanelModal').style.display = 'none';
+        }
+
+        // ===================== ระบบ Admin: เปลี่ยนรหัสผ่านของตัวเอง =====================
+        function openChangeAdminPasswordModal() {
+            document.getElementById('changeAdminPhoneInput').value = adminPhoneCache;
+            document.getElementById('changeAdminNewPasswordInput').value = '';
+            document.getElementById('changeAdminConfirmPasswordInput').value = '';
+            document.getElementById('changeAdminPasswordError').classList.add('hidden-element');
+            document.getElementById('changeAdminPasswordSuccess').classList.add('hidden-element');
+            document.getElementById('changeAdminPasswordModal').style.display = 'flex';
+        }
+
+        function closeChangeAdminPasswordModal() {
+            document.getElementById('changeAdminPasswordModal').style.display = 'none';
+        }
+
+        function submitChangeAdminPassword() {
+            const newPhone = document.getElementById('changeAdminPhoneInput').value.trim();
+            const newPassword = document.getElementById('changeAdminNewPasswordInput').value;
+            const confirmPassword = document.getElementById('changeAdminConfirmPasswordInput').value;
+            const errorEl = document.getElementById('changeAdminPasswordError');
+            const successEl = document.getElementById('changeAdminPasswordSuccess');
+            errorEl.classList.add('hidden-element');
+            successEl.classList.add('hidden-element');
+
+            if (!newPhone || !newPassword) {
+                errorEl.innerText = '⚠️ กรุณากรอกเบอร์โทรและรหัสผ่านใหม่ให้ครบ';
+                errorEl.classList.remove('hidden-element');
+                return;
+            }
+            if (newPassword.length < 6) {
+                errorEl.innerText = '⚠️ รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร';
+                errorEl.classList.remove('hidden-element');
+                return;
+            }
+            if (newPassword !== confirmPassword) {
+                errorEl.innerText = '⚠️ รหัสผ่านใหม่ทั้ง 2 ช่องไม่ตรงกัน';
+                errorEl.classList.remove('hidden-element');
+                return;
+            }
+
+            const submitBtn = document.getElementById('changeAdminPasswordSubmitBtn');
+            if (submitBtn) submitBtn.disabled = true;
+
+            callApi('adminChangePassword', [adminPhoneCache, adminPasswordCache, newPhone, newPassword])
+                .then(function(res) {
+                    if (submitBtn) submitBtn.disabled = false;
+                    if (res && res.success) {
+                        adminPhoneCache = res.phone || newPhone;
+                        adminPasswordCache = newPassword;
+                        successEl.classList.remove('hidden-element');
+                        setTimeout(function() { closeChangeAdminPasswordModal(); }, 1200);
+                    } else {
+                        errorEl.innerText = '⚠️ ' + ((res && res.error) ? res.error : 'เปลี่ยนรหัสผ่านไม่สำเร็จ');
+                        errorEl.classList.remove('hidden-element');
+                    }
+                })
+                .catch(function(err) {
+                    if (submitBtn) submitBtn.disabled = false;
+                    errorEl.innerText = '⚠️ เกิดข้อผิดพลาด: ' + err.message;
+                    errorEl.classList.remove('hidden-element');
+                });
         }
 
         function renderAdminUsersList(users, isSearchResult) {
