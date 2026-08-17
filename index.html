@@ -789,7 +789,7 @@
         <div class="modal-content" style="max-width: 600px;">
             <h2>👑 จัดการสิทธิ์ลูกดวง</h2>
             <p style="font-size:0.85rem;">
-                🔒 ล็อค = จำกัดสิทธิ์ตามปกติ (ทำนายได้ 3 ครั้ง/วัน, แชทเพิ่มได้ 6 ครั้ง/วัน, รีเซ็ตทุกเที่ยงคืน)<br>
+                🔒 ล็อค = จำกัดสิทธิ์ตามปกติ (ทำนายได้ 4 ครั้ง/เดือน รีเซ็ตทุกต้นเดือน, แชทเพิ่มได้ 6 ครั้ง/วัน รีเซ็ตทุกเที่ยงคืน)<br>
                 🔓 ปลดล็อค = ใช้งานได้ไม่จำกัด<br>
                 🚫 บล็อค = ระงับสิทธิ์ "ออกคำทำนาย" ชั่วคราวเป็นรายวัน (ยังตั้งคำถาม/เปิดไพ่ได้ตามปกติ) ใช้กรณีทำผิดกฎ/สร้างความรำคาญ
             </p>
@@ -1815,7 +1815,7 @@
                 idLine.innerText = u.userId;
                 const usageLine = document.createElement('div');
                 usageLine.className = 'admin-user-usage';
-                usageLine.innerText = 'ทำนายวันนี้ ' + u.readingCountToday + '/3 ครั้ง   |   แชทเพิ่มวันนี้ ' + u.chatCountToday + '/6 ครั้ง';
+                usageLine.innerText = 'ทำนายเดือนนี้ ' + u.readingCountThisMonth + '/4 ครั้ง   |   แชทเพิ่มวันนี้ ' + u.chatCountToday + '/6 ครั้ง';
                 info.appendChild(idLine);
                 info.appendChild(usageLine);
 
