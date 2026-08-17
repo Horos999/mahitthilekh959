@@ -773,7 +773,7 @@
         <div class="modal-content">
             <h2>🔐 Admin Login</h2>
             <p>กรุณากรอกเบอร์โทรและรหัสผ่านเพื่อเข้าสู่ระบบจัดการ</p>
-            <input type="tel" id="adminPhoneInput" class="text-input" placeholder="เบอร์โทรศัพท์" autocomplete="off" inputmode="numeric" onkeypress="if(event.key==='Enter'){ document.getElementById('adminPasswordInput').focus(); }" style="margin-bottom:10px;">
+            <input type="tel" id="adminPhoneInput" class="text-input" placeholder="เบอร์โทรศัพท์" autocomplete="off" inputmode="numeric" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" onkeypress="if(event.key==='Enter'){ document.getElementById('adminPasswordInput').focus(); }" style="margin-bottom:10px;">
             <div class="password-wrapper">
                 <input type="password" id="adminPasswordInput" class="text-input" placeholder="Password" autocomplete="off" onkeypress="if(event.key==='Enter'){ submitAdminLogin(); }">
                 <button type="button" id="adminPasswordToggleBtn" class="password-toggle-btn" onclick="toggleAdminPasswordVisibility()" aria-label="แสดง/ซ่อนรหัสผ่าน" title="แสดง/ซ่อนรหัสผ่าน">👁️</button>
@@ -808,7 +808,7 @@
             <h2>🔑 เปลี่ยนรหัสผ่านแอดมิน</h2>
             <p style="font-size:0.85rem;">ตั้งเบอร์โทรและรหัสผ่านใหม่ของตัวเอง (ถ้าไม่ต้องการเปลี่ยนเบอร์ ปล่อยให้เป็นเบอร์เดิมได้)</p>
             <label for="changeAdminPhoneInput" style="font-weight:bold; display:block; text-align:left;">เบอร์โทรใหม่:</label>
-            <input type="tel" id="changeAdminPhoneInput" class="text-input" placeholder="เบอร์โทรศัพท์" autocomplete="off" inputmode="numeric">
+            <input type="tel" id="changeAdminPhoneInput" class="text-input" placeholder="เบอร์โทรศัพท์" autocomplete="off" inputmode="numeric" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);">
             <label for="changeAdminNewPasswordInput" style="font-weight:bold; display:block; text-align:left; margin-top:10px;">รหัสผ่านใหม่:</label>
             <input type="password" id="changeAdminNewPasswordInput" class="text-input" placeholder="รหัสผ่านใหม่ (อย่างน้อย 6 ตัวอักษร)" autocomplete="off">
             <label for="changeAdminConfirmPasswordInput" style="font-weight:bold; display:block; text-align:left; margin-top:10px;">ยืนยันรหัสผ่านใหม่:</label>
@@ -1775,6 +1775,11 @@
                 errorEl.classList.remove('hidden-element');
                 return;
             }
+            if (!/^[0-9]{10}$/.test(phone)) {
+                errorEl.innerText = '⚠️ กรุณากรอกเบอร์โทรเป็นตัวเลข 10 หลักเท่านั้น';
+                errorEl.classList.remove('hidden-element');
+                return;
+            }
 
             const loginBtn = document.getElementById('adminLoginSubmitBtn');
             if (loginBtn) loginBtn.disabled = true;
@@ -1867,6 +1872,11 @@
 
             if (!newPhone || !newPassword) {
                 errorEl.innerText = '⚠️ กรุณากรอกเบอร์โทรและรหัสผ่านใหม่ให้ครบ';
+                errorEl.classList.remove('hidden-element');
+                return;
+            }
+            if (!/^[0-9]{10}$/.test(newPhone)) {
+                errorEl.innerText = '⚠️ กรุณากรอกเบอร์โทรเป็นตัวเลข 10 หลักเท่านั้น';
                 errorEl.classList.remove('hidden-element');
                 return;
             }
