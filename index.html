@@ -2222,13 +2222,13 @@
             callApi('getUserCreditStatus', [uid])
                 .then(function(res) {
                     const balance = (res && typeof res.creditBalance === 'number') ? res.creditBalance : 0;
-                    el.innerText = '💰 เครดิตคงเหลือ ' + balance + ' ครั้ง';
+                    el.innerText = '💰 เครดิตที่ซื้อคงเหลือ ' + balance + ' ครั้ง';
                     el.classList.remove('hidden-element');
                     if (res && res.phone) creditContactPhone = res.phone;
                     if (res && res.email) creditContactEmail = res.email;
                 })
                 .catch(function() {
-                    el.innerText = '💰 เครดิตคงเหลือ 0 ครั้ง';
+                    el.innerText = '💰 เครดิตที่ซื้อคงเหลือ 0 ครั้ง';
                     el.classList.remove('hidden-element');
                 });
         }
