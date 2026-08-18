@@ -97,7 +97,7 @@
         .input-group {
             background: white;
             padding: 20px;
-            padding-bottom: 40px; /* [เพิ่มใหม่] เว้นที่ด้านล่างให้ป้ายเครดิตคงเหลือ ไม่ให้ทับปุ่ม "ย้อนกลับ" */
+            padding-bottom: 40px; /* [เพิ่มใหม่] เว้นที่ด้านล่างให้ป้ายเครดิตคงเหลือ (ซ้าย) และแถบติดต่อไลน์ (ขวา) ไม่ให้ทับปุ่ม "ย้อนกลับ" */
             border-radius: 15px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             margin-bottom: 20px;
@@ -605,28 +605,22 @@
         }
         .admin-btn:hover { background: #2a3eb1; }
 
-        /* --- [เพิ่มใหม่] แถบข้อความ "ซื้อเครดิต > แจ้งชำระ > ติดต่อไลน์" อยู่ตำแหน่งเดียวกับปุ่ม Admin (แสดงแทนที่กันคนละหน้า) --- */
+        /* --- [ปรับปรุง] แถบข้อความ "ซื้อเครดิต > แจ้งชำระ > ติดต่อไลน์" ย้ายมาไว้มุมขวาล่างของกล่องคำถาม (กล่องใหญ่ .input-group)
+           คู่กับป้ายเครดิตคงเหลือที่มุมซ้ายล่าง ไม่มีพื้นหลัง ใช้ตัวหนังสือสีแดง ขนาดเท่าปุ่ม "ซื้อเครดิต" --- */
         .header-contact-banner {
             position: absolute;
-            top: 100%;
-            right: 15px;
+            right: 16px;
+            bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 6px;
-            max-width: min(72vw, 280px);
-            background: var(--primary-color);
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.7);
-            border-top: none;
-            padding: 6px 10px;
-            border-radius: 0 0 16px 16px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.25);
-            z-index: 101;
+            gap: 5px;
+            max-width: 58%;
             font-family: 'Sarabun', sans-serif;
         }
         .header-contact-banner .header-contact-text {
-            font-size: clamp(0.52rem, 2.6vw, 0.68rem);
+            font-size: 0.78rem;
             font-weight: bold;
+            color: #d90000;
             letter-spacing: 0.2px;
             white-space: nowrap;
             overflow: hidden;
@@ -637,8 +631,8 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             background: #06C755;
             border-radius: 50%;
             color: #fff;
@@ -954,12 +948,6 @@
 
     <header>
         <button id="adminBtn" class="admin-btn" onclick="openAdminLogin()">Admin</button>
-        <div id="headerContactBanner" class="header-contact-banner hidden-element">
-            <span class="header-contact-text">ซื้อเครดิต › แจ้งชำระ › รอเกิน 30 นาทีติดต่อเรา</span>
-            <a href="https://lin.ee/nIL01Mm" target="_blank" rel="noopener" class="header-line-link" aria-label="ติดต่อเราทางไลน์" title="ติดต่อเราทางไลน์">
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 4.27 3.58 7.85 8.41 8.55.33.07.78.22.89.5.1.26.07.66.03.92l-.14.86c-.04.26-.2 1 .88.55 1.08-.46 5.82-3.43 7.94-5.87C21.55 14.05 22 12.44 22 10.7 22 5.94 17.52 2 12 2z"/></svg>
-            </a>
-        </div>
         <h1>🔮 ดูดวงไพ่มหิทธิเลขฟรี</h1>
     </header>
 
@@ -978,6 +966,12 @@
             <br><br>
             <button class="btn" style="font-size:0.9rem; background:#ccc; color:#333;" onclick="resetGame()">⬅️ ย้อนกลับ</button>
             <div id="creditBalanceText" class="credit-balance-text hidden-element"></div>
+            <div id="headerContactBanner" class="header-contact-banner">
+                <span class="header-contact-text">ซื้อเครดิต › แจ้งชำระ › รอเกิน 30 นาทีติดต่อเรา</span>
+                <a href="https://lin.ee/nIL01Mm" target="_blank" rel="noopener" class="header-line-link" aria-label="ติดต่อเราทางไลน์" title="ติดต่อเราทางไลน์">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 4.27 3.58 7.85 8.41 8.55.33.07.78.22.89.5.1.26.07.66.03.92l-.14.86c-.04.26-.2 1 .88.55 1.08-.46 5.82-3.43 7.94-5.87C21.55 14.05 22 12.44 22 10.7 22 5.94 17.52 2 12 2z"/></svg>
+                </a>
+            </div>
         </div>
 
         <div id="readingStatsText" class="reading-stats-text">🔮 ให้คำทำนายแล้ว <span id="readingStatsCount">-</span> ครั้ง</div>
@@ -1496,22 +1490,16 @@
             }
         }
 
-        // [เพิ่มใหม่] สลับสิ่งที่แสดงในตำแหน่งเดียวกันของ header (ปุ่ม Admin / แถบติดต่อไลน์) ตามหน้าที่กำลังแสดงอยู่
-        // 'entry'    = หน้าทางเข้า (landing-page) -> แสดงเฉพาะปุ่ม Admin
-        // 'question' = หน้ากรอกคำถาม (ai-input-section) -> แสดงเฉพาะแถบติดต่อไลน์ แทนที่ปุ่ม Admin
-        // 'none'     = หน้าอื่น ๆ (เลือกไพ่ / คำพยากรณ์) -> ไม่แสดงทั้งคู่
+        // [ปรับปรุง] ควบคุมปุ่ม Admin บน header ตามหน้าที่กำลังแสดงอยู่
+        // (แถบติดต่อไลน์ย้ายไปอยู่ในกล่องคำถาม .input-group แล้ว จึงแสดง/ซ่อนตามกล่องนั้นโดยอัตโนมัติ ไม่ต้องคุมจากฟังก์ชันนี้อีกต่อไป)
+        // 'entry'    = หน้าทางเข้า (landing-page) -> แสดงปุ่ม Admin
+        // 'question' / 'none' = หน้าอื่น ๆ -> ซ่อนปุ่ม Admin
         function setHeaderMode_(mode) {
             const adminBtn = document.getElementById('adminBtn');
-            const banner = document.getElementById('headerContactBanner');
             if (mode === 'entry') {
                 adminBtn.classList.remove('hidden-element');
-                banner.classList.add('hidden-element');
-            } else if (mode === 'question') {
-                adminBtn.classList.add('hidden-element');
-                banner.classList.remove('hidden-element');
             } else {
                 adminBtn.classList.add('hidden-element');
-                banner.classList.add('hidden-element');
             }
         }
 
