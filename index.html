@@ -97,9 +97,41 @@
         .input-group {
             background: white;
             padding: 20px;
+            padding-bottom: 40px; /* [เพิ่มใหม่] เว้นที่ด้านล่างให้ป้ายเครดิตคงเหลือ ไม่ให้ทับปุ่ม "ย้อนกลับ" */
             border-radius: 15px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             margin-bottom: 20px;
+            position: relative; /* [เพิ่มใหม่] เพื่อให้ปุ่ม "ซื้อเครดิต" และป้ายเครดิตคงเหลือ ยึดตำแหน่งมุมของกล่องนี้ได้ */
+        }
+
+        /* --- [เพิ่มใหม่] ปุ่ม "ซื้อเครดิต" มุมขวาบนของกล่องพิมพ์คำถาม --- */
+        .buy-credit-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: linear-gradient(135deg, #FFD700, #FDB931);
+            color: #5a4300;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: bold;
+            font-family: 'Sarabun', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            white-space: nowrap;
+        }
+        .buy-credit-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.25); }
+        .credit-balance-text {
+            position: absolute;
+            left: 16px;
+            bottom: 10px;
+            font-size: 0.78rem;
+            color: #555;
+            font-weight: bold;
+            background: #fff8e1;
+            padding: 3px 10px;
+            border-radius: 20px;
         }
 
         textarea {
@@ -657,6 +689,225 @@
             margin-top: 2px;
         }
 
+        /* =================================================================================
+           [เพิ่มใหม่] ระบบ "ซื้อเครดิต" — สไตล์ฝั่งลูกดวง (เลือกแพ็กเกจ / แจ้งชำระเงิน)
+           ================================================================================= */
+        .package-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            background: #fff;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            text-align: left;
+            transition: border-color 0.2s, transform 0.15s;
+        }
+        .package-card:hover { border-color: var(--accent-color); transform: translateY(-2px); }
+        .package-card .package-q { font-weight: bold; color: var(--primary-color); font-size: 1.05rem; }
+        .package-card .package-p { font-weight: bold; color: #c0392b; font-size: 1.1rem; white-space: nowrap; }
+
+        .payment-info-box {
+            background: #f8f9ff;
+            border: 1px dashed var(--primary-color);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: left;
+            margin-bottom: 14px;
+        }
+        .payment-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            border-bottom: 1px solid #e6e9f5;
+        }
+        .payment-info-row:last-child { border-bottom: none; }
+        .payment-info-label { color: #777; font-size: 0.85rem; }
+        .payment-info-value { font-weight: bold; color: #333; text-align: right; word-break: break-word; }
+        .copy-account-btn {
+            background: var(--primary-color);
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            cursor: pointer;
+            margin-left: 8px;
+            flex-shrink: 0;
+        }
+        .payment-amount-highlight {
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #c0392b;
+            margin: 10px 0;
+        }
+
+        .form-field { text-align: left; margin-bottom: 12px; }
+        .form-field label { font-weight: bold; font-size: 0.9rem; display: block; margin-bottom: 4px; }
+        .form-field .text-input { margin-top: 0; }
+        .proof-preview {
+            max-width: 100%;
+            max-height: 180px;
+            border-radius: 8px;
+            margin-top: 8px;
+            display: none;
+            border: 1px solid #ddd;
+        }
+        .required-mark { color: #c0392b; }
+
+        /* =================================================================================
+           [เพิ่มใหม่] หน้าจัดการแอดมิน — แท็บหลัก (จัดการสิทธิ์ / จัดการเครดิต) และแท็บย่อยของจัดการเครดิต
+           ================================================================================= */
+        .admin-main-tabs, .credit-sub-tabs {
+            display: flex;
+            gap: 8px;
+            margin: 12px 0;
+        }
+        .admin-tab-btn {
+            flex: 1;
+            padding: 10px 6px;
+            border: 2px solid var(--primary-color);
+            background: #fff;
+            color: var(--primary-color);
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            font-family: 'Sarabun', sans-serif;
+            cursor: pointer;
+        }
+        .admin-tab-btn.active {
+            background: var(--primary-color);
+            color: #fff;
+        }
+        .credit-sub-tabs .admin-tab-btn {
+            border-color: #999;
+            color: #666;
+            font-size: 0.8rem;
+            padding: 8px 6px;
+        }
+        .credit-sub-tabs .admin-tab-btn.active {
+            background: #555;
+            border-color: #555;
+            color: #fff;
+        }
+
+        .package-config-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .package-config-row .package-config-index {
+            width: 22px;
+            flex-shrink: 0;
+            font-weight: bold;
+            color: #777;
+            font-size: 0.85rem;
+        }
+        .package-config-row input {
+            flex: 1;
+            min-width: 0;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+        }
+
+        .credit-request-card {
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+        .credit-request-card .cr-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .credit-request-card .cr-id { font-weight: bold; color: #333; }
+        .credit-request-card .cr-line { color: #666; margin-top: 2px; }
+        .credit-status-badge {
+            flex-shrink: 0;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        .credit-status-badge.pending { background: #fff3cd; color: #856404; }
+        .credit-status-badge.approved { background: #d4edda; color: #1e7e34; }
+        .credit-status-badge.rejected { background: #f8d7da; color: #c0392b; }
+        .credit-request-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .credit-request-actions .btn {
+            font-size: 0.75rem;
+            padding: 6px 12px;
+            margin: 0;
+        }
+        .credit-proof-link {
+            display: inline-block;
+            margin-top: 4px;
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .credit-customer-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 8px 4px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.85rem;
+        }
+        .credit-customer-row:last-child { border-bottom: none; }
+        .credit-customer-info { min-width: 0; word-break: break-all; }
+        .credit-customer-info .cc-id { font-weight: bold; color: #333; }
+        .credit-customer-info .cc-contact { color: #888; font-size: 0.78rem; }
+        .credit-balance-edit {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .credit-balance-edit input {
+            width: 55px;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            text-align: center;
+            font-family: 'Sarabun', sans-serif;
+        }
+        .credit-balance-edit button {
+            font-size: 0.72rem;
+            padding: 6px 8px;
+            margin: 0;
+        }
+
+        .section-heading {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 14px 0 8px 0;
+            font-size: 0.95rem;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 4px;
+        }
+
     </style>
 </head>
 <body>
@@ -674,11 +925,13 @@
 
     <div id="ai-input-section" class="container-box hidden-element">
         <div class="input-group">
+            <button type="button" class="buy-credit-btn" onclick="openBuyCredit()">💳 ซื้อเครดิต</button>
             <label for="userQuestion" style="font-weight:bold;">✍️ สิ่งที่ท่านอยากรู้:</label>
             <textarea id="userQuestion" placeholder="พิมพ์คำถามโดยละเอียดของท่านที่นี่..."></textarea>
             <button class="btn btn-gold" onclick="startAiProcess()">🎴 สับไพ่เสี่ยงทาย</button>
             <br><br>
             <button class="btn" style="font-size:0.9rem; background:#ccc; color:#333;" onclick="resetGame()">⬅️ ย้อนกลับ</button>
+            <div id="creditBalanceText" class="credit-balance-text hidden-element"></div>
         </div>
 
         <div id="readingStatsText" class="reading-stats-text">🔮 ให้คำทำนายแล้ว <span id="readingStatsCount">-</span> ครั้ง</div>
@@ -788,14 +1041,54 @@
 
     <div id="adminPanelModal" class="modal">
         <div class="modal-content" style="max-width: 600px;">
-            <h2>👑 จัดการสิทธิ์ลูกดวง</h2>
-            <p style="font-size:0.85rem;">
-                🔒 ล็อค = จำกัดสิทธิ์ตามปกติ (ทำนายได้ 4 ครั้ง/เดือน รีเซ็ตทุกต้นเดือน, แชทเพิ่มได้ 6 ครั้ง/วัน รีเซ็ตทุกเที่ยงคืน)<br>
-                🔓 ปลดล็อค = ใช้งานได้ไม่จำกัด<br>
-                🚫 บล็อค = ระงับสิทธิ์ "ออกคำทำนาย" ชั่วคราวเป็นรายวัน (ยังตั้งคำถาม/เปิดไพ่ได้ตามปกติ) ใช้กรณีทำผิดกฎ/สร้างความรำคาญ
-            </p>
-            <input type="text" id="adminUserSearchInput" class="text-input" placeholder="🔍 ค้นหาไอดีลูกดวง..." oninput="filterAdminUsers()" style="margin-top:10px; margin-bottom:10px;">
-            <div id="adminUsersList" style="text-align:left; max-height:50vh; overflow-y:auto;">กำลังโหลดข้อมูล...</div>
+            <h2>👑 หน้าจัดการแอดมิน</h2>
+
+            <!-- [เพิ่มใหม่] แท็บหลัก: จัดการสิทธิ์ / จัดการเครดิต -->
+            <div class="admin-main-tabs">
+                <button type="button" id="adminTabBtnPermissions" class="admin-tab-btn active" onclick="switchAdminMainTab('permissions')">🔐 จัดการสิทธิ์</button>
+                <button type="button" id="adminTabBtnCredit" class="admin-tab-btn" onclick="switchAdminMainTab('credit')">💳 จัดการเครดิต</button>
+            </div>
+
+            <!-- ===== แท็บ 1: จัดการสิทธิ์ (เนื้อหาเดิม) ===== -->
+            <div id="adminTabContentPermissions">
+                <p style="font-size:0.85rem;">
+                    🔒 ล็อค = จำกัดสิทธิ์ตามปกติ (ทำนายได้ 4 ครั้ง/เดือน รีเซ็ตทุกต้นเดือน, แชทเพิ่มได้ 6 ครั้ง/วัน รีเซ็ตทุกเที่ยงคืน)<br>
+                    🔓 ปลดล็อค = ใช้งานได้ไม่จำกัด<br>
+                    🚫 บล็อค = ระงับสิทธิ์ "ออกคำทำนาย" ชั่วคราวเป็นรายวัน (ยังตั้งคำถาม/เปิดไพ่ได้ตามปกติ) ใช้กรณีทำผิดกฎ/สร้างความรำคาญ
+                </p>
+                <input type="text" id="adminUserSearchInput" class="text-input" placeholder="🔍 ค้นหาไอดีลูกดวง..." oninput="filterAdminUsers()" style="margin-top:10px; margin-bottom:10px;">
+                <div id="adminUsersList" style="text-align:left; max-height:50vh; overflow-y:auto;">กำลังโหลดข้อมูล...</div>
+            </div>
+
+            <!-- ===== [เพิ่มใหม่] แท็บ 2: จัดการเครดิต ===== -->
+            <div id="adminTabContentCredit" class="hidden-element">
+                <div class="credit-sub-tabs">
+                    <button type="button" id="creditSubTabBtnPackages" class="admin-tab-btn active" onclick="switchCreditSubTab('packages')">📦 ตั้งค่าแพ็กเกจ</button>
+                    <button type="button" id="creditSubTabBtnRequests" class="admin-tab-btn" onclick="switchCreditSubTab('requests')">🧾 จัดการเครดิต</button>
+                </div>
+
+                <!-- 2.1 ตั้งค่าแพ็กเกจ -->
+                <div id="creditSubContentPackages">
+                    <p style="font-size:0.85rem;">ตั้งค่าแพ็กเกจเครดิตได้สูงสุด 5 รายการ (ระบุจำนวนคำถามและราคา) ช่องไหนไม่ใช้ ให้เว้นว่างหรือใส่ 0 ไว้ได้</p>
+                    <div id="packageConfigList" style="max-height:40vh; overflow-y:auto; margin:10px 0;">กำลังโหลดข้อมูล...</div>
+                    <div id="packageSaveMsg" class="hint-text hidden-element" style="color:#2e7d32; background:#eef8ee;"></div>
+                    <div class="action-area">
+                        <button class="btn btn-gold" onclick="saveAdminPackages()">💾 บันทึกแพ็กเกจ</button>
+                    </div>
+                </div>
+
+                <!-- 2.2 จัดการเครดิต: คำขอซื้อเครดิต + ยอดเครดิตคงเหลือ -->
+                <div id="creditSubContentRequests" class="hidden-element">
+                    <input type="text" id="creditSearchInput" class="text-input" placeholder="🔍 ค้นหาไอดี / อีเมล / เบอร์โทร ลูกดวง..." oninput="filterCreditSection()" style="margin-top:10px; margin-bottom:10px;">
+
+                    <div class="section-heading">🧾 คำขอซื้อเครดิตทั้งหมด</div>
+                    <div id="creditRequestsList" style="text-align:left; max-height:32vh; overflow-y:auto;">กำลังโหลดข้อมูล...</div>
+
+                    <div class="section-heading">💰 ยอดเครดิตคงเหลือของลูกดวง</div>
+                    <div id="creditCustomersList" style="text-align:left; max-height:28vh; overflow-y:auto;">กำลังโหลดข้อมูล...</div>
+                </div>
+            </div>
+
             <div class="action-area">
                 <button class="btn btn-blue" onclick="openChangeAdminPasswordModal()">🔑 เปลี่ยนรหัสผ่าน</button>
                 <button class="btn" style="background:#ccc; color:#333;" onclick="closeAdminPanel()">ปิด</button>
@@ -852,6 +1145,110 @@
         </div>
     </div>
 
+    <!-- ============================================================================
+         [เพิ่มใหม่] ระบบ "ซื้อเครดิต" ฝั่งลูกดวง — ขั้นตอน: กรอกข้อมูลติดต่อ (ครั้งแรก) > เลือกแพ็กเกจ >
+         ดูข้อมูลชำระเงิน > แจ้งชำระเงิน (แนบหลักฐาน) > ผลการแจ้ง
+         ============================================================================ -->
+    <div id="buyCreditContactModal" class="modal">
+        <div class="modal-content">
+            <h2>💳 ซื้อเครดิต</h2>
+            <p style="font-size:0.85rem;">กรุณากรอกเบอร์โทรและอีเมลไว้ครั้งแรก เพื่อใช้อ้างอิงการซื้อเครดิตของท่าน (ครั้งต่อไปไม่ต้องกรอกซ้ำ)</p>
+            <div class="form-field">
+                <label for="creditContactPhone">เบอร์โทรศัพท์ <span class="required-mark">*</span></label>
+                <input type="tel" id="creditContactPhone" class="text-input" placeholder="0812345678" inputmode="numeric" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);">
+            </div>
+            <div class="form-field">
+                <label for="creditContactEmail">อีเมล <span class="required-mark">*</span></label>
+                <input type="email" id="creditContactEmail" class="text-input" placeholder="example@email.com">
+            </div>
+            <div id="creditContactError" class="hint-text hidden-element">⚠️ กรุณากรอกข้อมูลให้ครบและถูกต้อง</div>
+            <div class="action-area">
+                <button class="btn btn-gold" onclick="submitCreditContact()">ถัดไป</button>
+                <button class="btn" style="background:#ccc; color:#333;" onclick="closeBuyCreditModals()">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="buyCreditPackageModal" class="modal">
+        <div class="modal-content">
+            <h2>📦 เลือกแพ็กเกจเครดิต</h2>
+            <p style="font-size:0.85rem;">เลือกแพ็กเกจที่ต้องการ เครดิตที่ซื้อใช้ได้ไม่มีวันหมดอายุ และหากใช้ไม่หมดในเดือนนี้ จะทบไปเดือนถัดไปให้อัตโนมัติ</p>
+            <div id="packageListContainer" style="margin-top:12px;">กำลังโหลดแพ็กเกจ...</div>
+            <div class="action-area">
+                <button class="btn" style="background:#ccc; color:#333;" onclick="closeBuyCreditModals()">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="buyCreditPaymentModal" class="modal">
+        <div class="modal-content">
+            <h2>💰 ชำระเงิน</h2>
+            <div class="payment-info-box">
+                <div class="payment-info-row">
+                    <span class="payment-info-label">ชื่อบัญชี</span>
+                    <span class="payment-info-value" id="paymentAccountName"></span>
+                </div>
+                <div class="payment-info-row">
+                    <span class="payment-info-label">ธนาคาร</span>
+                    <span class="payment-info-value" id="paymentBankName"></span>
+                </div>
+                <div class="payment-info-row">
+                    <span class="payment-info-label">เลขบัญชี</span>
+                    <span class="payment-info-value">
+                        <span id="paymentAccountNumber"></span>
+                        <button type="button" class="copy-account-btn" onclick="copyAccountNumber()">📋 คัดลอก</button>
+                    </span>
+                </div>
+            </div>
+            <div id="paymentCopyFeedback" class="copy-prompt-feedback hidden-element" style="text-align:center;">✅ คัดลอกเลขบัญชีแล้ว</div>
+            <p style="text-align:center; margin-bottom:0; color:#777;">ยอดที่ต้องชำระ</p>
+            <div class="payment-amount-highlight" id="paymentAmountText"></div>
+            <div class="action-area">
+                <button class="btn btn-green" onclick="openNotifyPaymentForm()">✅ แจ้งชำระเงิน</button>
+                <button class="btn" style="background:#ccc; color:#333;" onclick="closeBuyCreditModals()">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="buyCreditNotifyModal" class="modal">
+        <div class="modal-content">
+            <h2>✅ แจ้งชำระเงิน</h2>
+            <p style="font-size:0.85rem;">กรุณากรอกรายละเอียดการโอนเงินให้ครบทุกช่อง เพื่อให้แอดมินตรวจสอบและอนุมัติได้รวดเร็ว</p>
+            <div class="form-field">
+                <label for="notifyAmount">ยอดเงินที่โอน (บาท) <span class="required-mark">*</span></label>
+                <input type="number" id="notifyAmount" class="text-input" min="1" step="0.01" placeholder="เช่น 299">
+            </div>
+            <div class="form-field">
+                <label for="notifyDate">วันที่โอน (วัน/เดือน/ปี) <span class="required-mark">*</span></label>
+                <input type="date" id="notifyDate" class="text-input">
+            </div>
+            <div class="form-field">
+                <label for="notifyTime">เวลาที่โอน <span class="required-mark">*</span></label>
+                <input type="time" id="notifyTime" class="text-input">
+            </div>
+            <div class="form-field">
+                <label for="notifyProofFile">แนบหลักฐานการโอนเงิน (สลิป) <span class="required-mark">*</span></label>
+                <input type="file" id="notifyProofFile" class="text-input" accept="image/*" onchange="handleProofFileChange(this)">
+                <img id="notifyProofPreview" class="proof-preview" alt="ตัวอย่างสลิป">
+            </div>
+            <div id="notifyError" class="hint-text hidden-element">⚠️ กรุณากรอกข้อมูลให้ครบทุกช่อง</div>
+            <div class="action-area">
+                <button class="btn btn-gold" id="notifySubmitBtn" onclick="submitCreditNotify()">ส่งแจ้งชำระเงิน</button>
+                <button class="btn" style="background:#ccc; color:#333;" onclick="closeBuyCreditModals()">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="buyCreditResultModal" class="modal">
+        <div class="modal-content">
+            <h2 id="creditResultTitle">🙏 ขอบคุณค่ะ</h2>
+            <p id="creditResultMessage"></p>
+            <div class="action-area">
+                <button class="btn btn-gold" onclick="closeBuyCreditModals()">ปิด</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let allCardUrls = [];
         let shuffledDeck = [];
@@ -870,6 +1267,13 @@
         let pendingQuestionText = '';
         let pendingReviewId = null;
 
+        // [เพิ่มใหม่] ระบบ "ซื้อเครดิต" ฝั่งลูกดวง
+        let creditContactPhone = '';
+        let creditContactEmail = '';
+        let creditSelectedPackage = null; // { id, questions, price }
+        let creditProofBase64 = '';
+        let creditProofMimeType = '';
+
         // ระบบสถิติจำนวนคำทำนาย / รีวิว (แสดงที่หน้ากรอกคำถาม)
         let allReviews = [];
         let reviewsPage = 0;
@@ -880,6 +1284,11 @@
         // หลัง deploy แล้วให้นำ URL ที่ลงท้ายด้วย /exec มาแทนที่ค่านี้
         // =================================================================================
         const API_URL = 'https://script.google.com/macros/s/AKfycbyugHTqnCH5IUIqi__Mil3X-vGNBm3Gr6oY7_cX0OYrJ5p06El5L245xc0pHwS3A99L/exec';
+
+        // [เพิ่มใหม่] ข้อมูลบัญชีรับโอนเงิน แสดงในหน้าชำระเงินตอนซื้อเครดิต (ต้องตรงกับค่าคงที่ฝั่ง Code.gs เสมอ)
+        const PAYMENT_ACCOUNT_NAME_DISPLAY = 'นัฐพงษ์ วิละขันคำ';
+        const PAYMENT_BANK_NAME_DISPLAY = 'ธนาคารไทยพาณิชย์ (SCB)';
+        const PAYMENT_ACCOUNT_NUMBER_DISPLAY = '4092444133';
 
         /**
          * เรียกฟังก์ชันฝั่ง Apps Script ผ่าน fetch() แทน google.script.run เดิม
@@ -1037,6 +1446,7 @@
                 document.getElementById('userQuestion').focus();
                 loadReadingStats();
                 loadReviews();
+                loadCreditBalanceText(); // [เพิ่มใหม่]
             } else {
                 window.open('https://horos999.github.io/mahitthilekh/', '_blank');
                 resetGame();
@@ -1584,6 +1994,7 @@
                         buildStarRating(document.getElementById('resultStars'), 0);
 
                         document.getElementById('rating-section').classList.remove('hidden-element');
+                        loadCreditBalanceText(); // [เพิ่มใหม่] รีเฟรชยอดเครดิตคงเหลือ เผื่อทำนายครั้งนี้หักจากเครดิตที่ซื้อไว้
                     } else if (response && response.blocked) {
                         // ลูกดวงถูกแอดมินบล็อคอยู่ ยังตั้งคำถาม/เปิดไพ่ได้ปกติ แต่ขอคำทำนายไม่ได้ชั่วคราว
                         btn.classList.remove('hidden-element');
@@ -1729,6 +2140,256 @@
                 });
         }
 
+        // ===================== [เพิ่มใหม่] ระบบ "ซื้อเครดิต" ฝั่งลูกดวง =====================
+
+        /**
+         * โหลดยอดเครดิตคงเหลือ มาแสดงเป็นป้ายเล็กๆ มุมซ้ายล่างของกล่องพิมพ์คำถาม เช่น "เครดิตคงเหลือ 5 ครั้ง"
+         * แสดงเสมอ (แม้ยอด 0) เพื่อให้ลูกดวงเห็นสถานะเครดิตของตัวเองตลอดเวลา
+         * และถือโอกาสดึงเบอร์โทร/อีเมลที่เคยกรอกไว้ (ถ้ามี) มาเก็บไว้ใช้ข้ามขั้นตอนกรอกซ้ำตอนซื้อเครดิตครั้งถัดไป
+         */
+        function loadCreditBalanceText() {
+            const uid = getUserId();
+            const el = document.getElementById('creditBalanceText');
+            callApi('getUserCreditStatus', [uid])
+                .then(function(res) {
+                    const balance = (res && typeof res.creditBalance === 'number') ? res.creditBalance : 0;
+                    el.innerText = '💰 เครดิตคงเหลือ ' + balance + ' ครั้ง';
+                    el.classList.remove('hidden-element');
+                    if (res && res.phone) creditContactPhone = res.phone;
+                    if (res && res.email) creditContactEmail = res.email;
+                })
+                .catch(function() {
+                    el.innerText = '💰 เครดิตคงเหลือ 0 ครั้ง';
+                    el.classList.remove('hidden-element');
+                });
+        }
+
+        /**
+         * ปุ่ม "ซื้อเครดิต" มุมขวาบนของกล่องพิมพ์คำถาม
+         * เช็คก่อนว่าลูกดวงคนนี้เคยกรอกเบอร์โทร/อีเมลไว้แล้วหรือยัง (เช็คทั้ง localStorage และฝั่งเซิร์ฟเวอร์
+         * กันกรณีล้าง localStorage หรือเปลี่ยนเครื่อง) ถ้าเคยแล้วข้ามไปเลือกแพ็กเกจได้เลยตามที่กำหนด "เฉพาะครั้งแรก"
+         */
+        function openBuyCredit() {
+            const uid = getUserId();
+            const savedPhone = creditContactPhone || localStorage.getItem('mahitthalek_credit_phone') || '';
+            const savedEmail = creditContactEmail || localStorage.getItem('mahitthalek_credit_email') || '';
+
+            if (savedPhone && savedEmail) {
+                creditContactPhone = savedPhone;
+                creditContactEmail = savedEmail;
+                openPackageSelection();
+                return;
+            }
+
+            callApi('getUserCreditStatus', [uid])
+                .then(function(res) {
+                    if (res && res.phone && res.email) {
+                        creditContactPhone = res.phone;
+                        creditContactEmail = res.email;
+                        openPackageSelection();
+                    } else {
+                        document.getElementById('creditContactPhone').value = savedPhone;
+                        document.getElementById('creditContactEmail').value = savedEmail;
+                        document.getElementById('creditContactError').classList.add('hidden-element');
+                        document.getElementById('buyCreditContactModal').style.display = 'flex';
+                    }
+                })
+                .catch(function() {
+                    document.getElementById('buyCreditContactModal').style.display = 'flex';
+                });
+        }
+
+        function submitCreditContact() {
+            const phone = document.getElementById('creditContactPhone').value.trim();
+            const email = document.getElementById('creditContactEmail').value.trim();
+            const errorEl = document.getElementById('creditContactError');
+
+            if (!phone || phone.length < 9 || !email || email.indexOf('@') === -1) {
+                errorEl.innerText = '⚠️ กรุณากรอกเบอร์โทรและอีเมลให้ครบและถูกต้อง';
+                errorEl.classList.remove('hidden-element');
+                return;
+            }
+
+            creditContactPhone = phone;
+            creditContactEmail = email;
+            localStorage.setItem('mahitthalek_credit_phone', phone);
+            localStorage.setItem('mahitthalek_credit_email', email);
+
+            document.getElementById('buyCreditContactModal').style.display = 'none';
+            openPackageSelection();
+        }
+
+        function openPackageSelection() {
+            document.getElementById('buyCreditPackageModal').style.display = 'flex';
+            const container = document.getElementById('packageListContainer');
+            container.innerHTML = 'กำลังโหลดแพ็กเกจ...';
+
+            callApi('getActivePackages', [])
+                .then(function(packages) {
+                    container.innerHTML = '';
+                    if (!packages || packages.length === 0) {
+                        container.innerHTML = '<div class="review-empty-text">ขณะนี้ยังไม่มีแพ็กเกจเปิดขาย กรุณาติดต่อแอดมิน</div>';
+                        return;
+                    }
+                    packages.forEach(function(pkg) {
+                        const card = document.createElement('div');
+                        card.className = 'package-card';
+                        card.onclick = function() { selectPackage(pkg); };
+
+                        const qSpan = document.createElement('span');
+                        qSpan.className = 'package-q';
+                        qSpan.innerText = '🎴 ' + pkg.questions + ' คำถาม';
+
+                        const pSpan = document.createElement('span');
+                        pSpan.className = 'package-p';
+                        pSpan.innerText = Number(pkg.price).toLocaleString('th-TH') + ' บาท';
+
+                        card.appendChild(qSpan);
+                        card.appendChild(pSpan);
+                        container.appendChild(card);
+                    });
+                })
+                .catch(function(err) {
+                    container.innerHTML = '<div class="review-empty-text">⚠️ โหลดแพ็กเกจไม่สำเร็จ: ' + err.message + '</div>';
+                });
+        }
+
+        function selectPackage(pkg) {
+            creditSelectedPackage = pkg;
+            document.getElementById('buyCreditPackageModal').style.display = 'none';
+
+            document.getElementById('paymentAccountName').innerText = PAYMENT_ACCOUNT_NAME_DISPLAY;
+            document.getElementById('paymentBankName').innerText = PAYMENT_BANK_NAME_DISPLAY;
+            document.getElementById('paymentAccountNumber').innerText = PAYMENT_ACCOUNT_NUMBER_DISPLAY;
+            document.getElementById('paymentAmountText').innerText = Number(pkg.price).toLocaleString('th-TH') + ' บาท';
+            document.getElementById('paymentCopyFeedback').classList.add('hidden-element');
+
+            document.getElementById('buyCreditPaymentModal').style.display = 'flex';
+        }
+
+        // คัดลอกเลขบัญชีไปคลิปบอร์ด (ใช้ฟังก์ชันกลางเดียวกับปุ่ม Copy Prompt ด้านบน เพราะรองรับข้อความกำหนดเองอยู่แล้ว)
+        function copyAccountNumber() {
+            copyPredictionPromptToEl(document.getElementById('paymentCopyFeedback'), PAYMENT_ACCOUNT_NUMBER_DISPLAY);
+        }
+
+        function openNotifyPaymentForm() {
+            document.getElementById('buyCreditPaymentModal').style.display = 'none';
+
+            document.getElementById('notifyAmount').value = creditSelectedPackage ? creditSelectedPackage.price : '';
+            document.getElementById('notifyDate').value = '';
+            document.getElementById('notifyTime').value = '';
+            document.getElementById('notifyProofFile').value = '';
+            document.getElementById('notifyProofPreview').style.display = 'none';
+            document.getElementById('notifyError').classList.add('hidden-element');
+            creditProofBase64 = '';
+            creditProofMimeType = '';
+
+            document.getElementById('buyCreditNotifyModal').style.display = 'flex';
+        }
+
+        /**
+         * [เพิ่มเติมจากที่ระบุ] อ่านไฟล์รูปสลิปที่แนบ แล้วย่อขนาด/บีบอัดผ่าน canvas ก่อนแปลงเป็น base64
+         * ไม่ได้ถูกระบุไว้ในคำสั่งเดิม แต่เพิ่มให้เพื่อกันไฟล์ภาพจากกล้องมือถือ (มักมีขนาดหลาย MB) ใหญ่เกินไป
+         * จนส่งขึ้นเซิร์ฟเวอร์ไม่สำเร็จหรือช้ามาก โดยยังคงมองเห็นรายละเอียดสลิปได้ชัดเจนตามปกติ
+         */
+        function handleProofFileChange(input) {
+            const file = input.files && input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const MAX_DIM = 1200;
+                    let w = img.width, h = img.height;
+                    if (w > MAX_DIM || h > MAX_DIM) {
+                        if (w > h) { h = Math.round(h * MAX_DIM / w); w = MAX_DIM; }
+                        else { w = Math.round(w * MAX_DIM / h); h = MAX_DIM; }
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = w;
+                    canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+                    creditProofBase64 = dataUrl.split(',')[1];
+                    creditProofMimeType = 'image/jpeg';
+
+                    const preview = document.getElementById('notifyProofPreview');
+                    preview.src = dataUrl;
+                    preview.style.display = 'block';
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function submitCreditNotify() {
+            const amount = document.getElementById('notifyAmount').value;
+            const date = document.getElementById('notifyDate').value;
+            const time = document.getElementById('notifyTime').value;
+            const errorEl = document.getElementById('notifyError');
+
+            if (!amount || Number(amount) <= 0 || !date || !time || !creditProofBase64) {
+                errorEl.innerText = '⚠️ กรุณากรอกข้อมูลให้ครบทุกช่อง และแนบหลักฐานการโอนเงินด้วยค่ะ';
+                errorEl.classList.remove('hidden-element');
+                return;
+            }
+            errorEl.classList.add('hidden-element');
+
+            const btn = document.getElementById('notifySubmitBtn');
+            btn.disabled = true;
+            btn.innerText = 'กำลังส่ง...';
+
+            const uid = getUserId();
+            const displayDate = formatThaiDate(date); // แปลงเป็นรูปแบบ วัน เดือน(ไทย) ปี ตามที่กำหนด
+
+            callApi('submitCreditPurchase', [
+                uid, creditContactPhone, creditContactEmail,
+                creditSelectedPackage.questions, creditSelectedPackage.price,
+                Number(amount), displayDate, time,
+                creditProofBase64, creditProofMimeType
+            ]).then(function(res) {
+                btn.disabled = false;
+                btn.innerText = 'ส่งแจ้งชำระเงิน';
+                document.getElementById('buyCreditNotifyModal').style.display = 'none';
+
+                if (res && res.success) {
+                    document.getElementById('creditResultTitle').innerText = '🙏 ได้รับการแจ้งชำระเงินแล้ว';
+                    document.getElementById('creditResultMessage').innerText = 'ระบบได้ส่งข้อมูลให้แอดมินตรวจสอบแล้ว เมื่ออนุมัติเรียบร้อย เครดิตจะถูกเติมให้ท่านโดยอัตโนมัติค่ะ';
+                } else {
+                    document.getElementById('creditResultTitle').innerText = '⚠️ ส่งไม่สำเร็จ';
+                    document.getElementById('creditResultMessage').innerText = (res && res.error) ? res.error : 'เกิดข้อผิดพลาดไม่ทราบสาเหตุ กรุณาลองใหม่อีกครั้งค่ะ';
+                }
+                document.getElementById('buyCreditResultModal').style.display = 'flex';
+                loadCreditBalanceText();
+            }).catch(function(err) {
+                btn.disabled = false;
+                btn.innerText = 'ส่งแจ้งชำระเงิน';
+                errorEl.innerText = '⚠️ เกิดข้อผิดพลาด: ' + err.message;
+                errorEl.classList.remove('hidden-element');
+            });
+        }
+
+        function closeBuyCreditModals() {
+            document.getElementById('buyCreditContactModal').style.display = 'none';
+            document.getElementById('buyCreditPackageModal').style.display = 'none';
+            document.getElementById('buyCreditPaymentModal').style.display = 'none';
+            document.getElementById('buyCreditNotifyModal').style.display = 'none';
+            document.getElementById('buyCreditResultModal').style.display = 'none';
+        }
+
+        // แปลงวันที่จาก <input type="date"> (yyyy-mm-dd) เป็นรูปแบบไทยอ่านง่าย "วัน เดือน ปี" เช่น 17 สิงหาคม 2026
+        // [เพิ่มเติมจากที่ระบุ] ใช้ชื่อเดือนภาษาไทยแทนตัวเลข เพื่อความเป็นมืออาชีพและอ่านง่ายขึ้นสำหรับแอดมิน/ลูกดวง
+        function formatThaiDate(isoDateStr) {
+            const THAI_MONTHS = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+            const parts = String(isoDateStr).split('-');
+            if (parts.length !== 3) return isoDateStr;
+            const y = Number(parts[0]), m = Number(parts[1]), d = Number(parts[2]);
+            if (!y || !m || !d) return isoDateStr;
+            return d + ' ' + THAI_MONTHS[m - 1] + ' ' + y;
+        }
+
         // ===================== ระบบ Admin (ล็อค/ปลดล็อคสิทธิ์ลูกดวง) =====================
         let adminPhoneCache = '';
         let adminPasswordCache = '';
@@ -1807,6 +2468,7 @@
         function openAdminPanel() {
             document.getElementById('adminPanelModal').style.display = 'flex';
             document.getElementById('adminUserSearchInput').value = '';
+            switchAdminMainTab('permissions'); // [เพิ่มใหม่] เปิดมาที่แท็บ "จัดการสิทธิ์" เป็นค่าเริ่มต้นเสมอ
             refreshAdminUsersList();
         }
 
@@ -1845,6 +2507,359 @@
 
         function closeAdminPanel() {
             document.getElementById('adminPanelModal').style.display = 'none';
+        }
+
+        // ===================== [เพิ่มใหม่] ระบบ Admin: แท็บหลัก จัดการสิทธิ์ / จัดการเครดิต =====================
+        function switchAdminMainTab(tab) {
+            const permBtn = document.getElementById('adminTabBtnPermissions');
+            const creditBtn = document.getElementById('adminTabBtnCredit');
+            const permContent = document.getElementById('adminTabContentPermissions');
+            const creditContent = document.getElementById('adminTabContentCredit');
+
+            if (tab === 'credit') {
+                permBtn.classList.remove('active');
+                creditBtn.classList.add('active');
+                permContent.classList.add('hidden-element');
+                creditContent.classList.remove('hidden-element');
+                switchCreditSubTab('packages');
+                loadAdminPackages();
+                loadCreditRequestsAndCustomers();
+            } else {
+                creditBtn.classList.remove('active');
+                permBtn.classList.add('active');
+                creditContent.classList.add('hidden-element');
+                permContent.classList.remove('hidden-element');
+            }
+        }
+
+        // แท็บย่อยของ "จัดการเครดิต": ตั้งค่าแพ็กเกจ / คำขอซื้อเครดิต+ยอดคงเหลือ
+        function switchCreditSubTab(tab) {
+            const pkgBtn = document.getElementById('creditSubTabBtnPackages');
+            const reqBtn = document.getElementById('creditSubTabBtnRequests');
+            const pkgContent = document.getElementById('creditSubContentPackages');
+            const reqContent = document.getElementById('creditSubContentRequests');
+
+            if (tab === 'requests') {
+                pkgBtn.classList.remove('active');
+                reqBtn.classList.add('active');
+                pkgContent.classList.add('hidden-element');
+                reqContent.classList.remove('hidden-element');
+            } else {
+                reqBtn.classList.remove('active');
+                pkgBtn.classList.add('active');
+                reqContent.classList.add('hidden-element');
+                pkgContent.classList.remove('hidden-element');
+            }
+        }
+
+        // ===================== [เพิ่มใหม่] ระบบ Admin: ตั้งค่าแพ็กเกจเครดิต (สูงสุด 5 รายการ) =====================
+        function loadAdminPackages() {
+            const container = document.getElementById('packageConfigList');
+            container.innerHTML = 'กำลังโหลดข้อมูล...';
+            document.getElementById('packageSaveMsg').classList.add('hidden-element');
+
+            callApi('adminGetPackages', [adminPhoneCache, adminPasswordCache])
+                .then(function(res) {
+                    if (!res || !res.success) {
+                        container.innerHTML = '⚠️ ' + ((res && res.error) ? res.error : 'โหลดข้อมูลไม่สำเร็จ');
+                        return;
+                    }
+                    container.innerHTML = '';
+                    res.packages.forEach(function(pkg) {
+                        const row = document.createElement('div');
+                        row.className = 'package-config-row';
+
+                        const idxSpan = document.createElement('span');
+                        idxSpan.className = 'package-config-index';
+                        idxSpan.innerText = pkg.id + '.';
+
+                        const qInput = document.createElement('input');
+                        qInput.type = 'number';
+                        qInput.min = '0';
+                        qInput.placeholder = 'จำนวนคำถาม';
+                        qInput.value = pkg.questions || '';
+                        qInput.id = 'pkgQuestions_' + pkg.id;
+
+                        const pInput = document.createElement('input');
+                        pInput.type = 'number';
+                        pInput.min = '0';
+                        pInput.placeholder = 'ราคา (บาท)';
+                        pInput.value = pkg.price || '';
+                        pInput.id = 'pkgPrice_' + pkg.id;
+
+                        row.appendChild(idxSpan);
+                        row.appendChild(qInput);
+                        row.appendChild(pInput);
+                        container.appendChild(row);
+                    });
+                })
+                .catch(function(err) {
+                    container.innerHTML = '⚠️ เกิดข้อผิดพลาด: ' + err.message;
+                });
+        }
+
+        function saveAdminPackages() {
+            const packages = [];
+            for (let id = 1; id <= 5; id++) {
+                const qEl = document.getElementById('pkgQuestions_' + id);
+                const pEl = document.getElementById('pkgPrice_' + id);
+                packages.push({
+                    questions: qEl ? (Number(qEl.value) || 0) : 0,
+                    price: pEl ? (Number(pEl.value) || 0) : 0
+                });
+            }
+
+            const msgEl = document.getElementById('packageSaveMsg');
+            msgEl.classList.add('hidden-element');
+
+            callApi('adminSavePackages', [adminPhoneCache, adminPasswordCache, packages])
+                .then(function(res) {
+                    if (res && res.success) {
+                        msgEl.innerText = '✅ บันทึกแพ็กเกจสำเร็จแล้วค่ะ';
+                        msgEl.classList.remove('hidden-element');
+                        setTimeout(function() { msgEl.classList.add('hidden-element'); }, 2500);
+                    } else {
+                        alert((res && res.error) ? res.error : 'บันทึกไม่สำเร็จ');
+                    }
+                })
+                .catch(function(err) {
+                    alert('เกิดข้อผิดพลาด: ' + err.message);
+                });
+        }
+
+        // ===================== [เพิ่มใหม่] ระบบ Admin: คำขอซื้อเครดิต + ยอดเครดิตคงเหลือของลูกดวง =====================
+        let allCreditRequests = [];
+        let allCreditCustomers = [];
+
+        function loadCreditRequestsAndCustomers() {
+            document.getElementById('creditSearchInput').value = '';
+            document.getElementById('creditRequestsList').innerText = 'กำลังโหลดข้อมูล...';
+            document.getElementById('creditCustomersList').innerText = 'กำลังโหลดข้อมูล...';
+
+            callApi('adminGetCreditRequests', [adminPhoneCache, adminPasswordCache])
+                .then(function(res) {
+                    allCreditRequests = (res && res.success) ? res.requests : [];
+                    if (!res || !res.success) {
+                        document.getElementById('creditRequestsList').innerText = '⚠️ ' + ((res && res.error) ? res.error : 'โหลดข้อมูลไม่สำเร็จ');
+                    }
+                    filterCreditSection();
+                })
+                .catch(function(err) {
+                    allCreditRequests = [];
+                    document.getElementById('creditRequestsList').innerText = '⚠️ เกิดข้อผิดพลาด: ' + err.message;
+                });
+
+            callApi('adminGetCreditCustomers', [adminPhoneCache, adminPasswordCache])
+                .then(function(res) {
+                    allCreditCustomers = (res && res.success) ? res.customers : [];
+                    if (!res || !res.success) {
+                        document.getElementById('creditCustomersList').innerText = '⚠️ ' + ((res && res.error) ? res.error : 'โหลดข้อมูลไม่สำเร็จ');
+                    }
+                    filterCreditSection();
+                })
+                .catch(function(err) {
+                    allCreditCustomers = [];
+                    document.getElementById('creditCustomersList').innerText = '⚠️ เกิดข้อผิดพลาด: ' + err.message;
+                });
+        }
+
+        // ค้นหาไอดี/อีเมล/เบอร์โทร ครอบคลุมทั้งรายการคำขอซื้อเครดิตและรายชื่อลูกดวงที่มียอดเครดิต
+        function filterCreditSection() {
+            const query = document.getElementById('creditSearchInput').value.trim().toLowerCase();
+
+            const filteredRequests = !query ? allCreditRequests : allCreditRequests.filter(function(r) {
+                return (r.userId && String(r.userId).toLowerCase().indexOf(query) !== -1) ||
+                       (r.email && String(r.email).toLowerCase().indexOf(query) !== -1) ||
+                       (r.phone && String(r.phone).indexOf(query) !== -1);
+            });
+            renderCreditRequests(filteredRequests);
+
+            const filteredCustomers = !query ? allCreditCustomers : allCreditCustomers.filter(function(c) {
+                return (c.userId && String(c.userId).toLowerCase().indexOf(query) !== -1) ||
+                       (c.email && String(c.email).toLowerCase().indexOf(query) !== -1) ||
+                       (c.phone && String(c.phone).indexOf(query) !== -1);
+            });
+            renderCreditCustomers(filteredCustomers);
+        }
+
+        const CREDIT_STATUS_LABELS_ = {
+            pending: { cls: 'pending', text: '⏳ รออนุมัติ' },
+            rejected: { cls: 'rejected', text: '❌ ปฏิเสธแล้ว' }
+        };
+
+        function renderCreditRequests(requests) {
+            const container = document.getElementById('creditRequestsList');
+            container.innerHTML = '';
+
+            if (!requests || requests.length === 0) {
+                container.innerHTML = '<div class="review-empty-text">ไม่พบคำขอซื้อเครดิต</div>';
+                return;
+            }
+
+            requests.forEach(function(r) {
+                const card = document.createElement('div');
+                card.className = 'credit-request-card';
+
+                const top = document.createElement('div');
+                top.className = 'cr-top';
+
+                const shortId = r.userId ? String(r.userId).slice(-5) : '-----';
+                const idDiv = document.createElement('div');
+                idDiv.innerHTML =
+                    '<div class="cr-id">ID...' + shortId + '</div>' +
+                    '<div class="cr-line">📧 ' + (r.email || '-') + '</div>' +
+                    '<div class="cr-line">📱 ' + (r.phone || '-') + '</div>' +
+                    '<div class="cr-line">📦 ' + r.packageQuestions + ' คำถาม / ' + Number(r.packagePrice).toLocaleString('th-TH') + ' บาท</div>' +
+                    '<div class="cr-line">💵 แจ้งโอน ' + Number(r.amountPaid).toLocaleString('th-TH') + ' บาท เมื่อ ' + r.transferDate + ' เวลา ' + r.transferTime + '</div>' +
+                    '<div class="cr-line">🕒 ส่งคำขอเมื่อ ' + r.createdAt + '</div>';
+
+                const badge = document.createElement('span');
+                let statusInfo;
+                if (r.status === 'approved') {
+                    statusInfo = { cls: 'approved', text: '✅ อนุมัติแล้ว (' + (r.approvedBy === 'email' ? 'ทางอีเมล' : 'จากหน้าจัดการ') + ')' };
+                } else {
+                    statusInfo = CREDIT_STATUS_LABELS_[r.status] || CREDIT_STATUS_LABELS_.pending;
+                }
+                badge.className = 'credit-status-badge ' + statusInfo.cls;
+                badge.innerText = statusInfo.text;
+
+                top.appendChild(idDiv);
+                top.appendChild(badge);
+                card.appendChild(top);
+
+                if (r.proofUrl) {
+                    const link = document.createElement('a');
+                    link.href = r.proofUrl;
+                    link.target = '_blank';
+                    link.rel = 'noopener';
+                    link.className = 'credit-proof-link';
+                    link.innerText = '📎 ดูหลักฐานการโอนเงิน';
+                    card.appendChild(link);
+                }
+
+                const actions = document.createElement('div');
+                actions.className = 'credit-request-actions';
+
+                const approveBtn = document.createElement('button');
+                approveBtn.className = 'btn btn-green';
+                approveBtn.innerText = (r.status === 'approved') ? '✅ อนุมัติแล้ว' : '✅ อนุมัติ';
+                // [ตามที่กำหนด] ถ้าอนุมัติไปแล้วไม่ว่าทางไหน (รวมถึงจากอีเมล) ปุ่มนี้จะกดไม่ได้อีก
+                approveBtn.disabled = (r.status !== 'pending');
+
+                const rejectBtn = document.createElement('button');
+                rejectBtn.className = 'btn btn-block';
+                rejectBtn.innerText = '❌ ปฏิเสธ';
+                rejectBtn.disabled = (r.status !== 'pending');
+
+                approveBtn.onclick = function() { approveCreditRequestAdmin(r.requestId, approveBtn, rejectBtn); };
+                rejectBtn.onclick = function() { rejectCreditRequestAdmin(r.requestId, approveBtn, rejectBtn); };
+
+                actions.appendChild(approveBtn);
+                actions.appendChild(rejectBtn);
+                card.appendChild(actions);
+
+                container.appendChild(card);
+            });
+        }
+
+        function approveCreditRequestAdmin(requestId, approveBtn, rejectBtn) {
+            approveBtn.disabled = true;
+            rejectBtn.disabled = true;
+            callApi('adminApproveCreditRequest', [adminPhoneCache, adminPasswordCache, requestId])
+                .then(function(res) {
+                    if (!res || !res.success) {
+                        alert((res && res.error) ? res.error : 'อนุมัติไม่สำเร็จ');
+                    }
+                    loadCreditRequestsAndCustomers();
+                })
+                .catch(function(err) {
+                    alert('เกิดข้อผิดพลาด: ' + err.message);
+                    approveBtn.disabled = false;
+                    rejectBtn.disabled = false;
+                });
+        }
+
+        function rejectCreditRequestAdmin(requestId, approveBtn, rejectBtn) {
+            if (!confirm('ยืนยันปฏิเสธคำขอนี้หรือไม่?')) return;
+            approveBtn.disabled = true;
+            rejectBtn.disabled = true;
+            callApi('adminRejectCreditRequest', [adminPhoneCache, adminPasswordCache, requestId])
+                .then(function(res) {
+                    if (!res || !res.success) {
+                        alert((res && res.error) ? res.error : 'ปฏิเสธไม่สำเร็จ');
+                    }
+                    loadCreditRequestsAndCustomers();
+                })
+                .catch(function(err) {
+                    alert('เกิดข้อผิดพลาด: ' + err.message);
+                    approveBtn.disabled = false;
+                    rejectBtn.disabled = false;
+                });
+        }
+
+        function renderCreditCustomers(customers) {
+            const container = document.getElementById('creditCustomersList');
+            container.innerHTML = '';
+
+            if (!customers || customers.length === 0) {
+                container.innerHTML = '<div class="review-empty-text">ยังไม่มีลูกดวงที่มีข้อมูลเครดิต</div>';
+                return;
+            }
+
+            customers.forEach(function(c) {
+                const row = document.createElement('div');
+                row.className = 'credit-customer-row';
+
+                const shortId = c.userId ? String(c.userId).slice(-5) : '-----';
+                const info = document.createElement('div');
+                info.className = 'credit-customer-info';
+                info.innerHTML = '<div class="cc-id">ID...' + shortId + '</div>' +
+                    '<div class="cc-contact">' + (c.email || '-') + ' | ' + (c.phone || '-') + '</div>';
+
+                const editWrap = document.createElement('div');
+                editWrap.className = 'credit-balance-edit';
+
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.min = '0';
+                input.value = c.creditBalance;
+
+                const saveBtn = document.createElement('button');
+                saveBtn.className = 'btn btn-blue';
+                saveBtn.innerText = '💾';
+                saveBtn.title = 'บันทึกยอดเครดิต';
+                saveBtn.onclick = function() { saveCustomerCredit(c.userId, input, saveBtn); };
+
+                editWrap.appendChild(input);
+                editWrap.appendChild(saveBtn);
+
+                row.appendChild(info);
+                row.appendChild(editWrap);
+                container.appendChild(row);
+            });
+        }
+
+        function saveCustomerCredit(userId, inputEl, btnEl) {
+            const newBalance = Number(inputEl.value);
+            if (isNaN(newBalance) || newBalance < 0) {
+                alert('กรุณาระบุจำนวนเครดิตให้ถูกต้อง (ต้องไม่ติดลบ)');
+                return;
+            }
+            btnEl.disabled = true;
+            callApi('adminUpdateUserCredit', [adminPhoneCache, adminPasswordCache, userId, newBalance])
+                .then(function(res) {
+                    btnEl.disabled = false;
+                    if (res && res.success) {
+                        btnEl.innerText = '✅';
+                        setTimeout(function() { btnEl.innerText = '💾'; }, 1500);
+                    } else {
+                        alert((res && res.error) ? res.error : 'บันทึกไม่สำเร็จ');
+                    }
+                })
+                .catch(function(err) {
+                    btnEl.disabled = false;
+                    alert('เกิดข้อผิดพลาด: ' + err.message);
+                });
         }
 
         // ===================== ระบบ Admin: เปลี่ยนรหัสผ่านของตัวเอง =====================
