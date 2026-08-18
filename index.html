@@ -97,18 +97,21 @@
         .input-group {
             background: white;
             padding: 20px;
-            padding-bottom: 40px; /* [เพิ่มใหม่] เว้นที่ด้านล่างให้ป้ายเครดิตคงเหลือ (ซ้าย) และแถบติดต่อไลน์ (ขวา) ไม่ให้ทับปุ่ม "ย้อนกลับ" */
+            padding-bottom: 40px; /* [เพิ่มใหม่] เว้นที่ด้านล่างให้ป้ายเครดิตคงเหลือ ไม่ให้ทับปุ่ม "ย้อนกลับ" */
             border-radius: 15px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             margin-bottom: 20px;
-            position: relative; /* [เพิ่มใหม่] เพื่อให้ปุ่ม "ซื้อเครดิต" และป้ายเครดิตคงเหลือ ยึดตำแหน่งมุมของกล่องนี้ได้ */
+            position: relative; /* [เพิ่มใหม่] เพื่อให้ป้ายเครดิตคงเหลือ ยึดตำแหน่งมุมของกล่องนี้ได้ */
         }
 
-        /* --- [เพิ่มใหม่] ปุ่ม "ซื้อเครดิต" มุมขวาบนของกล่องพิมพ์คำถาม --- */
+        /* --- [ปรับปรุง] แถวปุ่ม "ซื้อเครดิต" อยู่นอกกรอบพื้นขาว (.input-group) ชิดขวา เหนือกล่องคำถาม --- */
+        .buy-credit-row {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 8px;
+        }
         .buy-credit-btn {
-            position: absolute;
-            top: 14px;
-            right: 14px;
             background: linear-gradient(135deg, #FFD700, #FDB931);
             color: #5a4300;
             border: none;
@@ -296,6 +299,13 @@
             flex-direction: column;
             gap: 10px;
             margin-top: 20px;
+        }
+        /* --- [เพิ่มใหม่] ตัวปรับ (modifier) ให้ปุ่มใน .action-area เรียงข้างกันแนวนอนแทนแนวตั้ง
+           ใช้เฉพาะจุดที่ต้องการ (เช่น ปุ่ม "แก้ไข" / "บันทึกแพ็กเกจ" ในแท็บตั้งค่าแพ็กเกจ) โดยไม่กระทบ .action-area จุดอื่น --- */
+        .action-area-row {
+            flex-direction: row;
+            justify-content: center;
+            flex-wrap: wrap;
         }
         /* หมายเหตุ: ใช้ !important เพราะ #game-area กำหนด display:flex ไว้ตรงๆ ผ่าน ID selector
            ซึ่งมีความจำเพาะ (specificity) สูงกว่า .hidden-element (class selector) ทำให้ก่อนหน้านี้
@@ -605,26 +615,22 @@
         }
         .admin-btn:hover { background: #2a3eb1; }
 
-        /* --- [ปรับปรุง] แถบข้อความ "ซื้อเครดิต > แจ้งชำระ > ติดต่อไลน์" ย้ายมาไว้มุมขวาล่างของกล่องคำถาม (กล่องใหญ่ .input-group)
-           คู่กับป้ายเครดิตคงเหลือที่มุมซ้ายล่าง ไม่มีพื้นหลัง ใช้ตัวหนังสือสีแดง ขนาดเท่าปุ่ม "ซื้อเครดิต" --- */
+        /* --- [ปรับปรุง] แถบข้อความ "ซื้อเครดิต > แจ้งชำระ > ติดต่อไลน์" อยู่นอกกรอบพื้นขาว (.input-group) ชิดขวา ใต้กล่องคำถาม
+           ไม่มีพื้นหลัง ใช้ตัวหนังสือสีแดง ขนาดเท่าปุ่ม "ซื้อเครดิต" (เอา letter-spacing/nowrap/ellipsis ออก เพราะทำให้วรรณยุกต์โทของคำว่า "ซื้อ" หายไป) --- */
         .header-contact-banner {
-            position: absolute;
-            right: 16px;
-            bottom: 10px;
+            width: 100%;
             display: flex;
+            justify-content: flex-end;
             align-items: center;
             gap: 5px;
-            max-width: 58%;
+            margin-top: 8px;
             font-family: 'Sarabun', sans-serif;
         }
         .header-contact-banner .header-contact-text {
             font-size: 0.78rem;
             font-weight: bold;
             color: #d90000;
-            letter-spacing: 0.2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            text-align: right;
         }
         .header-contact-banner .header-line-link {
             flex-shrink: 0;
@@ -958,20 +964,22 @@
     </div>
 
     <div id="ai-input-section" class="container-box hidden-element">
-        <div class="input-group">
+        <div class="buy-credit-row">
             <button type="button" class="buy-credit-btn" onclick="openBuyCredit()">💳 ซื้อเครดิต</button>
+        </div>
+        <div class="input-group">
             <label for="userQuestion" style="font-weight:bold;">✍️ สิ่งที่ท่านอยากรู้:</label>
             <textarea id="userQuestion" placeholder="พิมพ์คำถามโดยละเอียดของท่านที่นี่..."></textarea>
             <button class="btn btn-gold" onclick="startAiProcess()">🎴 สับไพ่เสี่ยงทาย</button>
             <br><br>
             <button class="btn" style="font-size:0.9rem; background:#ccc; color:#333;" onclick="resetGame()">⬅️ ย้อนกลับ</button>
             <div id="creditBalanceText" class="credit-balance-text hidden-element"></div>
-            <div id="headerContactBanner" class="header-contact-banner">
-                <span class="header-contact-text">ซื้อเครดิต › แจ้งชำระ › รอเกิน 30 นาทีติดต่อเรา</span>
-                <a href="https://lin.ee/nIL01Mm" target="_blank" rel="noopener" class="header-line-link" aria-label="ติดต่อเราทางไลน์" title="ติดต่อเราทางไลน์">
-                    <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 4.27 3.58 7.85 8.41 8.55.33.07.78.22.89.5.1.26.07.66.03.92l-.14.86c-.04.26-.2 1 .88.55 1.08-.46 5.82-3.43 7.94-5.87C21.55 14.05 22 12.44 22 10.7 22 5.94 17.52 2 12 2z"/></svg>
-                </a>
-            </div>
+        </div>
+        <div id="headerContactBanner" class="header-contact-banner">
+            <span class="header-contact-text">ซื้อเครดิต › แจ้งชำระ › รอเกิน 30 นาทีติดต่อเรา</span>
+            <a href="https://lin.ee/nIL01Mm" target="_blank" rel="noopener" class="header-line-link" aria-label="ติดต่อเราทางไลน์" title="ติดต่อเราทางไลน์">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 4.27 3.58 7.85 8.41 8.55.33.07.78.22.89.5.1.26.07.66.03.92l-.14.86c-.04.26-.2 1 .88.55 1.08-.46 5.82-3.43 7.94-5.87C21.55 14.05 22 12.44 22 10.7 22 5.94 17.52 2 12 2z"/></svg>
+            </a>
         </div>
 
         <div id="readingStatsText" class="reading-stats-text">🔮 ให้คำทำนายแล้ว <span id="readingStatsCount">-</span> ครั้ง</div>
@@ -1124,7 +1132,7 @@
                     <p style="font-size:0.85rem;">ตั้งค่าแพ็กเกจเครดิตได้สูงสุด 5 รายการ (ระบุจำนวนคำถามและราคา) ช่องไหนไม่ใช้ ให้เว้นว่างหรือใส่ 0 ไว้ได้</p>
                     <div id="packageConfigList" style="max-height:40vh; overflow-y:auto; margin:10px 0;">กำลังโหลดข้อมูล...</div>
                     <div id="packageSaveMsg" class="hint-text hidden-element" style="color:#2e7d32; background:#eef8ee;"></div>
-                    <div class="action-area">
+                    <div class="action-area action-area-row">
                         <button type="button" class="btn btn-blue" id="packageEditBtn" onclick="enablePackageEditing()">✏️ แก้ไข</button>
                         <button class="btn btn-gold" onclick="saveAdminPackages()">💾 บันทึกแพ็กเกจ</button>
                     </div>
