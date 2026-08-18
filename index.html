@@ -605,6 +605,46 @@
         }
         .admin-btn:hover { background: #2a3eb1; }
 
+        /* --- [เพิ่มใหม่] แถบข้อความ "ซื้อเครดิต > แจ้งชำระ > ติดต่อไลน์" อยู่ตำแหน่งเดียวกับปุ่ม Admin (แสดงแทนที่กันคนละหน้า) --- */
+        .header-contact-banner {
+            position: absolute;
+            top: 100%;
+            right: 15px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            max-width: min(72vw, 280px);
+            background: var(--primary-color);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.7);
+            border-top: none;
+            padding: 6px 10px;
+            border-radius: 0 0 16px 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.25);
+            z-index: 101;
+            font-family: 'Sarabun', sans-serif;
+        }
+        .header-contact-banner .header-contact-text {
+            font-size: clamp(0.52rem, 2.6vw, 0.68rem);
+            font-weight: bold;
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .header-contact-banner .header-line-link {
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            background: #06C755;
+            border-radius: 50%;
+            color: #fff;
+            text-decoration: none;
+        }
+
         /* --- ADMIN MODALS: input ช่องกรอกรหัสผ่าน / รายชื่อลูกดวง --- */
         .text-input {
             width: 100%;
@@ -914,6 +954,12 @@
 
     <header>
         <button id="adminBtn" class="admin-btn" onclick="openAdminLogin()">Admin</button>
+        <div id="headerContactBanner" class="header-contact-banner hidden-element">
+            <span class="header-contact-text">ซื้อเครดิต › แจ้งชำระ › รอเกิน 30 นาทีติดต่อเรา</span>
+            <a href="https://lin.ee/nIL01Mm" target="_blank" rel="noopener" class="header-line-link" aria-label="ติดต่อเราทางไลน์" title="ติดต่อเราทางไลน์">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 4.27 3.58 7.85 8.41 8.55.33.07.78.22.89.5.1.26.07.66.03.92l-.14.86c-.04.26-.2 1 .88.55 1.08-.46 5.82-3.43 7.94-5.87C21.55 14.05 22 12.44 22 10.7 22 5.94 17.52 2 12 2z"/></svg>
+            </a>
+        </div>
         <h1>🔮 ดูดวงไพ่มหิทธิเลขฟรี</h1>
     </header>
 
@@ -1032,6 +1078,10 @@
                 <button type="button" id="adminPasswordToggleBtn" class="password-toggle-btn" onclick="toggleAdminPasswordVisibility()" aria-label="แสดง/ซ่อนรหัสผ่าน" title="แสดง/ซ่อนรหัสผ่าน">👁️</button>
             </div>
             <div id="adminLoginError" class="hint-text hidden-element">⚠️ เบอร์โทรหรือรหัสผ่านไม่ถูกต้อง</div>
+            <div id="adminForgotPasswordMsg" class="hint-text hidden-element" style="color:#2a7a2a;"></div>
+            <div style="text-align:right; margin-top:2px;">
+                <a href="#" id="adminForgotPasswordLink" onclick="submitAdminForgotPassword(); return false;" style="font-size:0.8rem; color:var(--primary-color); text-decoration:underline;">ลืมรหัสผ่าน?</a>
+            </div>
             <div class="action-area">
                 <button class="btn btn-gold" id="adminLoginSubmitBtn" onclick="submitAdminLogin()">เข้าสู่ระบบ</button>
                 <button class="btn" style="background:#ccc; color:#333;" onclick="closeAdminLogin()">ยกเลิก</button>
@@ -1056,7 +1106,15 @@
                     🔓 ปลดล็อค = ใช้งานได้ไม่จำกัด<br>
                     🚫 บล็อค = ระงับสิทธิ์ "ออกคำทำนาย" ชั่วคราวเป็นรายวัน (ยังตั้งคำถาม/เปิดไพ่ได้ตามปกติ) ใช้กรณีทำผิดกฎ/สร้างความรำคาญ
                 </p>
-                <input type="text" id="adminUserSearchInput" class="text-input" placeholder="🔍 ค้นหาไอดีลูกดวง..." oninput="filterAdminUsers()" style="margin-top:10px; margin-bottom:10px;">
+                <div style="display:flex; gap:8px; margin-top:10px; margin-bottom:10px;">
+                    <input type="text" id="adminUserSearchInput" class="text-input" placeholder="🔍 ค้นหาไอดีลูกดวง..." oninput="filterAdminUsers()" style="flex:1; margin:0;">
+                    <select id="adminUserFilterSelect" class="text-input" onchange="filterAdminUsers()" style="flex:0 0 auto; width:auto; margin:0;">
+                        <option value="all">ทั้งหมด</option>
+                        <option value="locked">🔒 ล็อค</option>
+                        <option value="unlocked">🔓 ปลดล็อค</option>
+                        <option value="blocked">🚫 บล็อค</option>
+                    </select>
+                </div>
                 <div id="adminUsersList" style="text-align:left; max-height:50vh; overflow-y:auto;">กำลังโหลดข้อมูล...</div>
             </div>
 
@@ -1073,6 +1131,7 @@
                     <div id="packageConfigList" style="max-height:40vh; overflow-y:auto; margin:10px 0;">กำลังโหลดข้อมูล...</div>
                     <div id="packageSaveMsg" class="hint-text hidden-element" style="color:#2e7d32; background:#eef8ee;"></div>
                     <div class="action-area">
+                        <button type="button" class="btn btn-blue" id="packageEditBtn" onclick="enablePackageEditing()">✏️ แก้ไข</button>
                         <button class="btn btn-gold" onclick="saveAdminPackages()">💾 บันทึกแพ็กเกจ</button>
                     </div>
                 </div>
@@ -1437,6 +1496,25 @@
             }
         }
 
+        // [เพิ่มใหม่] สลับสิ่งที่แสดงในตำแหน่งเดียวกันของ header (ปุ่ม Admin / แถบติดต่อไลน์) ตามหน้าที่กำลังแสดงอยู่
+        // 'entry'    = หน้าทางเข้า (landing-page) -> แสดงเฉพาะปุ่ม Admin
+        // 'question' = หน้ากรอกคำถาม (ai-input-section) -> แสดงเฉพาะแถบติดต่อไลน์ แทนที่ปุ่ม Admin
+        // 'none'     = หน้าอื่น ๆ (เลือกไพ่ / คำพยากรณ์) -> ไม่แสดงทั้งคู่
+        function setHeaderMode_(mode) {
+            const adminBtn = document.getElementById('adminBtn');
+            const banner = document.getElementById('headerContactBanner');
+            if (mode === 'entry') {
+                adminBtn.classList.remove('hidden-element');
+                banner.classList.add('hidden-element');
+            } else if (mode === 'question') {
+                adminBtn.classList.add('hidden-element');
+                banner.classList.remove('hidden-element');
+            } else {
+                adminBtn.classList.add('hidden-element');
+                banner.classList.add('hidden-element');
+            }
+        }
+
         function selectMode(mode) {
             currentMode = mode;
             document.getElementById('landing-page').classList.add('hidden-element');
@@ -1447,6 +1525,7 @@
                 loadReadingStats();
                 loadReviews();
                 loadCreditBalanceText(); // [เพิ่มใหม่]
+                setHeaderMode_('question'); // [เพิ่มใหม่] หน้ากรอกคำถาม -> โชว์แถบติดต่อไลน์แทนปุ่ม Admin
             } else {
                 window.open('https://horos999.github.io/mahitthilekh/', '_blank');
                 resetGame();
@@ -1484,6 +1563,7 @@
             userQuestionText = q;
             document.getElementById('ai-input-section').classList.add('hidden-element');
             document.getElementById('game-area').classList.remove('hidden-element');
+            setHeaderMode_('none'); // [เพิ่มใหม่] หน้าเลือกไพ่/คำพยากรณ์ -> ไม่แสดงทั้งปุ่ม Admin และแถบติดต่อไลน์
 
             renderStackedDeck();
             startShuffle(SELECT_COUNT_AI);
@@ -1704,8 +1784,6 @@
             img.src = shuffledDeck[deckIndex];
             img.classList.add('revealed-img');
             img.style.animationDelay = `${delay}s`;
-            // เพิ่ม attribute เพื่อช่วยในการระบุตัวตน (เผื่ออนาคต)
-            img.title = "Mahitthalek Card"; 
             return img;
         }
 
@@ -2402,6 +2480,7 @@
             document.getElementById('adminPhoneInput').value = '';
             document.getElementById('adminPasswordToggleBtn').innerText = '👁️';
             document.getElementById('adminLoginError').classList.add('hidden-element');
+            document.getElementById('adminForgotPasswordMsg').classList.add('hidden-element');
             document.getElementById('adminLoginModal').style.display = 'flex';
             setTimeout(function() {
                 document.getElementById('adminPhoneInput').focus();
@@ -2465,6 +2544,39 @@
                 });
         }
 
+        // [เพิ่มใหม่] ลืมรหัสผ่านแอดมิน - รีเซ็ตรหัสผ่านทุกบัญชีแอดมินเป็นรหัสใหม่แบบสุ่ม แล้วส่งไปทางอีเมลแอดมินที่ผูกไว้กับระบบ
+        function submitAdminForgotPassword() {
+            const link = document.getElementById('adminForgotPasswordLink');
+            const errorEl = document.getElementById('adminLoginError');
+            const msgEl = document.getElementById('adminForgotPasswordMsg');
+            errorEl.classList.add('hidden-element');
+            msgEl.classList.add('hidden-element');
+
+            if (!confirm('ระบบจะรีเซ็ตรหัสผ่านแอดมินทุกบัญชี แล้วส่งรหัสผ่านใหม่ไปยังอีเมลแอดมินที่ผูกไว้กับระบบ ยืนยันหรือไม่?')) return;
+
+            link.style.pointerEvents = 'none';
+            link.innerText = 'กำลังส่งอีเมล...';
+
+            callApi('adminForgotPassword', [])
+                .then(function(res) {
+                    if (res && res.success) {
+                        msgEl.innerText = '✅ ' + res.message;
+                        msgEl.classList.remove('hidden-element');
+                    } else {
+                        errorEl.innerText = '⚠️ ' + ((res && res.error) ? res.error : 'ส่งอีเมลไม่สำเร็จ กรุณาลองใหม่');
+                        errorEl.classList.remove('hidden-element');
+                    }
+                })
+                .catch(function(err) {
+                    errorEl.innerText = '⚠️ เกิดข้อผิดพลาด: ' + err.message;
+                    errorEl.classList.remove('hidden-element');
+                })
+                .then(function() {
+                    link.style.pointerEvents = '';
+                    link.innerText = 'ลืมรหัสผ่าน?';
+                });
+        }
+
         function openAdminPanel() {
             document.getElementById('adminPanelModal').style.display = 'flex';
             document.getElementById('adminUserSearchInput').value = '';
@@ -2492,17 +2604,29 @@
                 });
         }
 
-        // กรองรายชื่อลูกดวงตามข้อความค้นหาไอดี (ค้นหาจากข้อมูลที่โหลดมาแล้ว ไม่ต้องยิงคำขอไปเซิร์ฟเวอร์ใหม่ทุกครั้งที่พิมพ์)
+        // กรองรายชื่อลูกดวงตามข้อความค้นหาไอดี + ตัวกรองสถานะ (ทั้งหมด/ล็อค/ปลดล็อค/บล็อค)
+        // (ค้นหาจากข้อมูลที่โหลดมาแล้ว ไม่ต้องยิงคำขอไปเซิร์ฟเวอร์ใหม่ทุกครั้งที่พิมพ์หรือเปลี่ยนตัวกรอง)
         function filterAdminUsers() {
             const query = document.getElementById('adminUserSearchInput').value.trim().toLowerCase();
-            if (!query) {
-                renderAdminUsersList(allAdminUsers, false);
-                return;
+            const statusFilter = document.getElementById('adminUserFilterSelect').value;
+
+            let filtered = allAdminUsers;
+            if (statusFilter === 'locked') {
+                filtered = filtered.filter(function(u) { return u.status !== 'unlocked'; });
+            } else if (statusFilter === 'unlocked') {
+                filtered = filtered.filter(function(u) { return u.status === 'unlocked'; });
+            } else if (statusFilter === 'blocked') {
+                filtered = filtered.filter(function(u) { return !!u.blocked; });
             }
-            const filtered = allAdminUsers.filter(function(u) {
-                return u.userId && u.userId.toLowerCase().indexOf(query) !== -1;
-            });
-            renderAdminUsersList(filtered, true);
+
+            if (query) {
+                filtered = filtered.filter(function(u) {
+                    return u.userId && u.userId.toLowerCase().indexOf(query) !== -1;
+                });
+            }
+
+            const isFiltering = !!query || statusFilter !== 'all';
+            renderAdminUsersList(filtered, isFiltering);
         }
 
         function closeAdminPanel() {
@@ -2557,6 +2681,8 @@
             const container = document.getElementById('packageConfigList');
             container.innerHTML = 'กำลังโหลดข้อมูล...';
             document.getElementById('packageSaveMsg').classList.add('hidden-element');
+            const editBtn = document.getElementById('packageEditBtn');
+            if (editBtn) editBtn.disabled = false; // โหลดใหม่ทุกครั้งให้เริ่มที่สถานะล็อค ต้องกดแก้ไขก่อนเสมอ
 
             callApi('adminGetPackages', [adminPhoneCache, adminPasswordCache])
                 .then(function(res) {
@@ -2579,6 +2705,7 @@
                         qInput.placeholder = 'จำนวนคำถาม';
                         qInput.value = pkg.questions || '';
                         qInput.id = 'pkgQuestions_' + pkg.id;
+                        qInput.disabled = true; // [เพิ่มใหม่] ล็อคไว้ก่อนเสมอ ต้องกดปุ่ม "✏️ แก้ไข" ก่อนถึงจะแก้ไขได้
 
                         const pInput = document.createElement('input');
                         pInput.type = 'number';
@@ -2586,6 +2713,7 @@
                         pInput.placeholder = 'ราคา (บาท)';
                         pInput.value = pkg.price || '';
                         pInput.id = 'pkgPrice_' + pkg.id;
+                        pInput.disabled = true; // [เพิ่มใหม่] ล็อคไว้ก่อนเสมอ ต้องกดปุ่ม "✏️ แก้ไข" ก่อนถึงจะแก้ไขได้
 
                         row.appendChild(idxSpan);
                         row.appendChild(qInput);
@@ -2596,6 +2724,18 @@
                 .catch(function(err) {
                     container.innerHTML = '⚠️ เกิดข้อผิดพลาด: ' + err.message;
                 });
+        }
+
+        // [เพิ่มใหม่] ปลดล็อคช่องตั้งค่าแพ็กเกจทั้งหมดให้แก้ไขได้ หลังจากกดปุ่ม "✏️ แก้ไข" เท่านั้น
+        function enablePackageEditing() {
+            for (let id = 1; id <= 5; id++) {
+                const qEl = document.getElementById('pkgQuestions_' + id);
+                const pEl = document.getElementById('pkgPrice_' + id);
+                if (qEl) qEl.disabled = false;
+                if (pEl) pEl.disabled = false;
+            }
+            const editBtn = document.getElementById('packageEditBtn');
+            if (editBtn) editBtn.disabled = true;
         }
 
         function saveAdminPackages() {
@@ -2615,6 +2755,15 @@
             callApi('adminSavePackages', [adminPhoneCache, adminPasswordCache, packages])
                 .then(function(res) {
                     if (res && res.success) {
+                        // บันทึกสำเร็จแล้วล็อคช่องกลับเหมือนเดิม ต้องกดปุ่ม "✏️ แก้ไข" ใหม่ทุกครั้งถ้าจะแก้ไขอีก
+                        for (let id = 1; id <= 5; id++) {
+                            const qEl = document.getElementById('pkgQuestions_' + id);
+                            const pEl = document.getElementById('pkgPrice_' + id);
+                            if (qEl) qEl.disabled = true;
+                            if (pEl) pEl.disabled = true;
+                        }
+                        const editBtn = document.getElementById('packageEditBtn');
+                        if (editBtn) editBtn.disabled = false;
                         msgEl.innerText = '✅ บันทึกแพ็กเกจสำเร็จแล้วค่ะ';
                         msgEl.classList.remove('hidden-element');
                         setTimeout(function() { msgEl.classList.add('hidden-element'); }, 2500);
@@ -2710,7 +2859,7 @@
                     '<div class="cr-line">📧 ' + (r.email || '-') + '</div>' +
                     '<div class="cr-line">📱 ' + (r.phone || '-') + '</div>' +
                     '<div class="cr-line">📦 ' + r.packageQuestions + ' คำถาม / ' + Number(r.packagePrice).toLocaleString('th-TH') + ' บาท</div>' +
-                    '<div class="cr-line">💵 แจ้งโอน ' + Number(r.amountPaid).toLocaleString('th-TH') + ' บาท เมื่อ ' + r.transferDate + ' เวลา ' + r.transferTime + '</div>' +
+                    '<div class="cr-line">💵 แจ้งโอน ' + Number(r.amountPaid).toLocaleString('th-TH') + ' บาท เมื่อ ' + formatThaiDate(r.transferDate) + ' เวลา ' + r.transferTime + '</div>' +
                     '<div class="cr-line">🕒 ส่งคำขอเมื่อ ' + r.createdAt + '</div>';
 
                 const badge = document.createElement('span');
@@ -2823,6 +2972,18 @@
                 input.type = 'number';
                 input.min = '0';
                 input.value = c.creditBalance;
+                input.disabled = true; // [เพิ่มใหม่] ล็อคไว้ก่อนเสมอ ต้องกดปุ่มดินสอเพื่อปลดล็อคก่อนถึงจะแก้ไขได้ กันแก้ไขพลาดโดยไม่ตั้งใจ
+
+                const editBtn = document.createElement('button');
+                editBtn.type = 'button';
+                editBtn.className = 'btn btn-blue';
+                editBtn.innerText = '✏️';
+                editBtn.title = 'แก้ไขยอดเครดิต';
+                editBtn.onclick = function() {
+                    input.disabled = false;
+                    input.focus();
+                    input.select();
+                };
 
                 const saveBtn = document.createElement('button');
                 saveBtn.className = 'btn btn-blue';
@@ -2831,6 +2992,7 @@
                 saveBtn.onclick = function() { saveCustomerCredit(c.userId, input, saveBtn); };
 
                 editWrap.appendChild(input);
+                editWrap.appendChild(editBtn);
                 editWrap.appendChild(saveBtn);
 
                 row.appendChild(info);
@@ -2850,6 +3012,7 @@
                 .then(function(res) {
                     btnEl.disabled = false;
                     if (res && res.success) {
+                        inputEl.disabled = true; // [เพิ่มใหม่] บันทึกสำเร็จแล้วล็อคกลับ ต้องกดปุ่มดินสอใหม่ทุกครั้งถ้าจะแก้ไขอีก
                         btnEl.innerText = '✅';
                         setTimeout(function() { btnEl.innerText = '💾'; }, 1500);
                     } else {
@@ -3122,6 +3285,7 @@
             document.getElementById('chatRetryHint').classList.add('hidden-element');
             
             document.getElementById('landing-page').classList.remove('hidden-element');
+            setHeaderMode_('entry'); // [เพิ่มใหม่] กลับหน้าทางเข้า -> โชว์ปุ่ม Admin กลับมาเหมือนเดิม (ซ่อนแถบติดต่อไลน์)
         }
 
         function shuffleArray(array) {
