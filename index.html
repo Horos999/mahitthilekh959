@@ -97,21 +97,18 @@
         .input-group {
             background: white;
             padding: 20px;
-            padding-bottom: 40px; /* [เพิ่มใหม่] เว้นที่ด้านล่างให้ป้ายเครดิตคงเหลือ ไม่ให้ทับปุ่ม "ย้อนกลับ" */
+            padding-bottom: 46px; /* [ปรับปรุง] เว้นที่ด้านล่างให้ป้ายเครดิตคงเหลือ (ซ้าย) และปุ่ม "ซื้อเครดิต" (ขวา) ไม่ให้ทับปุ่ม "ย้อนกลับ" */
             border-radius: 15px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             margin-bottom: 20px;
-            position: relative; /* [เพิ่มใหม่] เพื่อให้ป้ายเครดิตคงเหลือ ยึดตำแหน่งมุมของกล่องนี้ได้ */
+            position: relative; /* [เพิ่มใหม่] เพื่อให้ปุ่ม "ซื้อเครดิต" และป้ายเครดิตคงเหลือ ยึดตำแหน่งมุมของกล่องนี้ได้ */
         }
 
-        /* --- [ปรับปรุง] แถวปุ่ม "ซื้อเครดิต" อยู่นอกกรอบพื้นขาว (.input-group) ชิดขวา เหนือกล่องคำถาม --- */
-        .buy-credit-row {
-            width: 100%;
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 8px;
-        }
+        /* --- [ปรับปรุง] ปุ่ม "ซื้อเครดิต" กลับเข้ามาอยู่ในกรอบพื้นขาว (.input-group) มุมล่างขวา บรรทัดเดียวกับป้ายเครดิตคงเหลือ (มุมล่างซ้าย) --- */
         .buy-credit-btn {
+            position: absolute;
+            right: 16px;
+            bottom: 10px;
             background: linear-gradient(135deg, #FFD700, #FDB931);
             color: #5a4300;
             border: none;
@@ -513,7 +510,7 @@
             text-align: left;
             font-size: 0.82rem;
             color: #777;
-            margin: 6px 4px 18px 4px;
+            margin: 28px 4px 18px 4px; /* [ปรับปรุง] เพิ่มระยะห่างด้านบน กันไม่ให้ชิดกับข้อความ "ซื้อเครดิต > แจ้งชำระ..." ด้านบน */
         }
 
         /* --- REVIEW SUMMARY / CAROUSEL (ใต้ปุ่มสับไพ่เสี่ยงทาย) --- */
@@ -964,9 +961,6 @@
     </div>
 
     <div id="ai-input-section" class="container-box hidden-element">
-        <div class="buy-credit-row">
-            <button type="button" class="buy-credit-btn" onclick="openBuyCredit()">💳 ซื้อเครดิต</button>
-        </div>
         <div class="input-group">
             <label for="userQuestion" style="font-weight:bold;">✍️ สิ่งที่ท่านอยากรู้:</label>
             <textarea id="userQuestion" placeholder="พิมพ์คำถามโดยละเอียดของท่านที่นี่..."></textarea>
@@ -974,6 +968,7 @@
             <br><br>
             <button class="btn" style="font-size:0.9rem; background:#ccc; color:#333;" onclick="resetGame()">⬅️ ย้อนกลับ</button>
             <div id="creditBalanceText" class="credit-balance-text hidden-element"></div>
+            <button type="button" class="buy-credit-btn" onclick="openBuyCredit()">💳 ซื้อเครดิต</button>
         </div>
         <div id="headerContactBanner" class="header-contact-banner">
             <span class="header-contact-text">ซื้อเครดิต › แจ้งชำระ › รอเกิน 30 นาที ติดต่อเรา</span>
