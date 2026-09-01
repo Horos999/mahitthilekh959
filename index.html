@@ -86,11 +86,6 @@
             color: white;
             border: 2px solid white;
         }
-        .btn-human {
-            background: linear-gradient(135deg, #FFD700, #FDB931);
-            color: #444;
-            border: 2px solid #fff;
-        }
         .menu-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
         .menu-btn:active { transform: translateY(1px); }
 
@@ -354,41 +349,6 @@
             margin-bottom: 8px;
         }
 
-        /* --- STAR RATING --- */
-        .star-rating {
-            margin: 8px 0;
-        }
-        .star {
-            font-size: 1.9rem;
-            cursor: pointer;
-            color: var(--accent-color);
-            margin: 0 3px;
-            user-select: none;
-            display: inline-block;
-            transition: transform 0.15s;
-        }
-        .star:hover { transform: scale(1.15); }
-
-        .review-box {
-            background: #fff;
-            border: 1px solid #eee;
-            border-radius: 10px;
-            padding: 12px;
-            margin-top: 14px;
-            text-align: center;
-        }
-        .review-box p {
-            margin: 0 0 4px 0;
-            font-weight: bold;
-            color: #333;
-            font-size: 0.95rem;
-        }
-        .review-box textarea {
-            height: 50px;
-            margin-top: 8px;
-            margin-bottom: 8px;
-        }
-
         /* --- READING (กล่องคำทำนาย) --- */
         .reading-chat-box {
             background: #fffbe6;
@@ -513,82 +473,13 @@
             margin: 28px 4px 18px 4px; /* [ปรับปรุง] เพิ่มระยะห่างด้านบน กันไม่ให้ชิดกับข้อความ "ซื้อเครดิต > แจ้งชำระ..." ด้านบน */
         }
 
-        /* --- REVIEW SUMMARY / CAROUSEL (ใต้ปุ่มสับไพ่เสี่ยงทาย) --- */
-        .review-summary-box {
-            background: white;
-            padding: 18px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .review-summary-title {
-            font-weight: bold;
-            color: #333;
-            margin: 0 0 6px 0;
-            font-size: 1rem;
-        }
-        #reviewsAverageText {
-            color: var(--primary-color);
-            font-weight: bold;
-            margin-bottom: 14px;
-            font-size: 0.95rem;
-        }
-        .reviews-carousel {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .reviews-nav-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            min-width: 32px;
-            font-size: 1.1rem;
-            line-height: 1;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        .reviews-nav-btn:disabled {
-            background: #ccc;
-            cursor: default;
-        }
-        #reviewsList {
-            flex: 1;
-            text-align: left;
-            min-width: 0;
-        }
-        .review-item {
-            border-bottom: 1px solid #eee;
-            padding: 8px 6px;
-        }
-        .review-item:last-child { border-bottom: none; }
-        .review-item .review-stars {
-            color: var(--accent-color);
-            font-size: 1rem;
-            letter-spacing: 1px;
-        }
-        .review-item .review-comment {
-            font-size: 0.88rem;
-            color: #444;
-            margin-top: 3px;
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
+        /* --- EMPTY STATE TEXT (ใช้แสดงข้อความว่างเปล่าในกล่องต่าง ๆ เช่น รายการแพ็กเกจ/คำขอซื้อเครดิต) --- */
         .review-empty-text {
             color: #999;
             font-size: 0.9rem;
             padding: 10px 0;
             text-align: center;
             width: 100%;
-        }
-        .review-item .review-userid {
-            font-size: 0.75rem;
-            color: #999;
-            margin-bottom: 3px;
         }
 
         /* --- ADMIN BUTTON (มุมขวาของ header แต่ขยับลงมาอยู่ใต้แถบสีน้ำเงิน ติดเส้นขอบล่างของแถบ) --- */
@@ -957,7 +848,6 @@
     <div id="landing-page" class="container-box">
         <h2>เลือกรูปแบบการพยากรณ์</h2>
         <button class="menu-btn btn-ai" onclick="selectMode('ai')">🔮 รับคำทำนายทันที (ฟรี)</button>
-        <button class="menu-btn btn-human" onclick="selectMode('human')">🧙‍♂️ ดูดวงสดกับหมอดู</button>
     </div>
 
     <div id="ai-input-section" class="container-box hidden-element">
@@ -978,16 +868,6 @@
         </div>
 
         <div id="readingStatsText" class="reading-stats-text">🔮 ให้คำทำนายแล้ว <span id="readingStatsCount">-</span> ครั้ง</div>
-
-        <div id="reviews-section" class="review-summary-box">
-            <p class="review-summary-title">⭐ รีวิวจากลูกดวง</p>
-            <div id="reviewsAverageText">กำลังโหลดรีวิว...</div>
-            <div class="reviews-carousel">
-                <button id="reviewsPrevBtn" class="reviews-nav-btn" onclick="showPrevReviews()" disabled>&#10094;</button>
-                <div id="reviewsList"></div>
-                <button id="reviewsNextBtn" class="reviews-nav-btn" onclick="showNextReviews()" disabled>&#10095;</button>
-            </div>
-        </div>
     </div>
 
     <div id="game-area" class="hidden-element">
@@ -1039,29 +919,11 @@
                     </div>
                     <div id="chatRetryHint" class="chat-retry-hint hidden-element">กดส่งอีกครั้ง ลูกดวงจะได้ไม่ต้องพิมพ์ซ้ำ</div>
                 </div>
-
-                <div id="rating-section" class="review-box hidden-element">
-                    <p>⭐ ให้คะแนนคำทำนายนี้</p>
-                    <div id="resultStars" class="star-rating"></div>
-                    <textarea id="resultComment" placeholder="ความคิดเห็นเพิ่มเติม (ถ้ามี)"></textarea>
-                    <button class="btn btn-blue" onclick="submitResultReview()">ส่งคะแนน</button>
-                    <div id="resultReviewThanks" class="hidden-element" style="color:#28a745; margin-top:8px; font-weight:bold;">🙏 ขอบคุณสำหรับคะแนนค่ะ/ครับ</div>
-                </div>
             </div>
 
             <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px;">
                 <button class="btn" onclick="resetGame()">ปิด / เริ่มใหม่</button>
             </div>
-        </div>
-    </div>
-
-    <div id="reviewModal" class="modal">
-        <div class="modal-content">
-            <h2>🙏 ก่อนเสี่ยงทายครั้งใหม่</h2>
-            <p>กรุณาให้คะแนนคำทำนายครั้งก่อนหน้า<br>(คำถาม: "<span id="reviewQuestionText"></span>")<br>ก่อนเริ่มคำถามใหม่ครั้งนี้</p>
-            <div id="reviewStars" class="star-rating"></div>
-            <textarea id="reviewComment" placeholder="ความคิดเห็นเพิ่มเติม (ถ้ามี)"></textarea>
-            <button class="btn btn-gold" onclick="submitPendingReview()">ส่งคะแนนแล้วเริ่มคำถามใหม่</button>
         </div>
     </div>
 
@@ -1310,18 +1172,16 @@
         let shuffledDeck = [];
         let selectedIndices = [];
         let isGameActive = false;
-        let currentMode = ''; // 'ai' or 'human'
+        let currentMode = ''; // 'ai'
         let userQuestionText = '';
         const TOTAL_CARDS = 55;
         const SELECT_COUNT_AI = 3;
 
-        // ระบบสถิติ / รีวิว / แชทต่อ
+        // ระบบสถิติ / แชทต่อ
         let currentReadingId = null;
         let lastAnswerText = '';
         let chatHistory = []; // [{role:'user'|'model', text:'...'}]
         let chatEnded = false;
-        let pendingQuestionText = '';
-        let pendingReviewId = null;
 
         // [เพิ่มใหม่] ระบบ "ซื้อเครดิต" ฝั่งลูกดวง
         let creditContactPhone = '';
@@ -1329,11 +1189,6 @@
         let creditSelectedPackage = null; // { id, questions, price }
         let creditProofBase64 = '';
         let creditProofMimeType = '';
-
-        // ระบบสถิติจำนวนคำทำนาย / รีวิว (แสดงที่หน้ากรอกคำถาม)
-        let allReviews = [];
-        let reviewsPage = 0;
-        const REVIEWS_PER_PAGE = 5;
 
         // =================================================================================
         // 🔧 ตั้งค่า URL ของ Apps Script Web App (API) ที่ deploy ไว้
@@ -1403,96 +1258,6 @@
                 });
         }
 
-        /**
-         * โหลดรีวิวทั้งหมดจากชีท (เรียงใหม่สุดก่อน) มาเตรียมแสดงเป็นชุดๆ ละ 5 รีวิว
-         */
-        function loadReviews() {
-            document.getElementById('reviewsAverageText').innerText = 'กำลังโหลดรีวิว...';
-
-            callApi('getReviewsData', [])
-                .then(function(data) {
-                    allReviews = (data && data.reviews) ? data.reviews : [];
-                    reviewsPage = 0;
-                    renderReviewSummary(data);
-                    renderReviewsPage();
-                })
-                .catch(function() {
-                    allReviews = [];
-                    reviewsPage = 0;
-                    renderReviewSummary(null);
-                    renderReviewsPage();
-                });
-        }
-
-        function renderReviewSummary(data) {
-            const avgEl = document.getElementById('reviewsAverageText');
-            if (data && data.count > 0) {
-                avgEl.innerHTML = '⭐ คะแนนเฉลี่ย <b>' + Number(data.average).toFixed(1) + '</b> ดาว (จาก ' + data.count + ' รีวิว)';
-            } else {
-                avgEl.innerText = 'ยังไม่มีรีวิวในขณะนี้';
-            }
-        }
-
-        function renderReviewsPage() {
-            const listEl = document.getElementById('reviewsList');
-            const prevBtn = document.getElementById('reviewsPrevBtn');
-            const nextBtn = document.getElementById('reviewsNextBtn');
-            listEl.innerHTML = '';
-
-            const start = reviewsPage * REVIEWS_PER_PAGE;
-            const pageItems = allReviews.slice(start, start + REVIEWS_PER_PAGE);
-
-            if (pageItems.length === 0) {
-                const empty = document.createElement('div');
-                empty.className = 'review-empty-text';
-                empty.innerText = 'ยังไม่มีรีวิวในขณะนี้';
-                listEl.appendChild(empty);
-            } else {
-                pageItems.forEach(function(r) {
-                    const item = document.createElement('div');
-                    item.className = 'review-item';
-
-                    const idDiv = document.createElement('div');
-                    idDiv.className = 'review-userid';
-                    const uidFull = r.userId || '';
-                    const uidShort = uidFull.length > 5 ? uidFull.slice(-5) : uidFull;
-                    idDiv.innerText = uidShort ? ('ID...' + uidShort) : 'ID...-----';
-                    item.appendChild(idDiv);
-
-                    const starsDiv = document.createElement('div');
-                    starsDiv.className = 'review-stars';
-                    const fullStars = Math.max(0, Math.min(5, Math.round(Number(r.rating) || 0)));
-                    starsDiv.innerText = '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars);
-                    item.appendChild(starsDiv);
-
-                    const commentDiv = document.createElement('div');
-                    commentDiv.className = 'review-comment';
-                    commentDiv.innerText = r.comment ? r.comment : '(ไม่มีความคิดเห็นเพิ่มเติม)';
-                    item.appendChild(commentDiv);
-
-                    listEl.appendChild(item);
-                });
-            }
-
-            prevBtn.disabled = (reviewsPage <= 0);
-            nextBtn.disabled = (start + REVIEWS_PER_PAGE >= allReviews.length);
-        }
-
-        function showPrevReviews() {
-            if (reviewsPage > 0) {
-                reviewsPage--;
-                renderReviewsPage();
-            }
-        }
-
-        function showNextReviews() {
-            const start = (reviewsPage + 1) * REVIEWS_PER_PAGE;
-            if (start < allReviews.length) {
-                reviewsPage++;
-                renderReviewsPage();
-            }
-        }
-
         // [ปรับปรุง] ควบคุมปุ่ม Admin บน header ตามหน้าที่กำลังแสดงอยู่
         // (แถบติดต่อไลน์ย้ายไปอยู่ในกล่องคำถาม .input-group แล้ว จึงแสดง/ซ่อนตามกล่องนั้นโดยอัตโนมัติ ไม่ต้องคุมจากฟังก์ชันนี้อีกต่อไป)
         // 'entry'    = หน้าทางเข้า (landing-page) -> แสดงปุ่ม Admin
@@ -1510,17 +1275,11 @@
             currentMode = mode;
             document.getElementById('landing-page').classList.add('hidden-element');
 
-            if (mode === 'ai') {
-                document.getElementById('ai-input-section').classList.remove('hidden-element');
-                document.getElementById('userQuestion').focus();
-                loadReadingStats();
-                loadReviews();
-                loadCreditBalanceText(); // [เพิ่มใหม่]
-                setHeaderMode_('question'); // [เพิ่มใหม่] หน้ากรอกคำถาม -> โชว์แถบติดต่อไลน์แทนปุ่ม Admin
-            } else {
-                window.open('https://horos999.github.io/mahitthilekh/', '_blank');
-                resetGame();
-            }
+            document.getElementById('ai-input-section').classList.remove('hidden-element');
+            document.getElementById('userQuestion').focus();
+            loadReadingStats();
+            loadCreditBalanceText(); // [เพิ่มใหม่]
+            setHeaderMode_('question'); // [เพิ่มใหม่] หน้ากรอกคำถาม -> โชว์แถบติดต่อไลน์แทนปุ่ม Admin
         }
 
         function startAiProcess() {
@@ -1530,24 +1289,7 @@
                 return;
             }
 
-            const uid = getUserId();
-            callApi('checkPendingReview', [uid])
-                .then(function(res) {
-                    if (res && res.pending) {
-                        pendingQuestionText = q;
-                        pendingReviewId = res.readingId;
-                        document.getElementById('reviewQuestionText').innerText = res.question || '';
-                        buildStarRating(document.getElementById('reviewStars'), 0);
-                        document.getElementById('reviewComment').value = '';
-                        document.getElementById('reviewModal').style.display = 'flex';
-                    } else {
-                        proceedToShuffle(q);
-                    }
-                })
-                .catch(function(err) {
-                    // ถ้าตรวจสอบไม่สำเร็จ ไม่ควรบล็อกลูกดวง ให้ทำนายต่อได้เลย
-                    proceedToShuffle(q);
-                });
+            proceedToShuffle(q);
         }
 
         function proceedToShuffle(q) {
@@ -1558,26 +1300,6 @@
 
             renderStackedDeck();
             startShuffle(SELECT_COUNT_AI);
-        }
-
-        function submitPendingReview() {
-            const container = document.getElementById('reviewStars');
-            const rating = Number(container.dataset.value || 0);
-            if (!rating) {
-                alert('กรุณาให้คะแนนก่อนดำเนินการต่อ');
-                return;
-            }
-            const comment = document.getElementById('reviewComment').value.trim();
-
-            callApi('submitReview', [pendingReviewId, rating, comment])
-                .then(function() {
-                    document.getElementById('reviewModal').style.display = 'none';
-                    proceedToShuffle(pendingQuestionText);
-                })
-                .catch(function(err) {
-                    document.getElementById('reviewModal').style.display = 'none';
-                    proceedToShuffle(pendingQuestionText);
-                });
         }
 
         function renderStackedDeck() {
@@ -1776,27 +1498,6 @@
             img.classList.add('revealed-img');
             img.style.animationDelay = `${delay}s`;
             return img;
-        }
-
-        /**
-         * สร้างวิดเจ็ตให้ดาว 5 ระดับ ลงใน containerEl ที่ระบุ
-         */
-        function buildStarRating(containerEl, initialValue) {
-            containerEl.innerHTML = '';
-            containerEl.dataset.value = initialValue || 0;
-            for (let i = 1; i <= 5; i++) {
-                const star = document.createElement('span');
-                star.textContent = i <= (initialValue || 0) ? '★' : '☆';
-                star.className = 'star';
-                star.dataset.val = i;
-                star.onclick = () => {
-                    containerEl.dataset.value = i;
-                    Array.from(containerEl.children).forEach((s, idx) => {
-                        s.textContent = (idx < i) ? '★' : '☆';
-                    });
-                };
-                containerEl.appendChild(star);
-            }
         }
 
         /**
@@ -2058,11 +1759,6 @@
                         chatInputEl.style.height = '42px';
                         chatInputEl.style.overflowY = 'hidden';
 
-                        document.getElementById('resultComment').value = '';
-                        document.getElementById('resultReviewThanks').classList.add('hidden-element');
-                        buildStarRating(document.getElementById('resultStars'), 0);
-
-                        document.getElementById('rating-section').classList.remove('hidden-element');
                         loadCreditBalanceText(); // [เพิ่มใหม่] รีเฟรชยอดเครดิตคงเหลือ เผื่อทำนายครั้งนี้หักจากเครดิตที่ซื้อไว้
                     } else if (response && response.blocked) {
                         // ลูกดวงถูกแอดมินบล็อคอยู่ ยังตั้งคำถาม/เปิดไพ่ได้ปกติ แต่ขอคำทำนายไม่ได้ชั่วคราว
@@ -2077,28 +1773,6 @@
                     loading.classList.add('hidden-element');
                     showAiErrorMessage("⚠️ เกิดข้อผิดพลาด: " + err.message);
                     btn.classList.remove('hidden-element');
-                });
-        }
-
-        function submitResultReview() {
-            const container = document.getElementById('resultStars');
-            const rating = Number(container.dataset.value || 0);
-            if (!rating) {
-                alert('กรุณาเลือกจำนวนดาวก่อนส่งคะแนน');
-                return;
-            }
-            const comment = document.getElementById('resultComment').value.trim();
-
-            callApi('submitReview', [currentReadingId, rating, comment])
-                .then(function(res) {
-                    if (res && res.success) {
-                        document.getElementById('resultReviewThanks').classList.remove('hidden-element');
-                    } else {
-                        alert((res && res.error) ? res.error : 'ส่งคะแนนไม่สำเร็จ กรุณาลองใหม่');
-                    }
-                })
-                .catch(function(err) {
-                    alert('เกิดข้อผิดพลาด: ' + err.message);
                 });
         }
 
@@ -3250,7 +2924,6 @@
             
             document.getElementById('confirmModal').style.display = 'none';
             document.getElementById('resultModal').style.display = 'none';
-            document.getElementById('reviewModal').style.display = 'none';
             document.getElementById('blockedNoticeModal').style.display = 'none';
             document.getElementById('ai-input-section').classList.add('hidden-element');
             document.getElementById('game-area').classList.add('hidden-element');
@@ -3262,9 +2935,6 @@
             document.getElementById('ai-result').innerText = '';
             document.getElementById('userQuestion').value = '';
 
-            document.getElementById('rating-section').classList.add('hidden-element');
-            document.getElementById('resultReviewThanks').classList.add('hidden-element');
-            document.getElementById('resultComment').value = '';
             document.getElementById('reading-chat-box').classList.add('hidden-element');
             document.getElementById('reading-text-container').classList.remove('hidden-element');
             document.getElementById('toggle-reading-text').classList.add('hidden-element');
