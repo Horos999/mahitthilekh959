@@ -1297,9 +1297,16 @@
          * @return {Promise} resolve ด้วยผลลัพธ์ของฟังก์ชัน หรือ reject ด้วย Error เมื่อผิดพลาด
          */
         function callApi(action, params) {
+            // [แก้บั๊ก] เดิม fetch ไม่มีการจำกัดเวลาเลย ถ้าเซิร์ฟเวอร์ไม่ตอบกลับ (เช่น Apps Script ค้าง/หลับ)
+            // Promise นี้จะไม่ resolve/reject เลย ทำให้ทุกอย่างที่รอผลลัพธ์อยู่ (เช่น การโหลดกองไพ่) ค้างไปตลอดกาล
+            // จึงเพิ่มการยกเลิกคำขออัตโนมัติเมื่อรอเกิน 25 วินาที เพื่อให้โค้ดฝั่งที่เรียกใช้ได้รับ error กลับไปจัดการต่อได้เสมอ
+            const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+            const timeoutId = controller ? setTimeout(function () { controller.abort(); }, 25000) : null;
+
             return fetch(API_URL, {
                 method: 'POST',
-                body: JSON.stringify({ action: action, params: params || [] })
+                body: JSON.stringify({ action: action, params: params || [] }),
+                signal: controller ? controller.signal : undefined
             })
                 .then(function (res) { return res.json(); })
                 .then(function (data) {
@@ -1307,6 +1314,9 @@
                         throw new Error((data && data.error) ? data.error : 'เกิดข้อผิดพลาดไม่ทราบสาเหตุ');
                     }
                     return data.result;
+                })
+                .finally(function () {
+                    if (timeoutId) clearTimeout(timeoutId);
                 });
         }
 
@@ -1316,10 +1326,44 @@
             // เพื่อไม่ให้หน้าเว็บค้างว่างเปล่าถ้าโหลดกองไพ่จากเซิร์ฟเวอร์ช้าหรือผิดพลาด
             selectMode('ai');
 
-            callApi('getCardDeck', [])
-                .then(initDeck)
-                .catch(function (e) { alert("Error loading deck"); });
+            loadCardDeck();
         };
+
+        /**
+         * [แก้บั๊ก] "สับไพ่ไม่ได้ ค้าง" — สาเหตุเดิม: กองไพ่ (allCardUrls) ถูกโหลดแค่ครั้งเดียวตอนเปิดหน้าเว็บ
+         * ถ้าพลาดแม้แค่ครั้งเดียว (อินเทอร์เน็ตสะดุด/เซิร์ฟเวอร์ตอบช้าชั่วขณะ) จะขึ้น alert("Error loading deck")
+         * ทันที และปล่อยให้ allCardUrls ว่างเปล่าตลอดไปโดยไม่มีการลองใหม่เลย เมื่อผู้ใช้กดปุ่ม "สับไพ่เสี่ยงทาย"
+         * ในภายหลัง startShuffle() จะเจอกองไพ่ว่างแล้ว return เงียบๆ (ดูฟังก์ชัน startShuffle ด้านล่าง) ทำให้หน้าจอ
+         * ค้างอยู่ที่กองไพ่โดยไม่มีอะไรเกิดขึ้นต่อ ผู้ใช้ไม่มีทางแก้ไขนอกจากรีเฟรชหน้าเว็บใหม่ทั้งหมด
+         *
+         * ฟังก์ชันนี้จึงเพิ่มการลองใหม่อัตโนมัติ (รวมทั้งหมด 3 ครั้ง เว้นระยะ 1 วินาทีต่อครั้ง) และเก็บสถานะ
+         * การโหลดไว้ใน isDeckLoading / deckLoadFailed ให้ startAiProcess() ตรวจสอบและเรียกโหลดซ้ำเองได้ทันที
+         * ถ้ากองไพ่ยังไม่พร้อมตอนกดปุ่ม แทนที่จะปล่อยให้ผู้ใช้ไปค้างอยู่หน้าจอสับไพ่เปล่าๆ
+         */
+        let isDeckLoading = false;
+        let deckLoadFailed = false;
+
+        function loadCardDeck(retriesLeft) {
+            if (typeof retriesLeft !== 'number') retriesLeft = 2; // ลองรวมทั้งหมด 3 ครั้ง (ครั้งแรก + ลองใหม่อีก 2 ครั้ง)
+            isDeckLoading = true;
+            deckLoadFailed = false;
+
+            return callApi('getCardDeck', [])
+                .then(function (urls) {
+                    initDeck(urls);
+                    isDeckLoading = false;
+                    deckLoadFailed = false;
+                })
+                .catch(function (e) {
+                    if (retriesLeft > 0) {
+                        // รอสักครู่แล้วลองโหลดกองไพ่ใหม่อีกครั้งโดยอัตโนมัติ ก่อนจะยอมแพ้จริงๆ
+                        return new Promise(function (resolve) { setTimeout(resolve, 1000); })
+                            .then(function () { return loadCardDeck(retriesLeft - 1); });
+                    }
+                    isDeckLoading = false;
+                    deckLoadFailed = true;
+                });
+        }
 
         function initDeck(urls) {
             allCardUrls = urls;
@@ -1381,7 +1425,33 @@
                 return;
             }
 
-            proceedToShuffle(q);
+            // [แก้บั๊ก] เดิมกดปุ่มนี้แล้วพาไปหน้าสับไพ่ทันทีโดยไม่เช็คว่ากองไพ่ (allCardUrls) โหลดมาแล้วหรือยัง
+            // ถ้ากองไพ่ยังไม่มา (โหลดตอนเปิดหน้าเว็บพลาด/ยังโหลดไม่เสร็จ) หน้าจอจะค้างอยู่ที่กองไพ่เปล่าๆ ตลอดไป
+            // จึงเช็คก่อนเสมอ ถ้ามีกองไพ่พร้อมแล้วค่อยไปหน้าสับไพ่ตามปกติ
+            if (allCardUrls.length > 0) {
+                proceedToShuffle(q);
+                return;
+            }
+
+            // กองไพ่ยังไม่พร้อม: ลองโหลดใหม่ให้ก่อน (ปิดปุ่มชั่วคราวกันกดซ้ำระหว่างรอ) แล้วค่อยไปหน้าสับไพ่
+            const btn = document.querySelector('#ai-input-section .btn-gold');
+            const originalBtnText = btn ? btn.innerText : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = '⏳ กำลังเตรียมกองไพ่...';
+            }
+
+            loadCardDeck().then(function () {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerText = originalBtnText;
+                }
+                if (allCardUrls.length > 0) {
+                    proceedToShuffle(q);
+                } else {
+                    alert("ขณะนี้ไม่สามารถเชื่อมต่อกองไพ่ได้ กรุณาตรวจสอบอินเทอร์เน็ตของท่านแล้วกดปุ่ม \"สับไพ่เสี่ยงทาย\" อีกครั้งค่ะ");
+                }
+            });
         }
 
         function proceedToShuffle(q) {
