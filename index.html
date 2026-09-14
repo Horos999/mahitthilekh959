@@ -533,6 +533,66 @@
             text-decoration: none;
         }
 
+        /* --- [เพิ่มใหม่] กล่อง "☕️ สนับสนุนพวกเรา" แสดง 2 จุด คือใต้สถิติในหน้ากรอกคำถาม และในหน้าคำทำนาย (เหนือปุ่มปิด) --- */
+        .support-us-box {
+            width: 100%;
+            box-sizing: border-box;
+            background: #fff9f0;
+            border: 1px dashed var(--accent-color);
+            border-radius: 15px;
+            padding: 16px;
+            margin-top: 10px;
+            text-align: center;
+            font-family: 'Sarabun', sans-serif;
+        }
+        .support-us-title {
+            font-weight: bold;
+            font-size: 1.05rem;
+            color: #5a4300;
+            margin-bottom: 8px;
+        }
+        .support-us-text {
+            font-size: 0.85rem;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        .support-us-bank {
+            background: #fff;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        .support-us-bank-line {
+            font-size: 0.85rem;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .support-us-copy-btn {
+            margin-top: 6px;
+            margin-left: 0;
+        }
+        .support-us-qr {
+            margin-bottom: 10px;
+        }
+        .support-us-qr-img {
+            width: 160px;
+            max-width: 60%;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            background: #fff;
+        }
+        .support-us-qr-btn {
+            display: inline-block;
+            font-size: 0.8rem;
+            padding: 7px 16px;
+            margin-top: 4px;
+        }
+        .support-us-thanks {
+            font-size: 0.85rem;
+            color: #555;
+        }
+
         /* --- ADMIN MODALS: input ช่องกรอกรหัสผ่าน / รายชื่อลูกดวง --- */
         .text-input {
             width: 100%;
@@ -845,11 +905,6 @@
         <h1>🔮 ดูดวงไพ่มหิทธิเลขฟรี</h1>
     </header>
 
-    <div id="landing-page" class="container-box">
-        <h2>เลือกรูปแบบการพยากรณ์</h2>
-        <button class="menu-btn btn-ai" onclick="selectMode('ai')">🔮 รับคำทำนายทันที (ฟรี)</button>
-    </div>
-
     <div id="ai-input-section" class="container-box hidden-element">
         <div class="input-group">
             <label for="userQuestion" style="font-weight:bold;">✍️ สิ่งที่ท่านอยากรู้:</label>
@@ -858,16 +913,29 @@
             <br><br>
             <button class="btn" style="font-size:0.9rem; background:#ccc; color:#333;" onclick="resetGame()">⬅️ ย้อนกลับ</button>
             <div id="creditBalanceText" class="credit-balance-text hidden-element"></div>
-            <button type="button" class="buy-credit-btn" onclick="openBuyCredit()">💳 ซื้อเครดิต</button>
-        </div>
-        <div id="headerContactBanner" class="header-contact-banner">
-            <span class="header-contact-text">ซื้อเครดิต › แจ้งชำระ › รอเกิน 30 นาที › ติดต่อเรา 👉 </span>
-            <a href="https://lin.ee/nIL01Mm" target="_blank" rel="noopener" class="header-line-link" aria-label="ติดต่อเราทางไลน์" title="ติดต่อเราทางไลน์">
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 5.94 2 10.7c0 4.27 3.58 7.85 8.41 8.55.33.07.78.22.89.5.1.26.07.66.03.92l-.14.86c-.04.26-.2 1 .88.55 1.08-.46 5.82-3.43 7.94-5.87C21.55 14.05 22 12.44 22 10.7 22 5.94 17.52 2 12 2z"/></svg>
-            </a>
         </div>
 
         <div id="readingStatsText" class="reading-stats-text">🔮 ให้คำทำนายแล้ว <span id="readingStatsCount">-</span> ครั้ง</div>
+
+        <div class="support-us-box">
+            <div class="support-us-title">☕️ สนับสนุนพวกเรา</div>
+            <div class="support-us-text">
+                ขอให้วันนี้เป็นวันที่ดีของคุณ<br>
+                ร่วมสนับสนุนค่ากาแฟและให้กำลังใจได้ที่
+            </div>
+            <div class="support-us-bank">
+                <div class="support-us-bank-line">ธนาคารไทยพาณิชย์ เลขที่บัญชี <b>4092444133</b></div>
+                <div class="support-us-bank-line">ชื่อบัญชี นัฐพงษ์ วิละขันคำ</div>
+                <button type="button" class="copy-account-btn support-us-copy-btn" onclick="copySupportAccountNumber('supportCopyFeedback1')">📋 คัดลอกเลขบัญชี</button>
+                <div id="supportCopyFeedback1" class="copy-prompt-feedback hidden-element">✅ คัดลอกเลขบัญชีแล้ว</div>
+            </div>
+            <div class="support-us-qr">
+                <img src="https://lh3.googleusercontent.com/d/1YE4wkKoX15pf_R7D_ZFpWdVgf0pr7Nr9" alt="QR Code สนับสนุนค่ากาแฟ" class="support-us-qr-img">
+                <br>
+                <a href="https://lh3.googleusercontent.com/d/1YE4wkKoX15pf_R7D_ZFpWdVgf0pr7Nr9" download="qr-code-สนับสนุนกาแฟ.jpg" target="_blank" rel="noopener" class="btn support-us-qr-btn">⬇️ โหลด QR Code</a>
+            </div>
+            <div class="support-us-thanks">ขอบคุณสำหรับทุกกำลังใจครับ ❤️</div>
+        </div>
     </div>
 
     <div id="game-area" class="hidden-element">
@@ -921,6 +989,26 @@
                 </div>
             </div>
 
+            <div class="support-us-box">
+                <div class="support-us-title">☕️ สนับสนุนพวกเรา</div>
+                <div class="support-us-text">
+                    ขอให้วันนี้เป็นวันที่ดีของคุณ<br>
+                    ร่วมสนับสนุนค่ากาแฟและให้กำลังใจได้ที่
+                </div>
+                <div class="support-us-bank">
+                    <div class="support-us-bank-line">ธนาคารไทยพาณิชย์ เลขที่บัญชี <b>4092444133</b></div>
+                    <div class="support-us-bank-line">ชื่อบัญชี นัฐพงษ์ วิละขันคำ</div>
+                    <button type="button" class="copy-account-btn support-us-copy-btn" onclick="copySupportAccountNumber('supportCopyFeedback2')">📋 คัดลอกเลขบัญชี</button>
+                    <div id="supportCopyFeedback2" class="copy-prompt-feedback hidden-element">✅ คัดลอกเลขบัญชีแล้ว</div>
+                </div>
+                <div class="support-us-qr">
+                    <img src="https://lh3.googleusercontent.com/d/1YE4wkKoX15pf_R7D_ZFpWdVgf0pr7Nr9" alt="QR Code สนับสนุนค่ากาแฟ" class="support-us-qr-img">
+                    <br>
+                    <a href="https://lh3.googleusercontent.com/d/1YE4wkKoX15pf_R7D_ZFpWdVgf0pr7Nr9" download="qr-code-สนับสนุนกาแฟ.jpg" target="_blank" rel="noopener" class="btn support-us-qr-btn">⬇️ โหลด QR Code</a>
+                </div>
+                <div class="support-us-thanks">ขอบคุณสำหรับทุกกำลังใจครับ ❤️</div>
+            </div>
+
             <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px;">
                 <button class="btn" onclick="resetGame()">ปิด / เริ่มใหม่</button>
             </div>
@@ -961,7 +1049,7 @@
             <!-- ===== แท็บ 1: จัดการสิทธิ์ (เนื้อหาเดิม) ===== -->
             <div id="adminTabContentPermissions">
                 <p style="font-size:0.85rem;">
-                    🔒 ล็อค = จำกัดสิทธิ์ตามปกติ (ทำนายได้ 4 ครั้ง/เดือน รีเซ็ตทุกต้นเดือน, แชทเพิ่มได้ 6 ครั้ง/วัน รีเซ็ตทุกเที่ยงคืน)<br>
+                    🔒 ล็อค = จำกัดสิทธิ์ตามปกติ (ทำนายได้ 20 ครั้ง/เดือน รีเซ็ตทุกต้นเดือน, แชทเพิ่มได้ 10 ครั้ง/วัน รีเซ็ตทุกเที่ยงคืน)<br>
                     🔓 ปลดล็อค = ใช้งานได้ไม่จำกัด<br>
                     🚫 บล็อค = ระงับสิทธิ์ "ออกคำทำนาย" ชั่วคราวเป็นรายวัน (ยังตั้งคำถาม/เปิดไพ่ได้ตามปกติ) ใช้กรณีทำผิดกฎ/สร้างความรำคาญ
                 </p>
@@ -1224,7 +1312,11 @@
 
         window.onload = function() {
             callApi('getCardDeck', [])
-                .then(initDeck)
+                .then(function(urls) {
+                    initDeck(urls);
+                    // [ปรับปรุง] เอาหน้าเลือกรูปแบบการพยากรณ์ออกแล้ว เริ่มต้นที่หน้ากรอกคำถามโดยตรงทันทีที่โหลดเสร็จ
+                    selectMode('ai');
+                })
                 .catch(function (e) { alert("Error loading deck"); });
         };
 
@@ -1259,12 +1351,12 @@
         }
 
         // [ปรับปรุง] ควบคุมปุ่ม Admin บน header ตามหน้าที่กำลังแสดงอยู่
-        // (แถบติดต่อไลน์ย้ายไปอยู่ในกล่องคำถาม .input-group แล้ว จึงแสดง/ซ่อนตามกล่องนั้นโดยอัตโนมัติ ไม่ต้องคุมจากฟังก์ชันนี้อีกต่อไป)
-        // 'entry'    = หน้าทางเข้า (landing-page) -> แสดงปุ่ม Admin
-        // 'question' / 'none' = หน้าอื่น ๆ -> ซ่อนปุ่ม Admin
+        // (เอาหน้าเลือกรูปแบบการพยากรณ์ออกแล้ว เริ่มต้นที่หน้ากรอกคำถามโดยตรง ปุ่ม Admin จึงย้ายมาแสดงที่หน้านี้แทน)
+        // 'question' = หน้ากรอกคำถาม (ai-input-section) -> แสดงปุ่ม Admin
+        // 'none'     = หน้าอื่น ๆ (เลือกไพ่ / ผลคำทำนาย) -> ซ่อนปุ่ม Admin
         function setHeaderMode_(mode) {
             const adminBtn = document.getElementById('adminBtn');
-            if (mode === 'entry') {
+            if (mode === 'question') {
                 adminBtn.classList.remove('hidden-element');
             } else {
                 adminBtn.classList.add('hidden-element');
@@ -1273,13 +1365,12 @@
 
         function selectMode(mode) {
             currentMode = mode;
-            document.getElementById('landing-page').classList.add('hidden-element');
 
             document.getElementById('ai-input-section').classList.remove('hidden-element');
             document.getElementById('userQuestion').focus();
             loadReadingStats();
             loadCreditBalanceText(); // [เพิ่มใหม่]
-            setHeaderMode_('question'); // [เพิ่มใหม่] หน้ากรอกคำถาม -> โชว์แถบติดต่อไลน์แทนปุ่ม Admin
+            setHeaderMode_('question'); // หน้ากรอกคำถาม -> แสดงปุ่ม Admin
         }
 
         function startAiProcess() {
@@ -1296,7 +1387,7 @@
             userQuestionText = q;
             document.getElementById('ai-input-section').classList.add('hidden-element');
             document.getElementById('game-area').classList.remove('hidden-element');
-            setHeaderMode_('none'); // [เพิ่มใหม่] หน้าเลือกไพ่/คำพยากรณ์ -> ไม่แสดงทั้งปุ่ม Admin และแถบติดต่อไลน์
+            setHeaderMode_('none'); // หน้าเลือกไพ่/คำพยากรณ์ -> ไม่แสดงปุ่ม Admin
 
             renderStackedDeck();
             startShuffle(SELECT_COUNT_AI);
@@ -2015,6 +2106,12 @@
         // คัดลอกเลขบัญชีไปคลิปบอร์ด (ใช้ฟังก์ชันกลางเดียวกับปุ่ม Copy Prompt ด้านบน เพราะรองรับข้อความกำหนดเองอยู่แล้ว)
         function copyAccountNumber() {
             copyPredictionPromptToEl(document.getElementById('paymentCopyFeedback'), PAYMENT_ACCOUNT_NUMBER_DISPLAY);
+        }
+
+        // [เพิ่มใหม่] คัดลอกเลขบัญชีในกล่อง "☕️ สนับสนุนพวกเรา" (ใช้ร่วมกันทั้ง 2 จุดที่แสดงกล่องนี้ คือหน้ากรอกคำถาม และหน้าคำทำนาย
+        // จึงรับ id ของ feedback element เป็นพารามิเตอร์ เพื่อโชว์ข้อความ "คัดลอกแล้ว" ที่ถูกจุดตามตำแหน่งที่กดจริง)
+        function copySupportAccountNumber(feedbackElId) {
+            copyPredictionPromptToEl(document.getElementById(feedbackElId), PAYMENT_ACCOUNT_NUMBER_DISPLAY);
         }
 
         function openNotifyPaymentForm() {
@@ -2780,7 +2877,7 @@
                 idLine.innerText = u.userId;
                 const usageLine = document.createElement('div');
                 usageLine.className = 'admin-user-usage';
-                usageLine.innerText = 'ทำนายเดือนนี้ ' + u.readingCountThisMonth + '/4 ครั้ง   |   แชทเพิ่มวันนี้ ' + u.chatCountToday + '/6 ครั้ง';
+                usageLine.innerText = 'ทำนายเดือนนี้ ' + u.readingCountThisMonth + '/20 ครั้ง   |   แชทเพิ่มวันนี้ ' + u.chatCountToday + '/10 ครั้ง';
                 info.appendChild(idLine);
                 info.appendChild(usageLine);
 
@@ -2947,8 +3044,8 @@
             document.getElementById('chatInput').style.overflowY = 'hidden';
             document.getElementById('chatRetryHint').classList.add('hidden-element');
             
-            document.getElementById('landing-page').classList.remove('hidden-element');
-            setHeaderMode_('entry'); // [เพิ่มใหม่] กลับหน้าทางเข้า -> โชว์ปุ่ม Admin กลับมาเหมือนเดิม (ซ่อนแถบติดต่อไลน์)
+            // [ปรับปรุง] เอาหน้าเลือกรูปแบบการพยากรณ์ออกแล้ว กลับไปหน้ากรอกคำถามโดยตรงแทน (ปุ่ม Admin จะกลับมาแสดงที่หน้านี้)
+            selectMode('ai');
         }
 
         function shuffleArray(array) {
