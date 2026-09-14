@@ -989,7 +989,7 @@
                 </div>
             </div>
 
-            <div class="support-us-box">
+            <div id="resultSupportUsBox" class="support-us-box hidden-element">
                 <div class="support-us-title">☕️ สนับสนุนพวกเรา</div>
                 <div class="support-us-text">
                     ขอให้วันนี้เป็นวันที่ดีของคุณ<br>
@@ -1922,6 +1922,10 @@
                         chatInputEl.style.overflowY = 'hidden';
 
                         loadCreditBalanceText(); // [เพิ่มใหม่] รีเฟรชยอดเครดิตคงเหลือ เผื่อทำนายครั้งนี้หักจากเครดิตที่ซื้อไว้
+
+                        // [ปรับปรุง] กล่อง "ขอความสนับสนุนเรา" ให้แสดงหลังได้รับคำทำนายแล้วเท่านั้น
+                        // (ตอนเปิดไพ่แต่ยังไม่ได้กดขอคำทำนาย หรือกำลังรอผลอยู่ จะยังไม่แสดง)
+                        document.getElementById('resultSupportUsBox').classList.remove('hidden-element');
                     } else if (response && response.blocked) {
                         // ลูกดวงถูกแอดมินบล็อคอยู่ ยังตั้งคำถาม/เปิดไพ่ได้ปกติ แต่ขอคำทำนายไม่ได้ชั่วคราว
                         btn.classList.remove('hidden-element');
@@ -3102,6 +3106,7 @@
             document.getElementById('ai-error-copy-box').classList.add('hidden-element');
             document.getElementById('ai-result').innerText = '';
             document.getElementById('userQuestion').value = '';
+            document.getElementById('resultSupportUsBox').classList.add('hidden-element');
 
             document.getElementById('reading-chat-box').classList.add('hidden-element');
             document.getElementById('reading-text-container').classList.remove('hidden-element');
