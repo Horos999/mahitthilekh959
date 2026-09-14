@@ -1296,12 +1296,14 @@
          * @param {Array} params - พารามิเตอร์ตามลำดับของฟังก์ชันนั้น
          * @return {Promise} resolve ด้วยผลลัพธ์ของฟังก์ชัน หรือ reject ด้วย Error เมื่อผิดพลาด
          */
-        function callApi(action, params) {
-            // [แก้บั๊ก] เดิม fetch ไม่มีการจำกัดเวลาเลย ถ้าเซิร์ฟเวอร์ไม่ตอบกลับ (เช่น Apps Script ค้าง/หลับ)
-            // Promise นี้จะไม่ resolve/reject เลย ทำให้ทุกอย่างที่รอผลลัพธ์อยู่ (เช่น การโหลดกองไพ่) ค้างไปตลอดกาล
-            // จึงเพิ่มการยกเลิกคำขออัตโนมัติเมื่อรอเกิน 25 วินาที เพื่อให้โค้ดฝั่งที่เรียกใช้ได้รับ error กลับไปจัดการต่อได้เสมอ
-            const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-            const timeoutId = controller ? setTimeout(function () { controller.abort(); }, 25000) : null;
+        function callApi(action, params, timeoutMs) {
+            // [แก้บั๊ก] เดิมใส่ timeout 25 วินาทีให้ทุกคำขอเหมือนกันหมด ซึ่งกระทบ "เปิดคำทำนาย" (getAiReading)
+            // และ "คุยต่อ" (continueReading) ที่ต้องรอ Gemini API ประมวลผลรูปภาพ + อาจต้องลองซ้ำ/สลับโมเดลสำรอง
+            // ทำให้ใช้เวลาเกิน 25 วินาทีได้เป็นปกติ พอโดนตัดสัญญาณกลางคันจะเจอ error "signal is aborted without reason"
+            // ทั้งที่เซิร์ฟเวอร์ยังทำงานอยู่ปกติ จึงเปลี่ยนให้ timeout เป็นตัวเลือกเสริม (ระบุก็ต่อเมื่อจำเป็นจริงๆ
+            // เช่น ตอนโหลดกองไพ่ที่ควรเร็ว) ส่วนคำขอที่ไม่ระบุ timeoutMs มา จะไม่ถูกจำกัดเวลาเหมือนเดิมก่อนหน้านี้
+            const controller = (typeof AbortController !== 'undefined' && timeoutMs) ? new AbortController() : null;
+            const timeoutId = controller ? setTimeout(function () { controller.abort(); }, timeoutMs) : null;
 
             return fetch(API_URL, {
                 method: 'POST',
@@ -1348,7 +1350,7 @@
             isDeckLoading = true;
             deckLoadFailed = false;
 
-            return callApi('getCardDeck', [])
+            return callApi('getCardDeck', [], 25000)
                 .then(function (urls) {
                     initDeck(urls);
                     isDeckLoading = false;
