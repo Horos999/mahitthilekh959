@@ -908,14 +908,14 @@
     <div id="ai-input-section" class="container-box hidden-element">
         <div class="input-group">
             <label for="userQuestion" style="font-weight:bold;">✍️ สิ่งที่ท่านอยากรู้:</label>
-            <textarea id="userQuestion" placeholder="พิมพ์คำถามโดยละเอียดของท่านที่นี่..."></textarea>
-            <button class="btn btn-gold" onclick="startAiProcess()">🎴 สับไพ่เสี่ยงทาย</button>
+            <textarea id="userQuestion" placeholder="พิมพ์คำถามโดยละเอียดของท่านที่นี่..." readonly onfocus="handleQuestionFocusWhileLocked_(event)"></textarea>
+            <button class="btn btn-gold" onclick="startAiProcess()" disabled>⏳ กำลังเตรียมกองไพ่...</button>
             <br><br>
             <button class="btn" style="font-size:0.9rem; background:#ccc; color:#333;" onclick="resetGame()">⬅️ ย้อนกลับ</button>
             <div id="creditBalanceText" class="credit-balance-text hidden-element"></div>
         </div>
 
-        <div id="readingStatsText" class="reading-stats-text">🔮 ให้คำทำนายแล้ว <span id="readingStatsCount">-</span> ครั้ง</div>
+        <div id="readingStatsText" class="reading-stats-text">📊 กำลังโหลดข้อมูลสถิติ...</div>
 
         <div class="support-us-box">
             <div class="support-us-title">☕️ สนับสนุนค่ากาแฟและให้กำลังใจพ่อหมอ</div>
@@ -966,9 +966,9 @@
                 </div>
                 <div id="ai-error" class="hint-text hidden-element"></div>
                 <div id="ai-error-copy-box" class="copy-prompt-box hidden-element">
-                    <p>📸 ระหว่างที่ระบบยังไม่ว่าง คุณลูกดวงสามารถแคปหน้าจอ "หน้าไพ่" ที่เปิดอยู่นี้ไว้ก่อน แล้วกดปุ่มด้านล่างเพื่อคัดลอกคำสั่งสำหรับส่งให้ AI (เช่น แอป Gemini) จากนั้นนำภาพที่แคปไว้ไปส่ง พร้อมวางข้อความที่คัดลอกลงไปด้วย ก็จะได้รับคำทำนายเหมือนกับในหน้าแอปนี้ค่ะ</p>
+                    <p>📸 ระหว่างที่ระบบยังไม่ว่าง คุณลูกดวงสามารถแคปหน้าจอ "หน้าไพ่" ที่เปิดอยู่นี้ไว้ก่อน แล้วกดปุ่มด้านล่างเพื่อคัดลอกคำสั่งสำหรับส่งให้ AI (เช่น แอป Gemini) จากนั้นนำภาพที่แคปไว้ไปส่ง พร้อมวางข้อความที่คัดลอกลงไปด้วย ก็จะได้รับคำทำนายเหมือนกับในหน้าแอปนี้ครับ</p>
                     <button type="button" id="copyPromptBtn" class="btn btn-blue copy-prompt-btn" onclick="copyPredictionPrompt()">📋 Copy Prompt</button>
-                    <div id="copyPromptFeedback" class="copy-prompt-feedback hidden-element">✅ คัดลอกแล้ว! นำไปวางพร้อมภาพที่แคปไว้ในแอป AI ได้เลยค่ะ</div>
+                    <div id="copyPromptFeedback" class="copy-prompt-feedback hidden-element">✅ คัดลอกแล้ว! นำไปวางพร้อมภาพที่แคปไว้ในแอป AI ได้เลยครับ</div>
                 </div>
 
                 <div id="reading-chat-box" class="reading-chat-box hidden-element">
@@ -1111,7 +1111,7 @@
             <label for="changeAdminConfirmPasswordInput" style="font-weight:bold; display:block; text-align:left; margin-top:10px;">ยืนยันรหัสผ่านใหม่:</label>
             <input type="password" id="changeAdminConfirmPasswordInput" class="text-input" placeholder="พิมพ์รหัสผ่านใหม่อีกครั้ง" autocomplete="off">
             <div id="changeAdminPasswordError" class="hint-text hidden-element">⚠️ เกิดข้อผิดพลาด</div>
-            <div id="changeAdminPasswordSuccess" class="hint-text hidden-element" style="color:#2e7d32;">✅ เปลี่ยนรหัสผ่านสำเร็จแล้วค่ะ</div>
+            <div id="changeAdminPasswordSuccess" class="hint-text hidden-element" style="color:#2e7d32;">✅ เปลี่ยนรหัสผ่านสำเร็จแล้วครับ</div>
             <div class="action-area">
                 <button class="btn btn-gold" id="changeAdminPasswordSubmitBtn" onclick="submitChangeAdminPassword()">บันทึก</button>
                 <button class="btn" style="background:#ccc; color:#333;" onclick="closeChangeAdminPasswordModal()">ยกเลิก</button>
@@ -1139,12 +1139,23 @@
             <h2>🚫 แจ้งเตือน</h2>
             <p id="blockedNoticeMessage" style="font-weight:bold; color:#c0392b;"></p>
             <div class="copy-prompt-box">
-                <p>📸 คุณลูกดวงสามารถแคปหน้าจอ "หน้าไพ่" ที่เปิดอยู่นี้ไว้ก่อน แล้วกดปุ่มด้านล่างเพื่อคัดลอกคำสั่ง (รวมคำทำนายเดิมและคำถามเพิ่มเติมนี้) สำหรับส่งให้ AI (เช่น แอป Gemini) จากนั้นนำภาพที่แคปไว้ไปส่ง พร้อมวางข้อความที่คัดลอกลงไปด้วย ก็จะได้รับคำตอบต่อเนื่องเหมือนกับในหน้าแอปนี้ค่ะ</p>
+                <p>📸 คุณลูกดวงสามารถแคปหน้าจอ "หน้าไพ่" ที่เปิดอยู่นี้ไว้ก่อน แล้วกดปุ่มด้านล่างเพื่อคัดลอกคำสั่ง (รวมคำทำนายเดิมและคำถามเพิ่มเติมนี้) สำหรับส่งให้ AI (เช่น แอป Gemini) จากนั้นนำภาพที่แคปไว้ไปส่ง พร้อมวางข้อความที่คัดลอกลงไปด้วย ก็จะได้รับคำตอบต่อเนื่องเหมือนกับในหน้าแอปนี้ครับ</p>
                 <button type="button" id="blockedCopyPromptBtn" class="btn btn-blue copy-prompt-btn" onclick="copyBlockedPrompt()">📋 Copy Prompt</button>
-                <div id="blockedCopyPromptFeedback" class="copy-prompt-feedback hidden-element">✅ คัดลอกแล้ว! นำไปวางพร้อมภาพที่แคปไว้ในแอป AI ได้เลยค่ะ</div>
+                <div id="blockedCopyPromptFeedback" class="copy-prompt-feedback hidden-element">✅ คัดลอกแล้ว! นำไปวางพร้อมภาพที่แคปไว้ในแอป AI ได้เลยครับ</div>
             </div>
             <div class="action-area">
                 <button class="btn" style="background:#ccc; color:#333;" onclick="closeBlockedNoticeModal()">ปิด</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== [เพิ่มใหม่] ป็อปอัปแจ้งสถานะการเตรียมกองไพ่ (ก่อนพิมพ์คำถาม) ===================== -->
+    <div id="deckStatusModal" class="modal">
+        <div class="modal-content">
+            <h2 id="deckStatusTitle">🔮 กรุณารอสักครู่</h2>
+            <p id="deckStatusMessage">กำลังเตรียมกองไพ่ให้ท่านครับ</p>
+            <div class="action-area">
+                <button class="btn btn-gold" onclick="closeDeckStatusModal_()">รับทราบ</button>
             </div>
         </div>
     </div>
@@ -1245,7 +1256,7 @@
 
     <div id="buyCreditResultModal" class="modal">
         <div class="modal-content">
-            <h2 id="creditResultTitle">🙏 ขอบคุณค่ะ</h2>
+            <h2 id="creditResultTitle">🙏 ขอบคุณครับ</h2>
             <p id="creditResultMessage"></p>
             <div class="action-area">
                 <button class="btn btn-gold" onclick="closeBuyCreditModals()">ปิด</button>
@@ -1322,11 +1333,14 @@
 
         window.onload = function() {
             // [ปรับปรุง] เอาหน้าเลือกรูปแบบการพยากรณ์ออกแล้ว เริ่มต้นที่หน้ากรอกคำถามโดยตรงทันที
-            // แสดงหน้ากรอกคำถามก่อนเลย ไม่ต้องรอโหลดกองไพ่ให้เสร็จก่อน (กองไพ่จะถูกใช้ตอน "สับไพ่" ภายหลังเท่านั้น)
-            // เพื่อไม่ให้หน้าเว็บค้างว่างเปล่าถ้าโหลดกองไพ่จากเซิร์ฟเวอร์ช้าหรือผิดพลาด
             selectMode('ai');
 
-            loadCardDeck();
+            // [ปรับปรุง] เดิมปล่อยให้พิมพ์คำถามได้ทันทีระหว่างที่กองไพ่ยังโหลดอยู่เบื้องหลัง ทำให้บางครั้งกดปุ่ม
+            // "สับไพ่เสี่ยงทาย" ไปแล้ว ต้องรอโหลดกองไพ่ซ้ำอีกรอบกว่าจะสับไพ่ได้จริง (เห็นปุ่มค้างที่ "กำลังเตรียมกองไพ่...")
+            // เปลี่ยนใหม่ให้ล็อกกล่องคำถาม/ปุ่มสับไพ่ไว้ก่อนจนกว่าจะเตรียมกองไพ่เสร็จ พร้อมแจ้งเตือนด้วยป็อปอัปทั้งสองจังหวะ
+            // เพื่อให้พอกองไพ่พร้อม (ซึ่งมักจะเสร็จตั้งแต่ระหว่างที่ลูกดวงกำลังพิมพ์คำถามอยู่แล้ว) พิมพ์คำถามเสร็จ
+            // ก็สามารถกดสับไพ่ได้ทันทีโดยไม่ต้องรอซ้ำอีกครั้ง
+            lockQuestionInputUntilDeckReady_();
         };
 
         /**
@@ -1336,19 +1350,25 @@
          * ในภายหลัง startShuffle() จะเจอกองไพ่ว่างแล้ว return เงียบๆ (ดูฟังก์ชัน startShuffle ด้านล่าง) ทำให้หน้าจอ
          * ค้างอยู่ที่กองไพ่โดยไม่มีอะไรเกิดขึ้นต่อ ผู้ใช้ไม่มีทางแก้ไขนอกจากรีเฟรชหน้าเว็บใหม่ทั้งหมด
          *
-         * ฟังก์ชันนี้จึงเพิ่มการลองใหม่อัตโนมัติ (รวมทั้งหมด 3 ครั้ง เว้นระยะ 1 วินาทีต่อครั้ง) และเก็บสถานะ
-         * การโหลดไว้ใน isDeckLoading / deckLoadFailed ให้ startAiProcess() ตรวจสอบและเรียกโหลดซ้ำเองได้ทันที
-         * ถ้ากองไพ่ยังไม่พร้อมตอนกดปุ่ม แทนที่จะปล่อยให้ผู้ใช้ไปค้างอยู่หน้าจอสับไพ่เปล่าๆ
+         * ฟังก์ชันนี้จึงเพิ่มการลองใหม่อัตโนมัติ (รวมทั้งหมด 3 ครั้ง) และเก็บสถานะการโหลดไว้ใน isDeckLoading / deckLoadFailed
+         * ให้ startAiProcess() ตรวจสอบและเรียกโหลดซ้ำเองได้ทันที ถ้ากองไพ่ยังไม่พร้อมตอนกดปุ่ม แทนที่จะปล่อยให้ผู้ใช้
+         * ไปค้างอยู่หน้าจอสับไพ่เปล่าๆ
+         *
+         * [ปรับปรุงให้เตรียมกองไพ่เร็วขึ้น] เดิมแต่ละครั้งรอ timeout นานถึง 25 วินาที และเว้นระยะรอก่อนลองใหม่ถึง 1 วินาที
+         * ทั้งที่ getCardDeck() ฝั่งเซิร์ฟเวอร์คืนค่ารายการ URL คงที่ล้วนๆ ไม่ได้อ่านชีทใดๆ จึงควรตอบกลับได้เร็วมาก
+         * ปรับลด timeout ต่อครั้งและระยะรอก่อนลองใหม่ให้สั้นลง เพื่อให้เจอปัญหาได้ไวขึ้นและลองใหม่ได้เร็วขึ้น
+         * โดยรวมยังคงลองสูงสุด 3 ครั้งเท่าเดิม แต่ใช้เวลารวมน้อยลงมากในกรณีที่เชื่อมต่อมีปัญหาจริงๆ
          */
         let isDeckLoading = false;
         let deckLoadFailed = false;
+        let deckReady = false; // [เพิ่มใหม่] true เมื่อกองไพ่พร้อมใช้งานแล้วเท่านั้น ใช้คุมล็อกกล่องคำถาม
 
         function loadCardDeck(retriesLeft) {
             if (typeof retriesLeft !== 'number') retriesLeft = 2; // ลองรวมทั้งหมด 3 ครั้ง (ครั้งแรก + ลองใหม่อีก 2 ครั้ง)
             isDeckLoading = true;
             deckLoadFailed = false;
 
-            return callApi('getCardDeck', [], 25000)
+            return callApi('getCardDeck', [], 8000)
                 .then(function (urls) {
                     initDeck(urls);
                     isDeckLoading = false;
@@ -1357,7 +1377,7 @@
                 .catch(function (e) {
                     if (retriesLeft > 0) {
                         // รอสักครู่แล้วลองโหลดกองไพ่ใหม่อีกครั้งโดยอัตโนมัติ ก่อนจะยอมแพ้จริงๆ
-                        return new Promise(function (resolve) { setTimeout(resolve, 1000); })
+                        return new Promise(function (resolve) { setTimeout(resolve, 400); })
                             .then(function () { return loadCardDeck(retriesLeft - 1); });
                     }
                     isDeckLoading = false;
@@ -1367,6 +1387,72 @@
 
         function initDeck(urls) {
             allCardUrls = urls;
+        }
+
+        /**
+         * [เพิ่มใหม่] ล็อกกล่องคำถาม + ปุ่มสับไพ่ไว้ตั้งแต่เปิดหน้าเว็บ จนกว่าจะเตรียมกองไพ่ (allCardUrls) เสร็จ
+         * เพื่อให้พอกองไพ่พร้อม (ซึ่งมักจะเสร็จตั้งแต่ระหว่างที่ลูกดวงกำลังพิมพ์คำถามอยู่แล้ว) พิมพ์คำถามเสร็จ
+         * ก็สามารถกดสับไพ่ได้ทันที ไม่ต้องมารอโหลดกองไพ่ซ้ำอีกครั้งตอนกดปุ่ม
+         */
+        function lockQuestionInputUntilDeckReady_() {
+            setQuestionInputLocked_(true);
+            loadCardDeck().then(function () {
+                setQuestionInputLocked_(false);
+                if (allCardUrls.length > 0) {
+                    showDeckReadyModal_();
+                }
+                // ถ้าโหลดไม่สำเร็จเลยหลังลองครบทุกครั้งแล้ว ก็ยังปลดล็อกให้พิมพ์คำถามได้ตามปกติ
+                // (ปุ่มสับไพ่จะลองเชื่อมต่อกองไพ่ใหม่ให้เองอีกครั้งตามกลไกเดิมใน startAiProcess())
+            });
+        }
+
+        /**
+         * เปลี่ยนสถานะกล่องคำถาม + ปุ่มสับไพ่เสี่ยงทาย ระหว่าง "กำลังเตรียมกองไพ่" กับ "พร้อมใช้งานแล้ว"
+         */
+        function setQuestionInputLocked_(isLocked) {
+            deckReady = !isLocked;
+            const textarea = document.getElementById('userQuestion');
+            const btn = document.querySelector('#ai-input-section .btn-gold');
+            if (textarea) {
+                if (isLocked) {
+                    textarea.setAttribute('readonly', 'readonly');
+                } else {
+                    textarea.removeAttribute('readonly');
+                }
+            }
+            if (btn) {
+                btn.disabled = isLocked;
+                btn.innerText = isLocked ? '⏳ กำลังเตรียมกองไพ่...' : '🎴 สับไพ่เสี่ยงทาย';
+            }
+        }
+
+        /**
+         * เรียกเมื่อลูกดวงพยายามพิมพ์คำถาม (โฟกัสกล่องคำถาม) ระหว่างที่กองไพ่ยังเตรียมไม่เสร็จ (กล่อง readonly อยู่)
+         */
+        function handleQuestionFocusWhileLocked_(evt) {
+            if (deckReady) return;
+            if (evt && evt.target && typeof evt.target.blur === 'function') evt.target.blur();
+            showDeckPreparingModal_();
+        }
+
+        function showDeckPreparingModal_() {
+            document.getElementById('deckStatusTitle').innerText = '🔮 กรุณารอสักครู่';
+            document.getElementById('deckStatusMessage').innerText = 'กำลังเตรียมกองไพ่ให้ท่านอยู่ครับ ✨ กรุณารอสักครู่นะครับ เดี๋ยวพิมพ์คำถามได้เลย';
+            document.getElementById('deckStatusModal').style.display = 'flex';
+        }
+
+        function showDeckReadyModal_() {
+            document.getElementById('deckStatusTitle').innerText = '✅ เตรียมกองไพ่เสร็จแล้ว';
+            document.getElementById('deckStatusMessage').innerText = 'ท่านสามารถพิมพ์คำถามที่ท่านอยากรู้ได้ที่กล่องคำถามด้านล่างนี้ได้เลยครับ 🎴✨';
+            document.getElementById('deckStatusModal').style.display = 'flex';
+        }
+
+        function closeDeckStatusModal_() {
+            document.getElementById('deckStatusModal').style.display = 'none';
+            if (deckReady) {
+                const textarea = document.getElementById('userQuestion');
+                if (textarea) textarea.focus();
+            }
         }
 
         /**
@@ -1384,14 +1470,23 @@
         /**
          * โหลดจำนวนคำทำนายที่เคยออกไปแล้วทั้งหมด มาแสดงใต้กรอบคำถาม (ล่างซ้าย นอกกรอบ)
          */
-        function loadReadingStats() {
-            const countEl = document.getElementById('readingStatsCount');
-            callApi('getReadingCount', [])
+        function loadReadingStats(retriesLeft) {
+            const textEl = document.getElementById('readingStatsText');
+            if (typeof retriesLeft !== 'number') {
+                retriesLeft = 2; // ลองรวมทั้งหมด 3 ครั้ง
+                if (textEl) textEl.innerText = '📊 กำลังโหลดข้อมูลสถิติ...';
+            }
+            callApi('getReadingCount', [], 8000)
                 .then(function(count) {
-                    countEl.innerText = (typeof count === 'number') ? count : '0';
+                    const n = (typeof count === 'number') ? count : 0;
+                    if (textEl) textEl.innerText = '🔮 ให้คำทำนายแล้ว ' + n + ' ครั้ง';
                 })
                 .catch(function() {
-                    countEl.innerText = '0';
+                    if (retriesLeft > 0) {
+                        setTimeout(function () { loadReadingStats(retriesLeft - 1); }, 400);
+                        return;
+                    }
+                    if (textEl) textEl.innerText = '🔮 ให้คำทำนายแล้วหลายครั้ง';
                 });
         }
 
@@ -1412,7 +1507,11 @@
             currentMode = mode;
 
             document.getElementById('ai-input-section').classList.remove('hidden-element');
-            document.getElementById('userQuestion').focus();
+            // [ปรับปรุง] โฟกัสกล่องคำถามให้อัตโนมัติเฉพาะตอนที่กองไพ่พร้อมแล้วเท่านั้น (กันไม่ให้ป็อปอัป
+            // "กรุณารอสักครู่" โผล่ขึ้นมาเองทันทีที่เปิดหน้าเว็บ ทั้งที่ลูกดวงยังไม่ได้แตะกล่องคำถามเลย)
+            if (deckReady) {
+                document.getElementById('userQuestion').focus();
+            }
             loadReadingStats();
             loadCreditBalanceText(); // [เพิ่มใหม่]
             setHeaderMode_('question'); // หน้ากรอกคำถาม -> แสดงปุ่ม Admin
@@ -1433,23 +1532,17 @@
                 return;
             }
 
-            // กองไพ่ยังไม่พร้อม: ลองโหลดใหม่ให้ก่อน (ปิดปุ่มชั่วคราวกันกดซ้ำระหว่างรอ) แล้วค่อยไปหน้าสับไพ่
-            const btn = document.querySelector('#ai-input-section .btn-gold');
-            const originalBtnText = btn ? btn.innerText : '';
-            if (btn) {
-                btn.disabled = true;
-                btn.innerText = '⏳ กำลังเตรียมกองไพ่...';
-            }
+            // กองไพ่ยังไม่พร้อม (ไม่ควรเกิดขึ้นบ่อยแล้ว เพราะปุ่มนี้จะถูกล็อกไว้จนกว่ากองไพ่จะพร้อมตั้งแต่ต้น
+            // แต่เผื่อไว้กันเหนียว): ลองโหลดกองไพ่ใหม่ให้ก่อน (ใช้ตัวช่วยล็อกกล่องคำถาม/ปุ่มเดียวกับตอนเปิดหน้าเว็บ)
+            // แล้วค่อยไปหน้าสับไพ่
+            setQuestionInputLocked_(true);
 
             loadCardDeck().then(function () {
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerText = originalBtnText;
-                }
+                setQuestionInputLocked_(false);
                 if (allCardUrls.length > 0) {
                     proceedToShuffle(q);
                 } else {
-                    alert("ขณะนี้ไม่สามารถเชื่อมต่อกองไพ่ได้ กรุณาตรวจสอบอินเทอร์เน็ตของท่านแล้วกดปุ่ม \"สับไพ่เสี่ยงทาย\" อีกครั้งค่ะ");
+                    alert("ขณะนี้ไม่สามารถเชื่อมต่อกองไพ่ได้ กรุณาตรวจสอบอินเทอร์เน็ตของท่านแล้วกดปุ่ม \"สับไพ่เสี่ยงทาย\" อีกครั้งครับ");
                 }
             });
         }
@@ -1673,7 +1766,7 @@
         }
 
         /**
-         * แปลงข้อความจากแม่หมอที่อาจมีสัญลักษณ์ markdown ดิบๆ ปนมา
+         * แปลงข้อความจากพ่อหมอที่อาจมีสัญลักษณ์ markdown ดิบๆ ปนมา
          * เช่น **ตัวหนา**, <u>ขีดเส้นใต้</u>, บุลเลต * หรือเส้นคั่น ---
          * ให้กลายเป็นการจัดรูปแบบจริง (ตัวหนา / จุดบุลเลต / เส้นคั่น)
          * แทนที่จะโชว์สัญลักษณ์ดิบๆ ให้ลูกดวงเห็น
@@ -1724,7 +1817,7 @@
             box.className = 'copy-prompt-box chat-copy-prompt-box';
 
             const desc = document.createElement('p');
-            desc.innerText = '📸 ระหว่างที่ระบบยังไม่ว่าง คุณลูกดวงสามารถแคปหน้าจอ "หน้าไพ่" ที่เปิดอยู่นี้ไว้ก่อน แล้วกดปุ่มด้านล่างเพื่อคัดลอกคำสั่ง (รวมคำทำนายเดิมและคำถามเพิ่มเติมนี้) สำหรับส่งให้ AI (เช่น แอป Gemini) จากนั้นนำภาพที่แคปไว้ไปส่ง พร้อมวางข้อความที่คัดลอกลงไปด้วย ก็จะได้รับคำตอบต่อเนื่องเหมือนกับในหน้าแอปนี้ค่ะ';
+            desc.innerText = '📸 ระหว่างที่ระบบยังไม่ว่าง คุณลูกดวงสามารถแคปหน้าจอ "หน้าไพ่" ที่เปิดอยู่นี้ไว้ก่อน แล้วกดปุ่มด้านล่างเพื่อคัดลอกคำสั่ง (รวมคำทำนายเดิมและคำถามเพิ่มเติมนี้) สำหรับส่งให้ AI (เช่น แอป Gemini) จากนั้นนำภาพที่แคปไว้ไปส่ง พร้อมวางข้อความที่คัดลอกลงไปด้วย ก็จะได้รับคำตอบต่อเนื่องเหมือนกับในหน้าแอปนี้ครับ';
             box.appendChild(desc);
 
             const btn = document.createElement('button');
@@ -1735,7 +1828,7 @@
 
             const feedback = document.createElement('div');
             feedback.className = 'copy-prompt-feedback hidden-element';
-            feedback.innerText = '✅ คัดลอกแล้ว! นำไปวางพร้อมภาพที่แคปไว้ในแอป AI ได้เลยค่ะ';
+            feedback.innerText = '✅ คัดลอกแล้ว! นำไปวางพร้อมภาพที่แคปไว้ในแอป AI ได้เลยครับ';
             box.appendChild(feedback);
 
             btn.addEventListener('click', function() {
@@ -1775,11 +1868,11 @@
                 '2. ตำแหน่งสนับสนุน/อุปสรรค\n' +
                 '3. ตำแหน่งสรุป (แนวโน้ม/คำแนะนำ)\n\n' +
                 'คำสั่ง:\n' +
-                '1. บรรยายลักษณะเด่นของไพ่แต่ละใบสั้นๆ ก่อน (เช่น รูปยักษ์, รูปเทวดา, รูปสัตว์ ฯลฯ) เพื่อยืนยันว่าเห็นภาพถูกต้อง\n' +
-                '2. ทำนายดวงชะตาตามความหมายของแต่ละใบอย่างละเอียด เชื่อมโยงกับคำถามที่ถาม และที่สำคัญต้องตรงประเด็นไม่อ้อมค้อม เป็นหมอดูที่พูดตรง ๆ ไม่เอาใจลูกดวง ให้คำทำนายตามหน้าไพ่ หากมีการยกตำแหน่งไพ่ ลักษณะไพ่ คำทำนาย ให้มีอิโมจิหรือไอคอนอยู่หน้าหัวข้อหลัก ให้ดูสวยงามเป็นมืออาชีพ และไม่ต้องใส่ * ให้เยอะจนดูยุ่ง\n' +
+                '1. ห้ามบรรยายลักษณะไพ่ ภาพที่ปรากฎเด็ดขาด\n' +
+                '2. ทำนายดวงชะตาตามความหมายของแต่ละใบโดยสรุป เชื่อมโยงกับคำถามที่ถาม และที่สำคัญต้องตรงประเด็นไม่อ้อมค้อม เป็นหมอดูที่พูดตรง ๆ ไม่เอาใจลูกดวง ให้คำทำนายตามหน้าไพ่ หากมีการยกตำแหน่งไพ่ ลักษณะไพ่ คำทำนาย ให้มีอิโมจิหรือไอคอนอยู่หน้าหัวข้อหลัก ให้ดูสวยงามเป็นมืออาชีพ และไม่ต้องใส่ * ให้เยอะจนดูยุ่ง\n' +
                 '3. สรุปภาพรวมและให้คำแนะนำวิธีเสริมดวงหรือแก้ไขหากผลออกมาไม่ดี\n' +
-                '4. ใช้ภาษาไทย น้ำเสียงเป็นมิตร อบอุ่น เหมือนหมอดูที่ให้กำลังใจ โดยแทนตัวเองว่า "แม่หมอ" และเรียกผู้ถามว่า "คุณลูกดวง" ตลอดบทสนทนา โดยประโยคขึ้นต้นต้องเป็น "สวัสดีค่ะคุณลูกดวงที่รัก"\n' +
-                '5. กรณีที่คุณลูกดวงถามหลายเรื่องพร้อมกันในการเปิดไพ่ 1 ครั้ง (เช่น ถามทั้งเรื่องความรักและเรื่องการงานในคำถามเดียวกัน) ห้ามออกคำทำนายเด็ดขาด ให้ตอบปฏิเสธอย่างสุภาพด้วยข้อความนี้เท่านั้น: "สวัสดีค่ะคุณลูกดวงที่รัก สำหรับการเปิดไพ่พยากรณ์ในรอบนี้ แม่หมอขออนุญาตชี้แจงนิดนึงนะคะ เพื่อความแม่นยำและพลังงานที่โฟกัสอย่างเต็มที่ การจับไพ่ 1 ชุด จะสามารถตอบคำถามได้เพียง 1 เรื่องเท่านั้นค่ะ ตอนนี้คุณลูกดวงถามควบมาหลายเรื่องในคราวเดียวกัน แม่หมอจึงยังไม่สามารถออกคำทำนายให้ได้น้า แนะนำให้คุณลูกดวงเลือกเรื่องที่กังวลใจที่สุดมา 1 เรื่อง หรือตั้งคำถามใหม่แล้วแยกจับไพ่ทีละชุด เพื่อความแม่นยำของคำทำนายและเพื่อที่แม่หมอจะได้ส่องดวงชะตาให้อย่างละเอียดที่สุดค่ะ แม่หมอรอช่วยหาคำตอบให้อยู่นะคะ"\n' +
+                '4. ใช้ภาษาไทย น้ำเสียงเป็นมิตร อบอุ่น เหมือนหมอดูที่ให้กำลังใจ โดยแทนตัวเองว่า "พ่อหมอ" และเรียกผู้ถามว่า "คุณลูกดวง" ตลอดบทสนทนา โดยประโยคขึ้นต้นต้องเป็น "สวัสดีครับคุณลูกดวงที่รัก"\n' +
+                '5. กรณีที่คุณลูกดวงถามหลายเรื่องพร้อมกันในการเปิดไพ่ 1 ครั้ง (เช่น ถามทั้งเรื่องความรักและเรื่องการงานในคำถามเดียวกัน) ห้ามออกคำทำนายเด็ดขาด ให้ตอบปฏิเสธอย่างสุภาพด้วยข้อความนี้เท่านั้น: "สวัสดีรับคุณลูกดวงที่รัก สำหรับการเปิดไพ่พยากรณ์ในรอบนี้ พ่อหมอขออนุญาตชี้แจงนิดนึงนะครับ เพื่อความแม่นยำและพลังงานที่โฟกัสอย่างเต็มที่ การจับไพ่ 1 ชุด จะสามารถตอบคำถามได้เพียง 1 เรื่องเท่านั้นครับ ตอนนี้คุณลูกดวงถามควบมาหลายเรื่องในคราวเดียวกัน พ่อหมอจึงยังไม่สามารถออกคำทำนายให้ได้น้า แนะนำให้คุณลูกดวงเลือกเรื่องที่กังวลใจที่สุดมา 1 เรื่อง หรือตั้งคำถามใหม่แล้วแยกจับไพ่ทีละชุด เพื่อความแม่นยำของคำทำนายและเพื่อที่พ่อหมอจะได้ส่องดวงชะตาให้อย่างละเอียดที่สุดรับ พ่อหมอรอช่วยหาคำตอบให้อยู่นะครับ"\n' +
                 '6. ห้ามพูดถึงคำว่า AI, ปัญญาประดิษฐ์, Gemini, โมเดลภาษา หรือระบบคอมพิวเตอร์ใด ๆ เด็ดขาด ให้พูดในฐานะหมอดูจริงที่มีชีวิตเท่านั้น';
         }
 
@@ -1799,7 +1892,7 @@
                 'กรุณาพิจารณาว่าคำถามเพิ่มเติมนี้ยังอยู่ในเรื่องเดียวกัน/ต่อเนื่องจากคำถามและไพ่ที่ทำนายไปแล้วหรือไม่\n' +
                 '- ถ้ายังเกี่ยวข้อง: ตอบคำถามต่อในฐานะหมอดู โดยอ้างอิงจากไพ่และคำทำนายเดิมด้านบน น้ำเสียงเป็นมิตรอบอุ่นเหมือนเดิม กระชับ ตรงประเด็น ไม่อ้อมค้อม ไม่ต้องบรรยายลักษณะหน้าไพ่ซ้ำอีก\n' +
                 '- ถ้าเป็นคำถามใหม่ คนละเรื่องกับคำถามตั้งต้น: ห้ามทำนายเรื่องใหม่นี้ ให้ตอบอย่างสุภาพว่าเรื่องนี้ควรตั้งคำถามใหม่แล้วจับไพ่ชุดใหม่ เพื่อความแม่นยำของคำทำนาย\n\n' +
-                'แทนตัวเองว่า "แม่หมอ" และเรียกผู้ถามว่า "คุณลูกดวง" ตลอดบทสนทนา\n' +
+                'แทนตัวเองว่า "พ่อหมอ" และเรียกผู้ถามว่า "คุณลูกดวง" ตลอดบทสนทนา\n' +
                 'ห้ามพูดถึงคำว่า AI, ปัญญาประดิษฐ์, Gemini, โมเดลภาษา หรือระบบคอมพิวเตอร์ใด ๆ เด็ดขาด ให้พูดในฐานะหมอดูจริงที่มีชีวิตเท่านั้น';
         }
 
@@ -2056,22 +2149,37 @@
          * แสดงเสมอ (แม้ยอด 0) เพื่อให้ลูกดวงเห็นสถานะเครดิตของตัวเองตลอดเวลา
          * และถือโอกาสดึงเบอร์โทร/อีเมลที่เคยกรอกไว้ (ถ้ามี) มาเก็บไว้ใช้ข้ามขั้นตอนกรอกซ้ำตอนซื้อเครดิตครั้งถัดไป
          */
-        function loadCreditBalanceText() {
+        function loadCreditBalanceText(retriesLeft) {
             const uid = getUserId();
             const el = document.getElementById('creditBalanceText');
-            callApi('getUserCreditStatus', [uid])
+            if (typeof retriesLeft !== 'number') {
+                retriesLeft = 2; // ลองรวมทั้งหมด 3 ครั้ง
+                if (el) {
+                    el.innerText = '💰 กำลังโหลดข้อมูลเครดิต...';
+                    el.classList.remove('hidden-element');
+                }
+            }
+            callApi('getUserCreditStatus', [uid], 8000)
                 .then(function(res) {
                     // [ปรับปรุง] แสดง "เครดิตเดือนนี้คงเหลือ" แบบรวมทั้งหมด (เครดิตที่ซื้อไว้ + โควต้าฟรีของเดือนนี้ที่ยังเหลือ)
                     // ไม่ใช่แค่เครดิตที่ซื้อไว้อย่างเดียวเหมือนเดิม
                     const totalBalance = (res && typeof res.totalCreditBalance === 'number') ? res.totalCreditBalance : 0;
-                    el.innerText = '💰 เครดิตเดือนนี้คงเหลือ ' + totalBalance + ' ครั้ง';
-                    el.classList.remove('hidden-element');
+                    if (el) {
+                        el.innerText = '💰 เครดิตเดือนนี้คงเหลือ ' + totalBalance + ' ครั้ง';
+                        el.classList.remove('hidden-element');
+                    }
                     if (res && res.phone) creditContactPhone = res.phone;
                     if (res && res.email) creditContactEmail = res.email;
                 })
                 .catch(function() {
-                    el.innerText = '💰 เครดิตเดือนนี้คงเหลือ 0 ครั้ง';
-                    el.classList.remove('hidden-element');
+                    if (retriesLeft > 0) {
+                        setTimeout(function () { loadCreditBalanceText(retriesLeft - 1); }, 400);
+                        return;
+                    }
+                    if (el) {
+                        el.innerText = '💰 ไม่สามารถโหลดข้อมูลเครดิตได้ในขณะนี้ ลองรีเฟรชหน้าเว็บอีกครั้ง';
+                        el.classList.remove('hidden-element');
+                    }
                 });
         }
 
@@ -2248,7 +2356,7 @@
             const errorEl = document.getElementById('notifyError');
 
             if (!amount || Number(amount) <= 0 || !date || !time || !creditProofBase64) {
-                errorEl.innerText = '⚠️ กรุณากรอกข้อมูลให้ครบทุกช่อง และแนบหลักฐานการโอนเงินด้วยค่ะ';
+                errorEl.innerText = '⚠️ กรุณากรอกข้อมูลให้ครบทุกช่อง และแนบหลักฐานการโอนเงินด้วยครับ';
                 errorEl.classList.remove('hidden-element');
                 return;
             }
@@ -2273,10 +2381,10 @@
 
                 if (res && res.success) {
                     document.getElementById('creditResultTitle').innerText = '🙏 ได้รับการแจ้งชำระเงินแล้ว';
-                    document.getElementById('creditResultMessage').innerText = 'ระบบได้ส่งข้อมูลให้แอดมินตรวจสอบแล้ว เมื่ออนุมัติเรียบร้อย เครดิตจะถูกเติมให้ท่านโดยอัตโนมัติค่ะ';
+                    document.getElementById('creditResultMessage').innerText = 'ระบบได้ส่งข้อมูลให้แอดมินตรวจสอบแล้ว เมื่ออนุมัติเรียบร้อย เครดิตจะถูกเติมให้ท่านโดยอัตโนมัติครับ';
                 } else {
                     document.getElementById('creditResultTitle').innerText = '⚠️ ส่งไม่สำเร็จ';
-                    document.getElementById('creditResultMessage').innerText = (res && res.error) ? res.error : 'เกิดข้อผิดพลาดไม่ทราบสาเหตุ กรุณาลองใหม่อีกครั้งค่ะ';
+                    document.getElementById('creditResultMessage').innerText = (res && res.error) ? res.error : 'เกิดข้อผิดพลาดไม่ทราบสาเหตุ กรุณาลองใหม่อีกครั้งครับ';
                 }
                 document.getElementById('buyCreditResultModal').style.display = 'flex';
                 loadCreditBalanceText();
@@ -2603,7 +2711,7 @@
                         }
                         const editBtn = document.getElementById('packageEditBtn');
                         if (editBtn) editBtn.disabled = false;
-                        msgEl.innerText = '✅ บันทึกแพ็กเกจสำเร็จแล้วค่ะ';
+                        msgEl.innerText = '✅ บันทึกแพ็กเกจสำเร็จแล้วครับ';
                         msgEl.classList.remove('hidden-element');
                         setTimeout(function() { msgEl.classList.add('hidden-element'); }, 2500);
                     } else {
