@@ -255,8 +255,11 @@
             to { transform: scale(1); opacity: 1; }
         }
 
-        .modal h2 { color: var(--primary-color); font-size: 1.5rem; margin-bottom: 15px; margin-top: 0; }
-        .modal p { color: #555; font-size: 1rem; margin-bottom: 20px; }
+        .modal h2 { color: var(--primary-color); font-size: 1.5rem; margin-bottom: 15px; margin-top: 0; line-height: 1.4; }
+        /* [แก้บั๊ก] เดิมไม่ได้กำหนด line-height ให้ <p> ในป็อปอัปเลย พอข้อความยาวจนต้องขึ้นบรรทัดใหม่บนจอมือถือ
+           (โดยเฉพาะป็อปอัป "เตรียมกองไพ่เสร็จแล้ว") ระยะห่างระหว่างบรรทัดจะแคบมากตามค่า default ของเบราว์เซอร์
+           ทำให้สระ/วรรณยุกต์ภาษาไทยของบรรทัดบนกับล่างมาชนกัน ดูอ่านยากและไม่เป็นมืออาชีพ จึงกำหนด line-height ให้ชัดเจน */
+        .modal p { color: #555; font-size: 1rem; margin-bottom: 20px; line-height: 1.7; }
 
         /* --- REVEAL LAYOUT (PYRAMID) --- */
         #revealed-cards-container {
