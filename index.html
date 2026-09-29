@@ -928,12 +928,9 @@
                 <div class="support-us-bank-line">ธนาคารไทยพาณิชย์ เลขที่บัญชี <b>4092444133</b></div>
                 <div class="support-us-bank-line">ชื่อบัญชี นัฐพงษ์ วิละขันคำ</div>
                 <button type="button" class="copy-account-btn support-us-copy-btn" onclick="copySupportAccountNumber('supportCopyFeedback1')">📋 คัดลอกเลขบัญชี</button>
-                <div id="supportCopyFeedback1" class="copy-prompt-feedback hidden-element">✅ คัดลอกเลขบัญชีแล้ว</div>
-            </div>
-            <div class="support-us-qr">
-                <img src="https://lh3.googleusercontent.com/d/1YE4wkKoX15pf_R7D_ZFpWdVgf0pr7Nr9" alt="QR Code สนับสนุนค่ากาแฟ" class="support-us-qr-img">
                 <br>
-                <a href="https://lh3.googleusercontent.com/d/1YE4wkKoX15pf_R7D_ZFpWdVgf0pr7Nr9" download="qr-code-สนับสนุนกาแฟ.jpg" target="_blank" rel="noopener" class="btn support-us-qr-btn">⬇️ โหลด QR Code</a>
+                <a href="https://lh3.googleusercontent.com/d/1YE4wkKoX15pf_R7D_ZFpWdVgf0pr7Nr9" download="qr-code-สนับสนุนกาแฟ.jpg" target="_blank" rel="noopener" class="btn support-us-qr-btn">⬇️ โหลด QR. PromptPay (พร้อมเพย์)</a>
+                <div id="supportCopyFeedback1" class="copy-prompt-feedback hidden-element">✅ คัดลอกเลขบัญชีแล้ว</div>
             </div>
             <div class="support-us-thanks">
                   ขอบคุณสำหรับทุกกำลังใจครับ ❤️</div>
@@ -999,12 +996,9 @@
                     <div class="support-us-bank-line">ธนาคารไทยพาณิชย์ เลขที่บัญชี <b>4092444133</b></div>
                     <div class="support-us-bank-line">ชื่อบัญชี นัฐพงษ์ วิละขันคำ</div>
                     <button type="button" class="copy-account-btn support-us-copy-btn" onclick="copySupportAccountNumber('supportCopyFeedback2')">📋 คัดลอกเลขบัญชี</button>
-                    <div id="supportCopyFeedback2" class="copy-prompt-feedback hidden-element">✅ คัดลอกเลขบัญชีแล้ว</div>
-                </div>
-                <div class="support-us-qr">
-                    <img src="https://lh3.googleusercontent.com/d/1YE4wkKoX15pf_R7D_ZFpWdVgf0pr7Nr9" alt="QR Code สนับสนุนค่ากาแฟ" class="support-us-qr-img">
                     <br>
-                    <a href="https://lh3.googleusercontent.com/d/1YE4wkKoX15pf_R7D_ZFpWdVgf0pr7Nr9" download="qr-code-สนับสนุนกาแฟ.jpg" target="_blank" rel="noopener" class="btn support-us-qr-btn">⬇️ โหลด QR Code</a>
+                    <a href="https://lh3.googleusercontent.com/d/1YE4wkKoX15pf_R7D_ZFpWdVgf0pr7Nr9" download="qr-code-สนับสนุนกาแฟ.jpg" target="_blank" rel="noopener" class="btn support-us-qr-btn">⬇️ โหลด QR. PromptPay (พร้อมเพย์)</a>
+                    <div id="supportCopyFeedback2" class="copy-prompt-feedback hidden-element">✅ คัดลอกเลขบัญชีแล้ว</div>
                 </div>
                 <div class="support-us-thanks">
                   ขอบคุณสำหรับทุกกำลังใจครับ ❤️</div>
@@ -2305,12 +2299,9 @@
         // =============================================================================================
         // [เพิ่มใหม่] บันทึกพฤติกรรมที่กล่อง "☕️ สนับสนุนค่ากาแฟ" ลงชีท "บันทึกสนับสนุน" (ฝั่งเซิร์ฟเวอร์: logSupportAction)
         // เพื่อให้แอดมินเดาได้ว่ายอดโอนที่ไม่ทราบที่มา น่าจะมาจากลูกดวง ID ไหน โดยเทียบเวลาที่เงินเข้ากับเวลาในชีท
-        //  - คัดลอกเลขบัญชี  : บันทึกในฟังก์ชัน copySupportAccountNumber ด้านบน
-        //  - โหลด QR Code    : ดักการกดปุ่ม .support-us-qr-btn
-        //  - กดค้างที่ QR    : ดักการกดค้างที่รูป QR (มักเป็นการกดบันทึกรูปลงเครื่อง)
-        //  - แคปหน้าจอ       : เว็บเบราว์เซอร์ไม่สามารถตรวจจับการแคปหน้าจอได้โดยตรง จึงใช้สัญญาณแทน คือ
-        //                      ลูกดวงสลับออกจากหน้าเว็บ (ไปเปิดแอปธนาคาร/แกลเลอรี) ในขณะที่ QR แสดงอยู่บนหน้าจอ
-        // การบันทึกทั้งหมดทำเบื้องหลังแบบเงียบๆ ถ้าล้มเหลวจะไม่แจ้งเตือนและไม่กระทบการใช้งานปกติ
+        //  - คัดลอกเลขบัญชี       : บันทึกในฟังก์ชัน copySupportAccountNumber ด้านบน
+        //  - โหลด QR PromptPay    : ดักการกดปุ่ม .support-us-qr-btn
+        // การบันทึกทำเบื้องหลังแบบเงียบๆ ถ้าล้มเหลวจะไม่แจ้งเตือนและไม่กระทบการใช้งานปกติ
         // =============================================================================================
         const _supportLogLastSent = {};
 
@@ -2340,54 +2331,11 @@
         }
 
         function initSupportLogTracking_() {
-            // 1) กดปุ่ม "โหลด QR Code"
+            // กดปุ่ม "โหลด QR. PromptPay (พร้อมเพย์)"
             document.addEventListener('click', function(e) {
                 const btn = e.target && e.target.closest ? e.target.closest('.support-us-qr-btn') : null;
                 if (btn) logSupportAction_('download_qr', getSupportPlaceOf_(btn));
             }, true);
-
-            // 2) กดค้างที่รูป QR (มือถือ: ค้างนิ้วราว 0.5 วินาที / คอมพิวเตอร์และ Android: คลิกขวาหรือเมนูกดค้าง)
-            let holdTimer = null;
-            function clearHold() { if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; } }
-            document.addEventListener('touchstart', function(e) {
-                const img = e.target && e.target.closest ? e.target.closest('.support-us-qr-img') : null;
-                clearHold();
-                if (!img) return;
-                holdTimer = setTimeout(function() {
-                    holdTimer = null;
-                    logSupportAction_('hold_qr', getSupportPlaceOf_(img));
-                }, 500);
-            }, { passive: true });
-            ['touchend', 'touchmove', 'touchcancel'].forEach(function(evName) {
-                document.addEventListener(evName, clearHold, { passive: true });
-            });
-            document.addEventListener('contextmenu', function(e) {
-                const img = e.target && e.target.closest ? e.target.closest('.support-us-qr-img') : null;
-                if (img) logSupportAction_('hold_qr', getSupportPlaceOf_(img));
-            });
-
-            // 3) สลับออกจากหน้าเว็บขณะที่ QR แสดงอยู่บนหน้าจออย่างน้อยครึ่งหนึ่ง (สัญญาณแทนการแคปหน้าจอ)
-            if (typeof IntersectionObserver !== 'undefined') {
-                const visibleRatio = new Map();
-                const observer = new IntersectionObserver(function(entries) {
-                    entries.forEach(function(entry) {
-                        visibleRatio.set(entry.target, entry.isIntersecting ? entry.intersectionRatio : 0);
-                    });
-                }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
-                document.querySelectorAll('.support-us-qr-img').forEach(function(img) {
-                    observer.observe(img);
-                });
-
-                document.addEventListener('visibilitychange', function() {
-                    if (document.visibilityState !== 'hidden') return;
-                    let bestImg = null;
-                    let bestRatio = 0;
-                    visibleRatio.forEach(function(ratio, img) {
-                        if (ratio >= 0.5 && ratio > bestRatio) { bestRatio = ratio; bestImg = img; }
-                    });
-                    if (bestImg) logSupportAction_('leave_while_qr', getSupportPlaceOf_(bestImg));
-                });
-            }
         }
 
         if (document.readyState === 'loading') {
