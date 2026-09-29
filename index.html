@@ -575,6 +575,11 @@
             margin-top: 6px;
             margin-left: 0;
         }
+        /* [เพิ่มใหม่] ปรับขนาดตัวอักษรปุ่ม "คัดลอกเลขบัญชี" (เฉพาะในกล่องสนับสนุน) ให้เท่ากับปุ่ม "โหลด QR"
+           ใช้ 2 class ซ้อนกันเพื่อให้ชนะกฎ .copy-account-btn ที่อยู่ท้ายไฟล์ CSS โดยไม่กระทบปุ่มคัดลอกในหน้าชำระเงิน */
+        .copy-account-btn.support-us-copy-btn {
+            font-size: 0.8rem;
+        }
         .support-us-qr {
             margin-bottom: 10px;
         }
@@ -589,7 +594,7 @@
             display: inline-block;
             font-size: 0.8rem;
             padding: 7px 16px;
-            margin-top: 4px;
+            margin-top: 12px;
         }
         .support-us-thanks {
             font-size: 0.85rem;
