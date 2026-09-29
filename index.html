@@ -2298,6 +2298,102 @@
         // จึงรับ id ของ feedback element เป็นพารามิเตอร์ เพื่อโชว์ข้อความ "คัดลอกแล้ว" ที่ถูกจุดตามตำแหน่งที่กดจริง)
         function copySupportAccountNumber(feedbackElId) {
             copyPredictionPromptToEl(document.getElementById(feedbackElId), PAYMENT_ACCOUNT_NUMBER_DISPLAY);
+            // [เพิ่มใหม่] บันทึกลงชีท "บันทึกสนับสนุน" ว่า ID นี้กดคัดลอกเลขบัญชี (feedbackElId ใช้บอกตำแหน่งที่กด)
+            logSupportAction_('copy_account', feedbackElId === 'supportCopyFeedback2' ? 'result' : 'question');
+        }
+
+        // =============================================================================================
+        // [เพิ่มใหม่] บันทึกพฤติกรรมที่กล่อง "☕️ สนับสนุนค่ากาแฟ" ลงชีท "บันทึกสนับสนุน" (ฝั่งเซิร์ฟเวอร์: logSupportAction)
+        // เพื่อให้แอดมินเดาได้ว่ายอดโอนที่ไม่ทราบที่มา น่าจะมาจากลูกดวง ID ไหน โดยเทียบเวลาที่เงินเข้ากับเวลาในชีท
+        //  - คัดลอกเลขบัญชี  : บันทึกในฟังก์ชัน copySupportAccountNumber ด้านบน
+        //  - โหลด QR Code    : ดักการกดปุ่ม .support-us-qr-btn
+        //  - กดค้างที่ QR    : ดักการกดค้างที่รูป QR (มักเป็นการกดบันทึกรูปลงเครื่อง)
+        //  - แคปหน้าจอ       : เว็บเบราว์เซอร์ไม่สามารถตรวจจับการแคปหน้าจอได้โดยตรง จึงใช้สัญญาณแทน คือ
+        //                      ลูกดวงสลับออกจากหน้าเว็บ (ไปเปิดแอปธนาคาร/แกลเลอรี) ในขณะที่ QR แสดงอยู่บนหน้าจอ
+        // การบันทึกทั้งหมดทำเบื้องหลังแบบเงียบๆ ถ้าล้มเหลวจะไม่แจ้งเตือนและไม่กระทบการใช้งานปกติ
+        // =============================================================================================
+        const _supportLogLastSent = {};
+
+        function logSupportAction_(actionCode, placeCode) {
+            try {
+                // กันส่งซ้ำถี่ๆ จากฝั่งหน้าเว็บ (รายการเดียวกันภายใน 1.5 วินาที นับครั้งเดียว)
+                const nowMs = Date.now();
+                if (_supportLogLastSent[actionCode] && nowMs - _supportLogLastSent[actionCode] < 1500) return;
+                _supportLogLastSent[actionCode] = nowMs;
+
+                // ใช้ fetch โดยตรง (ไม่ผ่าน callApi) พร้อม keepalive เพื่อให้คำขอยังส่งสำเร็จ
+                // แม้ลูกดวงสลับแอปทันที (เช่น ไปเปิดแอปธนาคาร) ระหว่างที่กำลังส่งอยู่
+                fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'logSupportAction',
+                        params: [getUserId(), actionCode, placeCode || '', (navigator.userAgent || '').slice(0, 200)]
+                    }),
+                    keepalive: true
+                }).catch(function() { /* เงียบไว้ ไม่กระทบการใช้งาน */ });
+            } catch (e) { /* เงียบไว้ ไม่กระทบการใช้งาน */ }
+        }
+
+        // บอกว่ากล่องสนับสนุนที่ element นี้อยู่ คือกล่องในหน้าไหน (กล่องในหน้าคำทำนายมี id = resultSupportUsBox)
+        function getSupportPlaceOf_(el) {
+            return (el && el.closest && el.closest('#resultSupportUsBox')) ? 'result' : 'question';
+        }
+
+        function initSupportLogTracking_() {
+            // 1) กดปุ่ม "โหลด QR Code"
+            document.addEventListener('click', function(e) {
+                const btn = e.target && e.target.closest ? e.target.closest('.support-us-qr-btn') : null;
+                if (btn) logSupportAction_('download_qr', getSupportPlaceOf_(btn));
+            }, true);
+
+            // 2) กดค้างที่รูป QR (มือถือ: ค้างนิ้วราว 0.5 วินาที / คอมพิวเตอร์และ Android: คลิกขวาหรือเมนูกดค้าง)
+            let holdTimer = null;
+            function clearHold() { if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; } }
+            document.addEventListener('touchstart', function(e) {
+                const img = e.target && e.target.closest ? e.target.closest('.support-us-qr-img') : null;
+                clearHold();
+                if (!img) return;
+                holdTimer = setTimeout(function() {
+                    holdTimer = null;
+                    logSupportAction_('hold_qr', getSupportPlaceOf_(img));
+                }, 500);
+            }, { passive: true });
+            ['touchend', 'touchmove', 'touchcancel'].forEach(function(evName) {
+                document.addEventListener(evName, clearHold, { passive: true });
+            });
+            document.addEventListener('contextmenu', function(e) {
+                const img = e.target && e.target.closest ? e.target.closest('.support-us-qr-img') : null;
+                if (img) logSupportAction_('hold_qr', getSupportPlaceOf_(img));
+            });
+
+            // 3) สลับออกจากหน้าเว็บขณะที่ QR แสดงอยู่บนหน้าจออย่างน้อยครึ่งหนึ่ง (สัญญาณแทนการแคปหน้าจอ)
+            if (typeof IntersectionObserver !== 'undefined') {
+                const visibleRatio = new Map();
+                const observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        visibleRatio.set(entry.target, entry.isIntersecting ? entry.intersectionRatio : 0);
+                    });
+                }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
+                document.querySelectorAll('.support-us-qr-img').forEach(function(img) {
+                    observer.observe(img);
+                });
+
+                document.addEventListener('visibilitychange', function() {
+                    if (document.visibilityState !== 'hidden') return;
+                    let bestImg = null;
+                    let bestRatio = 0;
+                    visibleRatio.forEach(function(ratio, img) {
+                        if (ratio >= 0.5 && ratio > bestRatio) { bestRatio = ratio; bestImg = img; }
+                    });
+                    if (bestImg) logSupportAction_('leave_while_qr', getSupportPlaceOf_(bestImg));
+                });
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initSupportLogTracking_);
+        } else {
+            initSupportLogTracking_();
         }
 
         function openNotifyPaymentForm() {
